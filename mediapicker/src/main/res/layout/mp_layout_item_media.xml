@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.mct.mediapicker.common.MediaPickerSquareImageView
+            android:id="@+id/mp_iv_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?selectableItemBackground"
+            android:scaleType="centerCrop" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/mp_iv_selected"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/mp_selector_radio_button" />
+
+    </FrameLayout>
+</layout>

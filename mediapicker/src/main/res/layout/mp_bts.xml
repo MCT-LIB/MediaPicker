@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:theme="@style/PhotoPickerTheme">
+
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/mp_drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:paddingTop="16dp"
+            app:tint="?attr/colorPrimary" />
+
+        <FrameLayout
+            android:id="@+id/mp_frame_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mp_drag_handle">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/mp_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/mp_ic_close"
+                app:navigationIconTint="?attr/colorOnSurface" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/mp_tab_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:minWidth="220dp"
+                app:tabBackground="@drawable/mp_tab_background"
+                app:tabIndicator="@drawable/mp_tab_indicator"
+                app:tabIndicatorFullWidth="true"
+                app:tabIndicatorGravity="stretch"
+                app:tabRippleColor="@null"
+                app:tabSelectedTextColor="?attr/colorOnSurface"
+                app:tabTextColor="?attr/colorOnSurfaceVariant">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mp_media" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mp_album" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/mp_frame_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/mp_frame_toolbar"
+            android:layout_alignParentBottom="true">
+
+            <include
+                android:id="@+id/mp_album_detail"
+                layout="@layout/mp_layout_data"
+                android:visibility="gone" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/mp_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:id="@+id/mp_bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_gravity="bottom"
+                android:background="?colorSurface"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="16dp"
+                android:translationY="64dp"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/mp_btn_add"
+                    android:drawableStart="@drawable/mp_ic_gallery"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="8dp"
+                    android:text="@string/mp_selected_items"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="?colorOnSurface"
+                    app:drawableTint="?colorOnSurface" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/mp_btn_add"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/mp_add_n"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+</layout>

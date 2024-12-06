@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mp_tv_empty_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/mp_ic_folder"
+            android:drawablePadding="8dp"
+            android:text="@string/mp_empty_media"
+            android:visibility="gone" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/mp_progress_indicator"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mp_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:visibility="gone" />
+
+    </FrameLayout>
+</layout>

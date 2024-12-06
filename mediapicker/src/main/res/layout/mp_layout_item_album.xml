@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.mct.mediapicker.common.MediaPickerSquareImageView
+            android:id="@+id/mp_iv_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+            tools:src="#EDEDED" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mp_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mp_iv_thumb"
+            android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="@tools:sample/lorem" />
+
+    </RelativeLayout>
+</layout>

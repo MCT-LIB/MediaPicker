@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- @formatter:off -->
+    <style name="PhotoPickerTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/mp_theme_dark_primary</item>
+        <item name="colorOnPrimary">@color/mp_theme_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/mp_theme_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/mp_theme_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/mp_theme_dark_secondary</item>
+        <item name="colorOnSecondary">@color/mp_theme_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/mp_theme_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/mp_theme_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/mp_theme_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/mp_theme_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/mp_theme_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/mp_theme_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/mp_theme_dark_error</item>
+        <item name="colorErrorContainer">@color/mp_theme_dark_errorContainer</item>
+        <item name="colorOnError">@color/mp_theme_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/mp_theme_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/mp_theme_dark_background</item>
+        <item name="colorOnBackground">@color/mp_theme_dark_onBackground</item>
+        <item name="colorSurface">@color/mp_theme_dark_surface</item>
+        <item name="colorOnSurface">@color/mp_theme_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/mp_theme_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/mp_theme_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/mp_theme_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/mp_theme_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/mp_theme_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/mp_theme_dark_inversePrimary</item>
+    </style>
+    <!-- @formatter:on -->
+</resources>

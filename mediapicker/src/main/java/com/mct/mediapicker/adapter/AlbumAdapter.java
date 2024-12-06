@@ -41,6 +41,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.binding.mpIvThumb);
         holder.binding.mpTvTitle.setText(album.getBucketName());
+        holder.binding.mpTvDesc.setText(String.valueOf(album.getMediaList().size()));
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onClickItem(album, holder.getAdapterPosition());

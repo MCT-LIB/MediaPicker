@@ -28,7 +28,18 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+            tools:text="@tools:sample/lorem" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mp_tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mp_tv_title"
+            android:alpha="0.8"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             tools:text="@tools:sample/lorem" />
 
     </RelativeLayout>

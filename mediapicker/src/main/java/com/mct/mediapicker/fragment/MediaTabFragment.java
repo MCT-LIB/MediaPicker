@@ -1,5 +1,6 @@
 package com.mct.mediapicker.fragment;
 
+import androidx.annotation.RestrictTo;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +11,7 @@ import com.mct.mediapicker.model.Album;
 
 import java.util.List;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class MediaTabFragment extends BaseTabFragment {
 
     @Override

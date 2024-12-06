@@ -14,13 +14,11 @@ public class Album implements Serializable {
 
     private String bucketId;
     private String bucketName;
-    private Uri lastImageUri;
     private final List<Media> mediaList;
 
-    public Album(String bucketId, String bucketName, Uri lastImageUri) {
+    public Album(String bucketId, String bucketName) {
         this.bucketId = bucketId;
         this.bucketName = bucketName;
-        this.lastImageUri = lastImageUri;
         this.mediaList = new ArrayList<>();
     }
 
@@ -40,20 +38,12 @@ public class Album implements Serializable {
         this.bucketName = bucketName;
     }
 
-    public Uri getLastImageUri() {
-        return lastImageUri;
-    }
-
-    public void setLastImageUri(Uri lastImageUri) {
-        this.lastImageUri = lastImageUri;
+    public Uri getBucketThumbUri() {
+        return mediaList.isEmpty() ? null : mediaList.get(mediaList.size() - 1).getUri();
     }
 
     public List<Media> getMediaList() {
         return mediaList;
-    }
-
-    public void addMedia(Media media) {
-        mediaList.add(media);
     }
 
     public void setMediaList(List<Media> mediaList) {
@@ -61,14 +51,13 @@ public class Album implements Serializable {
         this.mediaList.addAll(mediaList);
     }
 
+    public void addMedia(@NonNull Media media) {
+        mediaList.add(media);
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return "Album{" +
-                "bucketId='" + bucketId + '\'' +
-                ", bucketName='" + bucketName + '\'' +
-                ", lastImageUri=" + lastImageUri +
-                ", mediaList=" + mediaList +
-                '}';
+        return "Album{" + "bucketId=" + bucketId + ", bucketName=" + bucketName + ", mediaList=" + mediaList + '}';
     }
 }

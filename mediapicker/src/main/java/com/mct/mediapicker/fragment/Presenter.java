@@ -197,13 +197,15 @@ class Presenter {
         }
 
         String[] projections = {
-                MediaStore.MediaColumns._ID,
                 MediaStore.MediaColumns.BUCKET_ID,
                 MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
                 MediaStore.MediaColumns.DATA,
-                MediaStore.MediaColumns.SIZE,
                 MediaStore.MediaColumns.MIME_TYPE,
                 MediaStore.MediaColumns.DATE_MODIFIED,
+                MediaStore.MediaColumns.SIZE,
+                MediaStore.MediaColumns.DURATION,
+                MediaStore.MediaColumns.WIDTH,
+                MediaStore.MediaColumns.HEIGHT,
         };
         String selection = null;
         String[] selectionArgs = null;
@@ -227,37 +229,41 @@ class Presenter {
             cursor = context.getContentResolver().query(contentUri, projections, selection, selectionArgs, orderBy);
         }
         try {
-            ArrayMap<String, Album> findAlbums = new ArrayMap<>();
+            ArrayMap<String, Album> albums = new ArrayMap<>();
             if (cursor != null && cursor.moveToFirst()) {
                 int bucketIdIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_ID);
                 int bucketNameIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
                 int mediaPathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                int sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE);
                 int mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
                 int dateModified = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED);
-
+                int sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE);
+                int durationIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DURATION);
+                int widthIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH);
+                int heightIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT);
 
                 do {
                     String path = cursor.getString(mediaPathIndex);
                     String bucketId = cursor.getString(bucketIdIndex);
-                    Album album = findAlbums.get(bucketId);
+                    Album album = albums.get(bucketId);
 
                     if (album == null) {
-                        album = new Album(bucketId, cursor.getString(bucketNameIndex), Uri.fromFile(new File(path)));
-                        findAlbums.put(bucketId, album);
+                        albums.put(bucketId, album = new Album(bucketId, cursor.getString(bucketNameIndex)));
                     }
 
                     Media media = new Media();
                     media.setUri(Uri.fromFile(new File(path)));
                     media.setName(getFileName(path));
-                    media.setSize(cursor.getLong(sizeIndex));
                     media.setMimeType(cursor.getString(mimeTypeIndex));
-                    media.setDateModified(cursor.getLong(dateModified));
+                    media.setDateModified(cursor.getInt(dateModified));
+                    media.setSize(cursor.getInt(sizeIndex));
+                    media.setDuration(cursor.getInt(durationIndex));
+                    media.setWidth(cursor.getInt(widthIndex));
+                    media.setHeight(cursor.getInt(heightIndex));
 
                     album.addMedia(media);
                 } while (cursor.moveToNext());
             }
-            return new ArrayList<>(findAlbums.values());
+            return new ArrayList<>(albums.values());
         } finally {
             if (cursor != null) {
                 cursor.close();

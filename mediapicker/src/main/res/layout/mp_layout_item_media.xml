@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,19 +10,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.mct.mediapicker.common.MediaPickerSquareImageView
+        <com.mct.mediapicker.common.MPSquareImageView
             android:id="@+id/mp_iv_thumb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:scaleType="centerCrop" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mp_tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/mp_bg_shape_corn_4"
+            android:backgroundTint="#80000000"
+            android:drawableStart="@drawable/mp_ic_play"
+            android:drawablePadding="2dp"
+            android:drawableTint="@android:color/white"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="1dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="0:00"
+            tools:visibility="visible" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/mp_iv_selected"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="4dp"
+            android:layout_gravity="top|end"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:src="@drawable/mp_selector_radio_button" />
 
     </FrameLayout>

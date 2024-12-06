@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mct.mediapicker.databinding.MpLayoutItemAlbumBinding;
 import com.mct.mediapicker.model.Album;
 
@@ -35,7 +36,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         if (album == null) {
             return;
         }
-        Glide.with(holder.itemView).load(album.getLastImageUri()).into(holder.binding.mpIvThumb);
+        Glide.with(holder.itemView)
+                .load(album.getBucketThumbUri())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(holder.binding.mpIvThumb);
         holder.binding.mpTvTitle.setText(album.getBucketName());
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

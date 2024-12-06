@@ -12,9 +12,12 @@ public class Media implements Serializable {
 
     private Uri uri;
     private String name;
-    private Long size;
     private String mimeType;
-    private Long dateModified;
+    private Integer dateModified;
+    private Integer size;
+    private Integer duration;
+    private Integer width;
+    private Integer height;
 
     public Media() {
     }
@@ -35,14 +38,6 @@ public class Media implements Serializable {
         this.name = name;
     }
 
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
-
     public String getMimeType() {
         return mimeType;
     }
@@ -51,12 +46,44 @@ public class Media implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public Long getDateModified() {
+    public Integer getDateModified() {
         return dateModified;
     }
 
-    public void setDateModified(Long dateModified) {
+    public void setDateModified(Integer dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public boolean isImage() {
@@ -73,8 +100,12 @@ public class Media implements Serializable {
         return "Media{" +
                 "uri=" + uri +
                 ", name=" + name +
-                ", size=" + size +
                 ", mimeType=" + mimeType +
+                ", dateModified=" + dateModified +
+                ", size=" + size +
+                ", duration=" + duration +
+                ", width=" + width +
+                ", height=" + height +
                 '}';
     }
 }

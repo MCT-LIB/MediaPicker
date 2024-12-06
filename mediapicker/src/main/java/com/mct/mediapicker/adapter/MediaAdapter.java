@@ -17,6 +17,7 @@ import com.mct.mediapicker.model.Media;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,9 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
     private final OnItemClickListener listener;
 
     public MediaAdapter(boolean isMultipleSelect, @NonNull List<Album> albums, OnItemClickListener listener, Function<Media, Boolean> evaluateMediaPick) {
-        List<Media> media = albums.stream().map(Album::getMediaList).flatMap(List::stream)
+        List<Media> media = albums.parallelStream()
+                .map(Album::getMediaList)
+                .flatMap(List::parallelStream)
                 .sorted(Comparator.comparingLong(m -> -m.getDateModified()))
                 .collect(Collectors.toList());
 
@@ -65,6 +68,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
                 .load(media.getUri())
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.binding.mpIvThumb);
+        holder.setDuration(media.isVideo(), media.getDuration());
         holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -97,6 +101,17 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> 
         public ViewHolder(@NonNull MpLayoutItemMediaBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+        }
+
+        void setDuration(boolean video, Integer duration) {
+            if (video && duration != null) {
+                duration /= 1000;
+                String txt = String.format(Locale.getDefault(), "%d:%02d", duration / 60, duration % 60);
+                binding.mpTvDuration.setText(txt);
+                binding.mpTvDuration.setVisibility(View.VISIBLE);
+            } else {
+                binding.mpTvDuration.setVisibility(View.GONE);
+            }
         }
 
         void setSelected(boolean visible, boolean selected) {

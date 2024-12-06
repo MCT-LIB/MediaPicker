@@ -3,9 +3,11 @@ package com.mct.mediapicker.model;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class Media implements Serializable {
@@ -92,6 +94,18 @@ public class Media implements Serializable {
 
     public boolean isVideo() {
         return mimeType != null && mimeType.startsWith("video/");
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Media) {
+            Media media = (Media) obj;
+            return Objects.equals(uri, media.uri);
+        }
+        return false;
     }
 
     @NonNull

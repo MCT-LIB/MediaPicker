@@ -17,6 +17,7 @@ import android.util.ArrayMap;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
+import androidx.core.util.Supplier;
 
 import com.mct.mediapicker.MediaPickerOption;
 import com.mct.mediapicker.model.Album;
@@ -25,7 +26,6 @@ import com.mct.mediapicker.model.Media;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,40 +37,22 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 class Presenter {
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Options keeper
-    ///////////////////////////////////////////////////////////////////////////
-
-    static void storeOption(@NonNull MediaPickerOption option) {
-        OptionHolder.options.put(option.getId(), option);
-    }
-
-    private static class OptionHolder {
-        private static final Map<String, MediaPickerOption> options = new ArrayMap<>();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Presenter area
-    ///////////////////////////////////////////////////////////////////////////
-
+    private boolean isCallSubmitListener;
     private Disposable albumDisposable;
 
-    private String optionId;
-    private MediaPickerOption option;
-    private List<Media> selectedMedia;
-    private List<Album> albums;
-    private boolean isCallSubmitListener;
+    private final List<Album> albums = new ArrayList<>();
+    private final List<Media> selectedMedia = new ArrayList<>();
+    private Supplier<MediaPickerOption> optionSupplier;
 
     public Presenter() {
     }
 
     public boolean isEmptyOption() {
-        return option == null;
+        return optionSupplier == null;
     }
 
-    public void attach(String optionId) {
-        this.optionId = optionId;
-        this.option = OptionHolder.options.get(optionId);
+    public void attach(Supplier<MediaPickerOption> optionSupplier) {
+        this.optionSupplier = optionSupplier;
     }
 
     public void detach() {
@@ -78,15 +60,13 @@ class Presenter {
             albumDisposable.dispose();
             albumDisposable = null;
         }
-        OptionHolder.options.remove(optionId);
-        optionId = null;
-        option = null;
-        selectedMedia = null;
-        albums = null;
+        albums.clear();
+        selectedMedia.clear();
+        optionSupplier = null;
     }
 
     public MediaPickerOption getOption() {
-        return option;
+        return optionSupplier.get();
     }
 
     public boolean isMultipleSelect() {
@@ -102,7 +82,7 @@ class Presenter {
             return;
         }
         isCallSubmitListener = true;
-        if (selectedMedia == null || selectedMedia.isEmpty()) {
+        if (selectedMedia.isEmpty()) {
             Optional.ofNullable(getOption()).map(MediaPickerOption::getListener1).ifPresent(l -> l.onPick(null));
             Optional.ofNullable(getOption()).map(MediaPickerOption::getListener2).ifPresent(l -> l.onPick(null));
         } else {
@@ -124,23 +104,14 @@ class Presenter {
     }
 
     public int getSelectedMediaCount() {
-        if (selectedMedia == null) {
-            return 0;
-        }
         return selectedMedia.size();
     }
 
     public boolean isSelectedMedia(Media media) {
-        if (selectedMedia == null) {
-            return false;
-        }
         return selectedMedia.contains(media);
     }
 
     public void addSelectedMedia(Media media) {
-        if (selectedMedia == null) {
-            selectedMedia = new ArrayList<>();
-        }
         if (media == null || selectedMedia.contains(media)) {
             return;
         }
@@ -148,10 +119,20 @@ class Presenter {
     }
 
     public void removeSelectedMedia(Media media) {
-        if (selectedMedia == null) {
-            return;
-        }
         selectedMedia.remove(media);
+    }
+
+    public List<Media> getSelectedMedia() {
+        return selectedMedia;
+    }
+
+    public void setSelectedMedia(List<Media> selectedMedia) {
+        if (selectedMedia == null) {
+            this.selectedMedia.clear();
+        } else {
+            this.selectedMedia.clear();
+            this.selectedMedia.addAll(selectedMedia);
+        }
     }
 
     private final List<Consumer<List<Album>>> albumCallbacks = new ArrayList<>();
@@ -160,13 +141,13 @@ class Presenter {
         if (isEmptyOption()) {
             return;
         }
-        if (albums == null || albums.isEmpty()) {
+        if (albums.isEmpty()) {
             albumCallbacks.add(callback);
             // check disposable
             if (albumDisposable != null) {
                 return;
             }
-            albumDisposable = Single.fromCallable(() -> loadMedia(context, option.getPickType()))
+            albumDisposable = Single.fromCallable(() -> loadMedia(context, getOption().getPickType()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnDispose(albumCallbacks::clear)
@@ -174,7 +155,8 @@ class Presenter {
                         if (isEmptyOption()) {
                             return;
                         }
-                        albums = loadedAlbums;
+                        albums.clear();
+                        albums.addAll(loadedAlbums);
                         albumDisposable = null;
                         albumCallbacks.forEach(c -> c.accept(albums));
                         albumCallbacks.clear();

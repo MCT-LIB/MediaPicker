@@ -36,6 +36,9 @@ public class MediaTabFragment extends BaseTabFragment {
     }
 
     public void invalidateSelectedMedia() {
+        if (getContext() == null || binding == null) {
+            return;
+        }
         RecyclerView.Adapter<?> adapter = binding.mpRecyclerView.getAdapter();
         if (adapter instanceof MediaAdapter) {
             ((MediaAdapter) adapter).invalidateSelect();

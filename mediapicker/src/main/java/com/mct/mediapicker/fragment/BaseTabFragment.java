@@ -50,13 +50,6 @@ abstract class BaseTabFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadData();
-        if (presenter.isMultipleSelect()) {
-            RecyclerView rcv = binding.mpRecyclerView;
-            rcv.setPadding(
-                    rcv.getPaddingLeft(), rcv.getPaddingTop(),
-                    rcv.getPaddingRight(), Utils.dp2px(72)
-            );
-        }
     }
 
     @Override
@@ -86,12 +79,13 @@ abstract class BaseTabFragment extends Fragment {
                 binding.mpTvEmptyMessage.setText(getEmptyMessage());
             } else {
                 show(binding.mpRecyclerView);
-                for (int i = 0; i < binding.mpRecyclerView.getItemDecorationCount(); i++) {
-                    binding.mpRecyclerView.removeItemDecorationAt(i);
+                RecyclerView rcv = binding.mpRecyclerView;
+                for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
+                    rcv.removeItemDecorationAt(i);
                 }
-                binding.mpRecyclerView.setAdapter(onCreateAdapter(albums));
-                binding.mpRecyclerView.setLayoutManager(onCreateLayoutManager());
-                binding.mpRecyclerView.addItemDecoration(onCreateItemDecoration());
+                rcv.setAdapter(onCreateAdapter(albums));
+                rcv.setLayoutManager(onCreateLayoutManager());
+                rcv.addItemDecoration(onCreateItemDecoration());
             }
         });
     }

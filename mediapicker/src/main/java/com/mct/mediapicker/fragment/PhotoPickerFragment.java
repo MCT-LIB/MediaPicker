@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,25 +42,18 @@ import com.mct.mediapicker.databinding.MpLayoutDataBinding;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhotoPickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener {
 
-    private static final String ARGS_OPTION_ID = "option_id";
-
     @NonNull
     public static PhotoPickerFragment newInstance(@NonNull MediaPickerOption option) {
-
-        // store option
-        Presenter.storeOption(option);
-
-        // create fragment
-        Bundle args = new Bundle();
-        args.putString(ARGS_OPTION_ID, option.getId());
         PhotoPickerFragment fragment = new PhotoPickerFragment();
-        fragment.setArguments(args);
+        fragment.option = option;
         return fragment;
     }
 
@@ -68,12 +62,13 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
 
     private Album album;
+    private MediaPickerOption option;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         presenter = new Presenter();
-        presenter.attach(requireArguments().getString(ARGS_OPTION_ID));
+        presenter.attach(() -> option);
     }
 
     @Override
@@ -84,14 +79,52 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("album", album);
+        outState.putString("optionId", option.getId());
+        outState.putSerializable("selectedMedia", new ArrayList<>(presenter.getSelectedMedia()));
+        OptionHolder.saveOption(option);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onCreate(@Nullable Bundle ss) {
+        super.onCreate(ss);
+        if (ss != null) {
+            album = (Album) ss.getSerializable("album");
+            option = OptionHolder.restoredOption(ss.getString("optionId"));
+            presenter.setSelectedMedia((ArrayList<Media>) ss.getSerializable("selectedMedia"));
+        }
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
             if (isPermissionGranted()) {
                 findTabFragment(0, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
                 findTabFragment(1, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        album = null;
+        option = null;
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Context context = requireContext();
+        if (!Utils.isMaterial3Theme(context)) {
+            context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
+        }
+        BottomSheetDialog dialog = new BottomSheetDialog(context, getTheme());
+        if (presenter.isMultipleSelect()) {
+            BottomSheetBehavior<?> behavior = dialog.getBehavior();
+            behavior.setSkipCollapsed(true);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+        return dialog;
     }
 
     @Nullable
@@ -104,14 +137,19 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (presenter.isEmptyOption()) {
-            dismiss();
-            return;
-        }
-
-        if (!isPermissionGranted()) {
-            requestPermissions();
-        }
+        // add back press callback
+        ((BottomSheetDialog) requireDialog())
+                .getOnBackPressedDispatcher()
+                .addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (album != null) {
+                            dismissDetailAlbum();
+                        } else {
+                            dismiss();
+                        }
+                    }
+                });
 
         binding.mpToolbar.setNavigationOnClickListener(v -> dismiss());
         binding.mpViewpager.setAdapter(new FragmentTabAdapter(getChildFragmentManager()));
@@ -135,45 +173,23 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
                 }
             }
         });
+
+        // show selected media if exist
         if (presenter.isMultipleSelect()) {
-            RecyclerView rcv = binding.mpAlbumDetail.mpRecyclerView;
-            rcv.setPadding(
-                    rcv.getPaddingLeft(), rcv.getPaddingTop(),
-                    rcv.getPaddingRight(), Utils.dp2px(72)
-            );
+            invalidateSelectedMedia();
         }
-        // add back press callback
-        ((BottomSheetDialog) requireDialog())
-                .getOnBackPressedDispatcher()
-                .addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        if (album != null) {
-                            dismissDetailAlbum();
-                        } else {
-                            dismiss();
-                        }
-                    }
-                });
-    }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            album = (Album) savedInstanceState.getSerializable("album");
-            if (album != null) {
-                showDetailAlbum(album);
-            } else {
-                dismissDetailAlbum();
-            }
+        // show detail album if exist
+        if (album != null) {
+            showDetailAlbum(album);
+        } else {
+            dismissDetailAlbum();
         }
-    }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("album", album);
+        // request permission
+        if (!isPermissionGranted()) {
+            requestPermissions();
+        }
     }
 
     @Override
@@ -182,25 +198,13 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
         binding = null;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Context context = requireContext();
-        if (!Utils.isMaterial3Theme(context)) {
-            context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
-        }
-        BottomSheetDialog dialog = new BottomSheetDialog(context, getTheme());
-        if (presenter.isMultipleSelect()) {
-            BottomSheetBehavior<?> behavior = dialog.getBehavior();
-            behavior.setSkipCollapsed(true);
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
-        return dialog;
-    }
-
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
+        if (isStateSaved()) {
+            return;
+        }
+        presenter.setSelectedMedia(null);
         presenter.submitSelectedMedia();
     }
 
@@ -217,33 +221,39 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
             }
         }
         if (presenter.isMultipleSelect()) {
-            int getSelectedMediaCount = presenter.getSelectedMediaCount();
-            View bottomBar = binding.mpBottomBar;
-            if (getSelectedMediaCount > 0) {
-                bottomBar.animate()
-                        .withStartAction(() -> bottomBar.setVisibility(View.VISIBLE))
-                        .setInterpolator(new AccelerateInterpolator())
-                        .setDuration(200)
-                        .translationY(0)
-                        .start();
-            } else {
-                bottomBar.animate()
-                        .withEndAction(() -> bottomBar.setVisibility(View.GONE))
-                        .setInterpolator(new DecelerateInterpolator())
-                        .setDuration(200)
-                        .translationY(bottomBar.getHeight())
-                        .start();
-            }
-            binding.mpBtnAdd.setEnabled(getSelectedMediaCount > 0);
-            binding.mpBtnAdd.setText(getString(R.string.mp_add_n, presenter.getSelectedMediaCount()));
-            binding.mpBtnAdd.setOnClickListener(v -> {
-                presenter.submitSelectedMedia();
-                dismiss();
-            });
+            invalidateSelectedMedia();
         } else {
             presenter.submitSelectedMedia();
             dismiss();
         }
+    }
+
+    private void invalidateSelectedMedia() {
+        int getSelectedMediaCount = presenter.getSelectedMediaCount();
+        View bottomBar = binding.mpBottomBar;
+        if (getSelectedMediaCount > 0) {
+            bottomBar.animate()
+                    .withStartAction(() -> bottomBar.setVisibility(View.VISIBLE))
+                    .withEndAction(null)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .setDuration(200)
+                    .translationY(0)
+                    .start();
+        } else {
+            bottomBar.animate()
+                    .withStartAction(null)
+                    .withEndAction(() -> bottomBar.setVisibility(View.GONE))
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(200)
+                    .translationY(bottomBar.getHeight())
+                    .start();
+        }
+        binding.mpBtnAdd.setEnabled(getSelectedMediaCount > 0);
+        binding.mpBtnAdd.setText(getString(R.string.mp_add_n, presenter.getSelectedMediaCount()));
+        binding.mpBtnAdd.setOnClickListener(v -> {
+            presenter.submitSelectedMedia();
+            dismiss();
+        });
     }
 
     void showDetailAlbum(@NonNull Album a) {
@@ -259,6 +269,7 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
         mpAlbumDetail.mpTvEmptyMessage.setVisibility(View.GONE);
         mpAlbumDetail.mpProgressIndicator.setVisibility(View.GONE);
         mpAlbumDetail.mpRecyclerView.setVisibility(View.VISIBLE);
+
         RecyclerView rcv = mpAlbumDetail.mpRecyclerView;
         for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
             rcv.removeItemDecorationAt(i);
@@ -351,6 +362,19 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
                     : getString(R.string.mp_album);
         }
 
+    }
+
+    private static class OptionHolder {
+
+        private static final Map<String, MediaPickerOption> options = new ArrayMap<>();
+
+        private static void saveOption(@NonNull MediaPickerOption option) {
+            options.put(option.getId(), option);
+        }
+
+        private static MediaPickerOption restoredOption(String optionId) {
+            return options.remove(optionId);
+        }
     }
 
 }

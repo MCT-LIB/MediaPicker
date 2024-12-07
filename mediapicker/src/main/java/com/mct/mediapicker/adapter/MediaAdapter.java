@@ -121,13 +121,10 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         return medias == null ? 0 : medias.size();
     }
 
-    public static class MediaViewHolder extends RecyclerView.ViewHolder {
-
-        MpLayoutItemMediaBinding binding;
+    public static class MediaViewHolder extends BindingViewHolder<MpLayoutItemMediaBinding> {
 
         public MediaViewHolder(@NonNull MpLayoutItemMediaBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
+            super(binding);
             // @formatter:off
             TouchUtils.setTouchListener(itemView, new TouchUtils.TouchScaleListener(){
                 protected float getPressScale() {return 0.075f;}

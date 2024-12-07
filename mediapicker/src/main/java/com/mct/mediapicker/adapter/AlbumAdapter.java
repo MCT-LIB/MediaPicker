@@ -54,13 +54,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         return albums == null ? 0 : albums.size();
     }
 
-    public static class AlbumViewHolder extends RecyclerView.ViewHolder {
-
-        MpLayoutItemAlbumBinding binding;
+    public static class AlbumViewHolder extends BindingViewHolder<MpLayoutItemAlbumBinding> {
 
         public AlbumViewHolder(@NonNull MpLayoutItemAlbumBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
+            super(binding);
         }
     }
 

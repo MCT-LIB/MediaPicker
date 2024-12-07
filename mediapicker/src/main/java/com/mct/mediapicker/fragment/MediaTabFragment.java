@@ -1,10 +1,9 @@
 package com.mct.mediapicker.fragment;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.adapter.MediaAdapter;
 import com.mct.mediapicker.model.Album;
@@ -20,19 +19,9 @@ public class MediaTabFragment extends BaseTabFragment {
     }
 
     @Override
-    protected RecyclerView.Adapter<?> onCreateAdapter(List<Album> albums) {
+    protected void displayData(@NonNull RecyclerView rcv, List<Album> albums) {
         PickerFragment picker = getPhotoPickerFragment();
-        return new MediaAdapter(picker.getPresenter().isMultipleSelect(), albums, picker, picker.getPresenter()::isSelectedMedia);
-    }
-
-    @Override
-    protected RecyclerView.LayoutManager onCreateLayoutManager() {
-        return new GridLayoutManager(getContext(), 3);
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration onCreateItemDecoration() {
-        return new SpacingGridItemDecoration(3, MediaUtils.dp2px(3), false, 0);
+        SetupDataHelper.setup(rcv, picker.getPresenter(), albums, picker);
     }
 
     public void invalidateSelectedMedia() {

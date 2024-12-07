@@ -1,5 +1,6 @@
 package com.mct.mediapicker.fragment;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,21 +21,19 @@ public class AlbumTabFragment extends BaseTabFragment {
     }
 
     @Override
-    protected RecyclerView.Adapter<?> onCreateAdapter(List<Album> albums) {
-        return new AlbumAdapter(albums, (album, position) -> {
+    protected void displayData(@NonNull RecyclerView rcv, List<Album> albums) {
+        for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
+            if (rcv.getItemDecorationAt(i) instanceof SpacingGridItemDecoration) {
+                rcv.removeItemDecorationAt(i);
+            }
+        }
+        rcv.addItemDecoration(new SpacingGridItemDecoration(2, MediaUtils.dp2px(16), true, 0));
+        rcv.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        rcv.setAdapter(new AlbumAdapter(albums, (album, position) -> {
             if (getPhotoPickerFragment() != null) {
                 getPhotoPickerFragment().showDetailAlbum(album);
             }
-        });
+        }));
     }
 
-    @Override
-    protected RecyclerView.LayoutManager onCreateLayoutManager() {
-        return new GridLayoutManager(getContext(), 2);
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration onCreateItemDecoration() {
-        return new SpacingGridItemDecoration(2, MediaUtils.dp2px(16), true, 0);
-    }
 }

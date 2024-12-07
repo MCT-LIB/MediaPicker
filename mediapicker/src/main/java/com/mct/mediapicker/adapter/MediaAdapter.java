@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
+import androidx.core.util.Function;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -39,18 +39,21 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     private boolean dragging = false;
 
     public MediaAdapter(boolean isMultipleSelect, @NonNull List<Album> albums, OnItemClickListener listener, Function<Media, Boolean> evaluateMediaPick) {
-        List<Media> media = albums.parallelStream()
+        this.boundViewHolders = new HashSet<>();
+        this.isMultipleSelect = isMultipleSelect;
+        this.items = processAlbums(albums);
+        this.listener = listener;
+        this.evaluateMediaPick = evaluateMediaPick;
+    }
+
+    @NonNull
+    private List<Media> processAlbums(@NonNull List<Album> albums) {
+        return albums.parallelStream()
                 .map(Album::getMediaList)
                 .flatMap(List::parallelStream)
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparingLong(m -> -m.getDateModified()))
                 .collect(Collectors.toList());
-
-        this.boundViewHolders = new HashSet<>();
-        this.isMultipleSelect = isMultipleSelect;
-        this.items = media;
-        this.listener = listener;
-        this.evaluateMediaPick = evaluateMediaPick;
     }
 
     public Media getMedia(int position) {

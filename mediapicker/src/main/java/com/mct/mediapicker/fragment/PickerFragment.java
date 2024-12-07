@@ -25,7 +25,6 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -169,7 +168,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
 
         // show selected media if exist
         if (presenter.isMultipleSelect()) {
-            invalidateSelectedMedia();
+            view.post(this::invalidateSelectedMedia);
         }
 
         // show detail album if exist
@@ -265,12 +264,13 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
 
         boolean show = selectedCount > 0 || (exactMode);
         View bottomBar = binding.mpBottomBar;
+        bottomBar.animate().cancel();
         bottomBar.animate()
-                .withStartAction(show ? () -> bottomBar.setVisibility(View.VISIBLE) : null)
-                .withEndAction(!show ? () -> bottomBar.setVisibility(View.GONE) : null)
-                .setInterpolator(show ? new AccelerateInterpolator() : new DecelerateInterpolator())
                 .setDuration(200)
                 .translationY(show ? 0 : bottomBar.getHeight())
+                .setInterpolator(show ? new AccelerateInterpolator() : new DecelerateInterpolator())
+                .withStartAction(show ? () -> bottomBar.setVisibility(View.VISIBLE) : null)
+                .withEndAction(!show ? () -> bottomBar.setVisibility(View.GONE) : null)
                 .start();
     }
 
@@ -287,16 +287,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         invalidateToolbar();
 
         RecyclerView rcv = binding.mpAlbumDetail.mpRecyclerView;
-        for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
-            if (rcv.getItemDecorationAt(i) instanceof SpacingGridItemDecoration) {
-                rcv.removeItemDecorationAt(i);
-            }
-        }
-        rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? rcv.getPaddingBottom() : 0);
-        rcv.setAdapter(new MediaAdapter(presenter.isMultipleSelect(), Collections.singletonList(album), this, presenter::isSelectedMedia));
-        rcv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
-        rcv.addItemDecoration(new SpacingGridItemDecoration(3, MediaUtils.dp2px(3), false, 0));
-        ScrollHelper.attachTo(rcv);
+        SetupDataHelper.setup(rcv, presenter, Collections.singletonList(album), this);
     }
 
     void dismissDetailAlbum() {

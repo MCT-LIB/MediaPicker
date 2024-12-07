@@ -88,7 +88,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:translationY="64dp"
-                android:visibility="gone">
+                android:visibility="invisible">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/mp_tv_selected_items"

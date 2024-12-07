@@ -80,17 +80,7 @@ abstract class BaseTabFragment extends Fragment {
                 binding.mpTvEmptyMessage.setText(getEmptyMessage());
             } else {
                 show(binding.mpRecyclerView);
-                RecyclerView rcv = binding.mpRecyclerView;
-                for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
-                    if (rcv.getItemDecorationAt(i) instanceof SpacingGridItemDecoration) {
-                        rcv.removeItemDecorationAt(i);
-                    }
-                }
-                rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? rcv.getPaddingBottom() : 0);
-                rcv.setAdapter(onCreateAdapter(albums));
-                rcv.setLayoutManager(onCreateLayoutManager());
-                rcv.addItemDecoration(onCreateItemDecoration());
-                ScrollHelper.attachTo(rcv);
+                displayData(binding.mpRecyclerView, albums);
             }
         });
     }
@@ -101,11 +91,7 @@ abstract class BaseTabFragment extends Fragment {
 
     protected abstract String getEmptyMessage();
 
-    protected abstract RecyclerView.Adapter<?> onCreateAdapter(List<Album> albums);
-
-    protected abstract RecyclerView.LayoutManager onCreateLayoutManager();
-
-    protected abstract RecyclerView.ItemDecoration onCreateItemDecoration();
+    protected abstract void displayData(@NonNull RecyclerView rcv, List<Album> albums);
 
     private void show(@NonNull View show) {
         View[] views = new View[]{

@@ -141,15 +141,10 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
                 .addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        if (album != null) {
-                            dismissDetailAlbum();
-                        } else {
-                            dismiss();
-                        }
+                        onBackPressed();
                     }
                 });
 
-        binding.mpToolbar.setNavigationOnClickListener(v -> dismiss());
         binding.mpViewpager.setAdapter(new FragmentTabAdapter(getChildFragmentManager()));
         binding.mpTabLayout.setupWithViewPager(binding.mpViewpager);
         binding.mpViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -206,6 +201,22 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         presenter.submitSelectedMedia();
     }
 
+    public void onBackPressed() {
+        if (album != null) {
+            dismissDetailAlbum();
+            invalidateSelectedMediaTab();
+            return;
+        }
+        if (presenter.getSelectedMediaCount() > 0) {
+            presenter.setSelectedMedia(null);
+            invalidateToolbar();
+            invalidateSelectedMedia();
+            invalidateSelectedMediaTab();
+            return;
+        }
+        dismissAllowingStateLoss();
+    }
+
     @Override
     public void onItemClick(Media media, int position) {
         if (media == null) {
@@ -219,10 +230,11 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
             }
         }
         if (presenter.isMultipleSelect()) {
+            invalidateToolbar();
             invalidateSelectedMedia();
         } else {
             presenter.submitSelectedMedia();
-            dismiss();
+            dismissAllowingStateLoss();
         }
     }
 
@@ -250,8 +262,12 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         binding.mpBtnAdd.setText(getString(R.string.mp_add_n, presenter.getSelectedMediaCount()));
         binding.mpBtnAdd.setOnClickListener(v -> {
             presenter.submitSelectedMedia();
-            dismiss();
+            dismissAllowingStateLoss();
         });
+    }
+
+    private void invalidateSelectedMediaTab() {
+        findTabFragment(0, MediaTabFragment.class).ifPresent(MediaTabFragment::invalidateSelectedMedia);
     }
 
     void showDetailAlbum(@NonNull Album a) {
@@ -260,9 +276,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         binding.mpAlbumDetail.mpRecyclerView.setVisibility(View.VISIBLE);
         binding.mpViewpager.setVisibility(View.GONE);
         binding.mpTabLayout.setVisibility(View.GONE);
-        binding.mpToolbar.setTitle(album.getBucketName());
-        binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
-        binding.mpToolbar.setNavigationOnClickListener(v -> dismissDetailAlbum());
+        invalidateToolbar();
 
         RecyclerView rcv = binding.mpAlbumDetail.mpRecyclerView;
         for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
@@ -283,11 +297,25 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         binding.mpAlbumDetail.mpRecyclerView.setAdapter(null);
         binding.mpViewpager.setVisibility(View.VISIBLE);
         binding.mpTabLayout.setVisibility(View.VISIBLE);
-        binding.mpToolbar.setTitle(null);
-        binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_close);
-        binding.mpToolbar.setNavigationOnClickListener(v -> dismiss());
+        invalidateToolbar();
+    }
 
-        findTabFragment(0, MediaTabFragment.class).ifPresent(MediaTabFragment::invalidateSelectedMedia);
+    private void invalidateToolbar() {
+        if (album != null) {
+            binding.mpToolbar.setTitle(album.getBucketName());
+            binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
+            binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+            return;
+        }
+        if (presenter.getSelectedMediaCount() > 0) {
+            binding.mpToolbar.setTitle("");
+            binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
+            binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+            return;
+        }
+        binding.mpToolbar.setTitle("");
+        binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_close);
+        binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void requestPermissions() {

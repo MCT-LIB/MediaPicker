@@ -17,6 +17,7 @@ import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.databinding.MpLayoutItemMediaBinding;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
+import com.mct.touchutils.TouchUtils;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -127,6 +128,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         public MediaViewHolder(@NonNull MpLayoutItemMediaBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            // @formatter:off
+            TouchUtils.setTouchListener(itemView, new TouchUtils.TouchScaleListener(){
+                protected float getPressScale() {return 0.075f;}
+                protected float getReleaseScale() {return 0.025f;}
+            });
+            // @formatter:on
         }
 
         void loadImage(Media media, int size, boolean dragging) {

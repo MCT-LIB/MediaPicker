@@ -15,6 +15,7 @@
             android:id="@+id/mp_iv_thumb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?colorSurfaceContainerHigh"
             android:scaleType="centerCrop"
             app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
             tools:src="#EDEDED" />

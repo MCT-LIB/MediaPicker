@@ -6,6 +6,7 @@ import static com.bumptech.glide.load.engine.DiskCacheStrategy.NONE;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
-import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.databinding.MpLayoutItemMediaBinding;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
@@ -32,11 +32,10 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     private final Set<MediaViewHolder> boundViewHolders;
 
     private final boolean isMultipleSelect;
-    private final List<Media> medias;
+    private final List<Media> items;
     private final OnItemClickListener listener;
     private final Function<Media, Boolean> evaluateMediaPick;
 
-    private int thumbnailSize;
     private boolean dragging = false;
 
     public MediaAdapter(boolean isMultipleSelect, @NonNull List<Album> albums, OnItemClickListener listener, Function<Media, Boolean> evaluateMediaPick) {
@@ -49,16 +48,16 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         this.boundViewHolders = new HashSet<>();
         this.isMultipleSelect = isMultipleSelect;
-        this.medias = media;
+        this.items = media;
         this.listener = listener;
         this.evaluateMediaPick = evaluateMediaPick;
     }
 
-    public Media getMedias(int position) {
-        if (position < 0 || position >= medias.size()) {
+    public Media getMedia(int position) {
+        if (position < 0 || position >= items.size()) {
             return null;
         } else {
-            return medias.get(position);
+            return items.get(position);
         }
     }
 
@@ -66,22 +65,19 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         this.dragging = dragging;
         if (!dragging) {
             for (MediaViewHolder holder : boundViewHolders) {
-                holder.loadImage(medias.get(holder.getAdapterPosition()), thumbnailSize, false);
+                Media media = items.get(holder.getAdapterPosition());
+                if (media != null) {
+                    holder.loadImage(media, false);
+                }
             }
         }
     }
 
     public void invalidateSelect() {
         for (MediaViewHolder holder : boundViewHolders) {
-            Media media = medias.get(holder.getAdapterPosition());
+            Media media = items.get(holder.getAdapterPosition());
             holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
         }
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        thumbnailSize = MediaUtils.getScreenWidth(recyclerView.getContext()) / 3;
     }
 
     @NonNull
@@ -93,8 +89,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
-        Media media = medias.get(position);
-        holder.loadImage(media, thumbnailSize, dragging);
+        Media media = items.get(position);
+        if (media == null) {
+            return;
+        }
+        holder.loadImage(media, dragging);
         holder.setDuration(media.isVideo(), media.getDuration());
         holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
         holder.itemView.setOnClickListener(v -> {
@@ -118,7 +117,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     @Override
     public int getItemCount() {
-        return medias == null ? 0 : medias.size();
+        return items == null ? 0 : items.size();
     }
 
     public static class MediaViewHolder extends BindingViewHolder<MpLayoutItemMediaBinding> {
@@ -133,16 +132,21 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             // @formatter:on
         }
 
-        void loadImage(Media media, int size, boolean dragging) {
+        void loadImage(@NonNull Media media, boolean dragging) {
+            ImageView ivThumb = binding.mpIvThumb;
+            if (ivThumb.getHandler() == null) {
+                ivThumb.post(() -> loadImage(media, dragging));
+                return;
+            }
             if (dragging) {
-                binding.mpIvThumb.setImageDrawable(null);
+                ivThumb.setImageDrawable(null);
             } else {
-                Glide.with(itemView)
+                Glide.with(ivThumb)
                         .load(media.getUri())
                         .signature(new ObjectKey(media.getDateModified()))
                         .diskCacheStrategy(media.isVideo() ? AUTOMATIC : NONE)
-                        .override(size)
-                        .into(binding.mpIvThumb);
+                        .override(ivThumb.getWidth())
+                        .into(ivThumb);
             }
         }
 

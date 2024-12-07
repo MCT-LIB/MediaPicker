@@ -3,9 +3,11 @@ package com.mct.mediapicker.fragment;
 import android.graphics.Typeface;
 import android.text.format.DateUtils;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mct.mediapicker.MediaUtils;
@@ -14,7 +16,9 @@ import com.mct.mediapicker.adapter.MediaAdapter;
 import com.mct.mediapicker.common.fastscroll.FastScroller;
 import com.mct.mediapicker.common.fastscroll.FastScrollerBuilder;
 import com.mct.mediapicker.common.fastscroll.PopupStyles;
+import com.mct.mediapicker.common.fastscroll.PopupTextProvider;
 
+import java.util.Map;
 import java.util.Optional;
 
 class ScrollHelper {
@@ -53,7 +57,7 @@ class ScrollHelper {
                     try {
                         MediaAdapter mediaAdapter = getAdapter(recyclerView).orElse(null);
                         if (mediaAdapter != null) {
-                            long date = mediaAdapter.getMedias(position).getDateModified() * 1000L;
+                            long date = mediaAdapter.getMedia(position).getDateModified() * 1000L;
                             return DateUtils.formatDateTime(view.getContext(), date, DateUtils.FORMAT_SHOW_YEAR);
                         }
                     } catch (Exception ignored) {

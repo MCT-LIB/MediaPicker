@@ -64,8 +64,8 @@ public class Album implements Parcelable {
         this.bucketName = bucketName;
     }
 
-    public Uri getBucketThumbUri() {
-        return mediaList.isEmpty() ? null : mediaList.get(mediaList.size() - 1).getUri();
+    public Media getLastMedia() {
+        return mediaList.isEmpty() ? null : mediaList.get(mediaList.size() - 1);
     }
 
     public List<Media> getMediaList() {

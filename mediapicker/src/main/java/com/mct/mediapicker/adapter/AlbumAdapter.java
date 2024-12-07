@@ -1,15 +1,20 @@
 package com.mct.mediapicker.adapter;
 
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.AUTOMATIC;
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.NONE;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.mct.mediapicker.databinding.MpLayoutItemAlbumBinding;
 import com.mct.mediapicker.model.Album;
+import com.mct.mediapicker.model.Media;
 
 import java.util.List;
 
@@ -36,10 +41,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         if (album == null) {
             return;
         }
-        Glide.with(holder.itemView)
-                .load(album.getBucketThumbUri())
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(holder.binding.mpIvThumb);
+        Media media = album.getLastMedia();
+        holder.loadImage(media != null ? media : new Media());
         holder.binding.mpTvTitle.setText(album.getBucketName());
         holder.binding.mpTvDesc.setText(String.valueOf(album.getMediaList().size()));
         holder.itemView.setOnClickListener(v -> {
@@ -58,6 +61,20 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
         public AlbumViewHolder(@NonNull MpLayoutItemAlbumBinding binding) {
             super(binding);
+        }
+
+        void loadImage(@NonNull Media media) {
+            ImageView ivThumb = binding.mpIvThumb;
+            if (ivThumb.getHandler() == null) {
+                ivThumb.post(() -> loadImage(media));
+                return;
+            }
+            Glide.with(ivThumb)
+                    .load(media.getUri())
+                    .signature(new ObjectKey(media.getDateModified()))
+                    .diskCacheStrategy(media.isVideo() ? AUTOMATIC : NONE)
+                    .override(ivThumb.getWidth())
+                    .into(ivThumb);
         }
     }
 

@@ -36,7 +36,7 @@ class Md2PopupBackground extends Drawable {
     public Md2PopupBackground(@NonNull Context context) {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Utils.getColorFromAttrRes(com.google.android.material.R.attr.colorControlActivated, context));
+        mPaint.setColor(Utils.getColorFromAttrRes(com.google.android.material.R.attr.colorSurfaceContainer, context));
         mPaint.setStyle(Paint.Style.FILL);
         Resources resources = context.getResources();
         mPaddingStart = resources.getDimensionPixelOffset(R.dimen.afs_md2_popup_padding_start);

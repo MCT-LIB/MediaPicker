@@ -66,9 +66,6 @@ public class FastScroller {
     private boolean mDragging;
 
     @NonNull
-    private final Runnable mAutoHideScrollbarRunnable = this::autoHideScrollbar;
-
-    @NonNull
     private final Rect mTempRect = new Rect();
 
     public FastScroller(@NonNull ViewGroup view, @NonNull ViewHelper viewHelper,
@@ -278,7 +275,9 @@ public class FastScroller {
         }
 
         mAnimationHelper.showScrollbar(mTrackView, mThumbView);
+        mAnimationHelper.showPopup(mPopupView);
         postAutoHideScrollbar();
+        postAutoHidePopup();
     }
 
     private boolean onTouchEvent(@NonNull MotionEvent event) {
@@ -406,22 +405,18 @@ public class FastScroller {
         }
 
         if (mDragging) {
-            cancelAutoHideScrollbar();
+            mView.removeCallbacks(mAutoHideScrollbarRunnable);
+            mView.removeCallbacks(mAutoHidePopupRunnable);
             mAnimationHelper.showScrollbar(mTrackView, mThumbView);
             mAnimationHelper.showPopup(mPopupView);
         } else {
             postAutoHideScrollbar();
-            mAnimationHelper.hidePopup(mPopupView);
+            postAutoHidePopup();
         }
     }
 
-    private void postAutoHideScrollbar() {
-        cancelAutoHideScrollbar();
-        if (mAnimationHelper.isScrollbarAutoHideEnabled()) {
-            mView.postDelayed(mAutoHideScrollbarRunnable,
-                    mAnimationHelper.getScrollbarAutoHideDelayMillis());
-        }
-    }
+    private final Runnable mAutoHideScrollbarRunnable = this::autoHideScrollbar;
+    private final Runnable mAutoHidePopupRunnable = this::autoHidePopup;
 
     private void autoHideScrollbar() {
         if (mDragging) {
@@ -430,8 +425,23 @@ public class FastScroller {
         mAnimationHelper.hideScrollbar(mTrackView, mThumbView);
     }
 
-    private void cancelAutoHideScrollbar() {
+    private void autoHidePopup() {
+        if (mDragging) {
+            return;
+        }
+        mAnimationHelper.hidePopup(mPopupView);
+    }
+
+    private void postAutoHideScrollbar() {
         mView.removeCallbacks(mAutoHideScrollbarRunnable);
+        if (mAnimationHelper.isScrollbarAutoHideEnabled()) {
+            mView.postDelayed(mAutoHideScrollbarRunnable, mAnimationHelper.getScrollbarAutoHideDelayMillis());
+        }
+    }
+
+    private void postAutoHidePopup() {
+        mView.removeCallbacks(mAutoHidePopupRunnable);
+        mView.postDelayed(mAutoHidePopupRunnable, mAnimationHelper.getPopupAutoHideDelayMillis());
     }
 
     public interface ViewHelper {
@@ -467,6 +477,8 @@ public class FastScroller {
         void showPopup(@NonNull View popupView);
 
         void hidePopup(@NonNull View popupView);
+
+        int getPopupAutoHideDelayMillis();
     }
 
     public interface DraggingListener {

@@ -1,6 +1,11 @@
 package com.mct.mediapicker.fragment;
 
+import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
+import static android.text.format.DateUtils.FORMAT_NO_MONTH_DAY;
+import static android.text.format.DateUtils.FORMAT_SHOW_YEAR;
+
 import android.graphics.Typeface;
+import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -72,20 +77,24 @@ class SetupDataHelper {
                     layoutParams.gravity = Gravity.CENTER;
                     layoutParams.setMarginEnd(MediaUtils.dp2px(8));
                     popupView.setLayoutParams(layoutParams);
-                    int padStart = MediaUtils.dp2px(12);
-                    int padEnd = MediaUtils.dp2px(20);
-                    int padVertical = MediaUtils.dp2px(8);
+                    int padStart = MediaUtils.dp2px(10);
+                    int padEnd = MediaUtils.dp2px(16);
+                    int padVertical = MediaUtils.dp2px(6);
                     popupView.setPaddingRelative(padStart, padVertical, padEnd, padVertical);
                     popupView.setMinWidth(0);
                     popupView.setMinimumHeight(0);
-                    popupView.setTextSize(14);
+                    popupView.setTextSize(13);
                     popupView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 })
                 .setPopupTextProvider((view, position) -> adapterSupplier.get()
                         .map(a -> a.getMedia(position))
-                        .map(m -> m.getTempDate(view.getContext()))
+                        .map(m -> {
+                            int flag = FORMAT_SHOW_YEAR | FORMAT_NO_MONTH_DAY | FORMAT_ABBREV_MONTH;
+                            return DateUtils.formatDateTime(view.getContext(), m.getDateModified() * 1000L, flag);
+                        })
                         .orElse(null)
-                ).build();
+                )
+                .build();
 
         recyclerView.setTag(TAG_FAST_SCROLLER, scroller);
     }

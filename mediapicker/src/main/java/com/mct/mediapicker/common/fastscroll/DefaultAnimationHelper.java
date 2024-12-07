@@ -16,6 +16,7 @@ public class DefaultAnimationHelper implements FastScroller.AnimationHelper {
     private static final Interpolator HIDE_SCROLLBAR_INTERPOLATOR =
             new FastOutLinearInInterpolator();
     private static final int AUTO_HIDE_SCROLLBAR_DELAY_MILLIS = 1500;
+    private static final int AUTO_HIDE_POPUP_DELAY_MILLIS = 1500;
 
     @NonNull
     private final View mView;
@@ -121,5 +122,10 @@ public class DefaultAnimationHelper implements FastScroller.AnimationHelper {
                 .alpha(0)
                 .setDuration(HIDE_DURATION_MILLIS)
                 .start();
+    }
+
+    @Override
+    public int getPopupAutoHideDelayMillis() {
+        return AUTO_HIDE_POPUP_DELAY_MILLIS;
     }
 }

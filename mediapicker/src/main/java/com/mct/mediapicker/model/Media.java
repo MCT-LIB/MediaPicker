@@ -1,10 +1,8 @@
 package com.mct.mediapicker.model;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.format.DateUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +21,6 @@ public class Media implements Parcelable {
     private int duration;
     private int width;
     private int height;
-
-    private String tempDate;
 
     public Media() {
     }
@@ -126,17 +122,6 @@ public class Media implements Parcelable {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public String getTempDate(Context context) {
-        if (tempDate == null || tempDate.isEmpty()) {
-            tempDate = DateUtils.formatDateTime(context, dateModified * 1000L, DateUtils.FORMAT_SHOW_YEAR);
-        }
-        return tempDate;
-    }
-
-    public void setTempDate(String tempDate) {
-        this.tempDate = tempDate;
     }
 
     public boolean isImage() {

@@ -20,8 +20,7 @@ public class PopupStyles {
                 R.dimen.afs_md2_popup_min_width));
         popupView.setMinimumHeight(resources.getDimensionPixelSize(
                 R.dimen.afs_md2_popup_min_height));
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)
-                popupView.getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) popupView.getLayoutParams();
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
         layoutParams.setMarginEnd(resources.getDimensionPixelOffset(
                 R.dimen.afs_md2_popup_margin_end));
@@ -33,8 +32,7 @@ public class PopupStyles {
         popupView.setGravity(Gravity.CENTER);
         popupView.setIncludeFontPadding(false);
         popupView.setSingleLine(true);
-        popupView.setTextColor(Utils.getColorFromAttrRes(android.R.attr.textColorPrimaryInverse,
-                context));
+        popupView.setTextColor(Utils.getColorFromAttrRes(android.R.attr.colorControlActivated, context));
         popupView.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(
                 R.dimen.afs_md2_popup_text_size));
     };

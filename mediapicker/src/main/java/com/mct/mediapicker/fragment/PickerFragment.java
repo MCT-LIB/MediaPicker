@@ -36,7 +36,7 @@ import com.mct.mediapicker.MediaPickerOption;
 import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.adapter.MediaAdapter;
-import com.mct.mediapicker.databinding.MpBtsBinding;
+import com.mct.mediapicker.databinding.MpFragmentBtsPickerBinding;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 
@@ -56,7 +56,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         return fragment;
     }
 
-    private MpBtsBinding binding;
+    private MpFragmentBtsPickerBinding binding;
     private Presenter presenter;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
 
@@ -128,7 +128,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return (binding = MpBtsBinding.inflate(inflater)).getRoot();
+        return (binding = MpFragmentBtsPickerBinding.inflate(inflater)).getRoot();
     }
 
     @Override
@@ -292,6 +292,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
                 rcv.removeItemDecorationAt(i);
             }
         }
+        rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? rcv.getPaddingBottom() : 0);
         rcv.setAdapter(new MediaAdapter(presenter.isMultipleSelect(), Collections.singletonList(album), this, presenter::isSelectedMedia));
         rcv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
         rcv.addItemDecoration(new SpacingGridItemDecoration(3, MediaUtils.dp2px(3), false, 0));

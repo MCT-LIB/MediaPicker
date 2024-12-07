@@ -28,10 +28,10 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/mp_toolbar"
+                style="@style/Widget.Material3.Toolbar.OnSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:navigationIcon="@drawable/mp_ic_close"
-                app:navigationIconTint="?attr/colorOnSurface" />
+                app:navigationIcon="@drawable/mp_ic_close" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/mp_tab_layout"
@@ -105,7 +105,7 @@
                     android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                     android:textColor="?colorOnSurface"
                     app:drawableTint="?colorOnSurface"
-                    tools:text="selected_items" />
+                    tools:text="Selected items" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/mp_btn_continue"

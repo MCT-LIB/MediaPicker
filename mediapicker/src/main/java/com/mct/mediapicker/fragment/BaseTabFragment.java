@@ -86,6 +86,7 @@ abstract class BaseTabFragment extends Fragment {
                         rcv.removeItemDecorationAt(i);
                     }
                 }
+                rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? rcv.getPaddingBottom() : 0);
                 rcv.setAdapter(onCreateAdapter(albums));
                 rcv.setLayoutManager(onCreateLayoutManager());
                 rcv.addItemDecoration(onCreateItemDecoration());

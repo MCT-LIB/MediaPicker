@@ -1,28 +1,64 @@
 package com.mct.mediapicker.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class Media implements Serializable {
+public class Media implements Parcelable {
 
     private Uri uri;
     private String name;
     private String mimeType;
-    private Integer dateModified;
-    private Integer size;
-    private Integer duration;
-    private Integer width;
-    private Integer height;
+    private int dateModified;
+    private int size;
+    private int duration;
+    private int width;
+    private int height;
 
     public Media() {
     }
+
+    protected Media(@NonNull Parcel in) {
+        uri = in.readParcelable(Uri.class.getClassLoader());
+        name = in.readString();
+        mimeType = in.readString();
+        dateModified = in.readInt();
+        size = in.readInt();
+        duration = in.readInt();
+        width = in.readInt();
+        height = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeParcelable(uri, flags);
+        dest.writeString(name);
+        dest.writeString(mimeType);
+        dest.writeInt(dateModified);
+        dest.writeInt(size);
+        dest.writeInt(duration);
+        dest.writeInt(width);
+        dest.writeInt(height);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Media> CREATOR = new Creator<Media>() {
+        // @formatter:off
+        public @NonNull Media createFromParcel(Parcel in) {return new Media(in);}
+        public @NonNull Media[] newArray(int size) {return new Media[size];}
+        // @formatter:on
+    };
 
     public Uri getUri() {
         return uri;
@@ -48,43 +84,43 @@ public class Media implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public Integer getDateModified() {
+    public int getDateModified() {
         return dateModified;
     }
 
-    public void setDateModified(Integer dateModified) {
+    public void setDateModified(int dateModified) {
         this.dateModified = dateModified;
     }
 
-    public Integer getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
-    public Integer getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
-    public Integer getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
-    public Integer getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 

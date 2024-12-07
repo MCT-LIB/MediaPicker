@@ -80,20 +80,19 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("album", album);
-        outState.putString("optionId", option.getId());
-        outState.putSerializable("selectedMedia", new ArrayList<>(presenter.getSelectedMedia()));
         OptionHolder.saveOption(option);
+        outState.putParcelable("album", album);
+        outState.putString("optionId", option.getId());
+        outState.putParcelableArrayList("selectedMedia", new ArrayList<>(presenter.getSelectedMedia()));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(@Nullable Bundle ss) {
         super.onCreate(ss);
         if (ss != null) {
-            album = (Album) ss.getSerializable("album");
+            album = ss.getParcelable("album");
             option = OptionHolder.restoredOption(ss.getString("optionId"));
-            presenter.setSelectedMedia((ArrayList<Media>) ss.getSerializable("selectedMedia"));
+            presenter.setSelectedMedia(ss.getParcelableArrayList("selectedMedia"));
         }
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
             if (isPermissionGranted()) {

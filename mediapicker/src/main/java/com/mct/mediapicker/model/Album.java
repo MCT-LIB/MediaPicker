@@ -1,16 +1,17 @@
 package com.mct.mediapicker.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class Album implements Serializable {
+public class Album implements Parcelable {
 
     private String bucketId;
     private String bucketName;
@@ -21,6 +22,31 @@ public class Album implements Serializable {
         this.bucketName = bucketName;
         this.mediaList = new ArrayList<>();
     }
+
+    protected Album(@NonNull Parcel in) {
+        bucketId = in.readString();
+        bucketName = in.readString();
+        mediaList = in.createTypedArrayList(Media.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(bucketId);
+        dest.writeString(bucketName);
+        dest.writeTypedList(mediaList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Album> CREATOR = new Creator<Album>() {
+        // @formatter:off
+        public @NonNull Album createFromParcel(Parcel in) {return new Album(in);}
+        public @NonNull Album[] newArray(int size) {return new Album[size];}
+        // @formatter:on
+    };
 
     public String getBucketId() {
         return bucketId;

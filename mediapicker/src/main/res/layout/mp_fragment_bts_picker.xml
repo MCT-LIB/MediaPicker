@@ -9,9 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:theme="@style/PhotoPickerTheme">
+        android:layout_height="match_parent">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/mp_drag_handle"
@@ -94,18 +92,24 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/mp_tv_selected_items"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_weight="1"
                     android:drawableStart="@drawable/mp_ic_gallery"
                     android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
                     android:paddingStart="4dp"
                     android:paddingEnd="8dp"
                     android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                     android:textColor="?colorOnSurface"
                     app:drawableTint="?colorOnSurface"
                     tools:text="Selected items" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/mp_btn_continue"

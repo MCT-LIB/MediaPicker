@@ -1,13 +1,10 @@
 package com.mct.mediapicker.fragment;
 
 import android.graphics.Typeface;
-import android.text.format.DateUtils;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.collection.ArrayMap;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mct.mediapicker.MediaUtils;
@@ -16,9 +13,7 @@ import com.mct.mediapicker.adapter.MediaAdapter;
 import com.mct.mediapicker.common.fastscroll.FastScroller;
 import com.mct.mediapicker.common.fastscroll.FastScrollerBuilder;
 import com.mct.mediapicker.common.fastscroll.PopupStyles;
-import com.mct.mediapicker.common.fastscroll.PopupTextProvider;
 
-import java.util.Map;
 import java.util.Optional;
 
 class ScrollHelper {
@@ -45,26 +40,20 @@ class ScrollHelper {
                     layoutParams.gravity = Gravity.CENTER;
                     layoutParams.setMarginEnd(MediaUtils.dp2px(8));
                     popupView.setLayoutParams(layoutParams);
-                    int padHorizontal = MediaUtils.dp2px(12);
+                    int padStart = MediaUtils.dp2px(12);
+                    int padEnd = MediaUtils.dp2px(20);
                     int padVertical = MediaUtils.dp2px(8);
-                    popupView.setPadding(padHorizontal, padVertical, padHorizontal, padVertical);
+                    popupView.setPaddingRelative(padStart, padVertical, padEnd, padVertical);
                     popupView.setMinWidth(0);
                     popupView.setMinimumHeight(0);
                     popupView.setTextSize(14);
                     popupView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 })
-                .setPopupTextProvider((view, position) -> {
-                    try {
-                        MediaAdapter mediaAdapter = getAdapter(recyclerView).orElse(null);
-                        if (mediaAdapter != null) {
-                            long date = mediaAdapter.getMedia(position).getDateModified() * 1000L;
-                            return DateUtils.formatDateTime(view.getContext(), date, DateUtils.FORMAT_SHOW_YEAR);
-                        }
-                    } catch (Exception ignored) {
-                    }
-                    return null;
-                })
-                .build();
+                .setPopupTextProvider((view, position) -> getAdapter(recyclerView)
+                        .map(a -> a.getMedia(position))
+                        .map(m -> m.getTempDate(view.getContext()))
+                        .orElse(null)
+                ).build();
 
         recyclerView.setTag(TAG_FAST_SCROLLER, scroller);
     }

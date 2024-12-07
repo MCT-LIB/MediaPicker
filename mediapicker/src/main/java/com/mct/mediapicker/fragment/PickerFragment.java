@@ -42,6 +42,7 @@ import com.mct.mediapicker.model.Media;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -222,48 +223,56 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         if (media == null) {
             return;
         }
-        if (presenter.isSelectedMedia(media)) {
-            presenter.removeSelectedMedia(media);
-        } else {
-            if (presenter.getSelectedMediaCount() < presenter.getMaxSelection()) {
-                presenter.addSelectedMedia(media);
-            }
-        }
         if (presenter.isMultipleSelect()) {
+            if (presenter.isSelectedMedia(media)) {
+                presenter.removeSelectedMedia(media);
+            } else {
+                if (presenter.getSelectedMediaCount() < presenter.getOption().getMaxSelection()) {
+                    presenter.addSelectedMedia(media);
+                }
+            }
             invalidateToolbar();
             invalidateSelectedMedia();
         } else {
+            presenter.setSelectedMedia(Collections.singletonList(media));
             presenter.submitSelectedMedia();
             dismissAllowingStateLoss();
         }
     }
 
     private void invalidateSelectedMedia() {
-        int getSelectedMediaCount = presenter.getSelectedMediaCount();
-        View bottomBar = binding.mpBottomBar;
-        if (getSelectedMediaCount > 0) {
-            bottomBar.animate()
-                    .withStartAction(() -> bottomBar.setVisibility(View.VISIBLE))
-                    .withEndAction(null)
-                    .setInterpolator(new AccelerateInterpolator())
-                    .setDuration(200)
-                    .translationY(0)
-                    .start();
+        int selectedCount = presenter.getSelectedMediaCount();
+        int minSelection = presenter.getOption().getMinSelection();
+        int maxSelection = presenter.getOption().getMaxSelection();
+        boolean exactMode = minSelection == maxSelection;
+        String count;
+        String minTxt = minSelection == Integer.MAX_VALUE ? "∞" : String.valueOf(minSelection);
+        String maxTxt = maxSelection == Integer.MAX_VALUE ? "∞" : String.valueOf(maxSelection);
+
+        if (minSelection == 1 && maxSelection == Integer.MAX_VALUE) {
+            count = String.format(Locale.getDefault(), "(%d)", selectedCount);
+        } else if (exactMode) {
+            count = String.format(Locale.getDefault(), "(%d/%s)", selectedCount, minTxt);
         } else {
-            bottomBar.animate()
-                    .withStartAction(null)
-                    .withEndAction(() -> bottomBar.setVisibility(View.GONE))
-                    .setInterpolator(new DecelerateInterpolator())
-                    .setDuration(200)
-                    .translationY(bottomBar.getHeight())
-                    .start();
+            count = String.format(Locale.getDefault(), "(%d) | [%s-%s]", selectedCount, minTxt, maxTxt);
         }
-        binding.mpBtnAdd.setEnabled(getSelectedMediaCount > 0);
-        binding.mpBtnAdd.setText(getString(R.string.mp_add_n, presenter.getSelectedMediaCount()));
-        binding.mpBtnAdd.setOnClickListener(v -> {
+
+        binding.mpTvSelectedItems.setText(getString(R.string.mp_selected, count));
+        binding.mpBtnContinue.setEnabled(selectedCount >= minSelection && selectedCount <= maxSelection);
+        binding.mpBtnContinue.setOnClickListener(v -> {
             presenter.submitSelectedMedia();
             dismissAllowingStateLoss();
         });
+
+        boolean show = selectedCount > 0 || (exactMode);
+        View bottomBar = binding.mpBottomBar;
+        bottomBar.animate()
+                .withStartAction(show ? () -> bottomBar.setVisibility(View.VISIBLE) : null)
+                .withEndAction(!show ? () -> bottomBar.setVisibility(View.GONE) : null)
+                .setInterpolator(show ? new AccelerateInterpolator() : new DecelerateInterpolator())
+                .setDuration(200)
+                .translationY(show ? 0 : bottomBar.getHeight())
+                .start();
     }
 
     private void invalidateSelectedMediaTab() {

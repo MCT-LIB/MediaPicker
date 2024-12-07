@@ -4,6 +4,6 @@
     <string name="mp_album">Album</string>
     <string name="mp_empty_media">Empty media</string>
     <string name="mp_empty_album">Empty album</string>
-    <string name="mp_selected_items">Selected items</string>
-    <string name="mp_add_n">Add (%d)</string>
+    <string name="mp_selected">Selected %s</string>
+    <string name="mp_continue">Continue</string>
 </resources>

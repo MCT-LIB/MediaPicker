@@ -34,6 +34,7 @@ public class MediaPickerOption {
     private final String id;
     private final int pickMode;
     private final int pickType;
+    private final int minSelection;
     private final int maxSelection;
     private final PickListener<Uri> listener1;
     private final PickListener<List<Uri>> listener2;
@@ -42,6 +43,7 @@ public class MediaPickerOption {
         id = UUID.randomUUID().toString();
         pickMode = builder.pickMode;
         pickType = builder.pickType;
+        minSelection = builder.minSelection;
         maxSelection = builder.maxSelection;
         listener1 = builder.listener1;
         listener2 = builder.listener2;
@@ -62,6 +64,10 @@ public class MediaPickerOption {
         return pickType;
     }
 
+    public int getMinSelection() {
+        return minSelection;
+    }
+
     public int getMaxSelection() {
         return maxSelection;
     }
@@ -76,46 +82,74 @@ public class MediaPickerOption {
         return listener2;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static class Builder {
 
         private int pickMode;
         private int pickType;
+        private int minSelection;
         private int maxSelection;
         private PickListener<Uri> listener1;
         private PickListener<List<Uri>> listener2;
 
         public Builder() {
-            set(PICK_MODE_SINGLE, 1, null, null);
-            pickType = PICK_TYPE_IMAGE;
+            single(null).image();
         }
 
-        public Builder all() {
-            pickType = PICK_TYPE_ALL;
-            return this;
-        }
-
+        /**
+         * Pick image only
+         */
         public Builder image() {
             pickType = PICK_TYPE_IMAGE;
             return this;
         }
 
+        /**
+         * Pick video only
+         */
         public Builder video() {
             pickType = PICK_TYPE_VIDEO;
             return this;
         }
 
+        /**
+         * Pick image and video
+         */
+        public Builder all() {
+            pickType = PICK_TYPE_ALL;
+            return this;
+        }
+
+        /**
+         * Pick single media
+         */
         public Builder single(PickListener<Uri> listener) {
-            set(PICK_MODE_SINGLE, 1, listener, null);
+            set(PICK_MODE_SINGLE, 1, 1, listener, null);
             return this;
         }
 
+        /**
+         * Pick multiple media
+         */
         public Builder multi(PickListener<List<Uri>> listener) {
-            set(PICK_MODE_MULTI, Integer.MAX_VALUE, null, listener);
-            return this;
+            return multiRange(listener, 1, Integer.MAX_VALUE);
         }
 
-        public Builder multi(PickListener<List<Uri>> listener, @IntRange(from = 1) int maxSelection) {
-            set(PICK_MODE_MULTI, maxSelection, null, listener);
+        /**
+         * Pick multiple media with exact selection
+         */
+        public Builder multiExact(PickListener<List<Uri>> listener, int exactSelection) {
+            return multiRange(listener, exactSelection, exactSelection);
+        }
+
+        /**
+         * Pick multiple media with min and max selection
+         */
+        public Builder multiRange(
+                PickListener<List<Uri>> listener,
+                @IntRange(from = 1) int minSelection,
+                @IntRange(from = 1) int maxSelection) {
+            set(PICK_MODE_MULTI, minSelection, maxSelection, null, listener);
             return this;
         }
 
@@ -123,9 +157,21 @@ public class MediaPickerOption {
             return new MediaPickerOption(this);
         }
 
-        private void set(int pickMode, int maxSelectionCount, PickListener<Uri> listener1, PickListener<List<Uri>> listener2) {
+        private void set(
+                int pickMode,
+                int minSelection,
+                int maxSelection,
+                PickListener<Uri> listener1,
+                PickListener<List<Uri>> listener2) {
+            if (minSelection < 1) {
+                throw new IllegalArgumentException("minSelection must be >= 1");
+            }
+            if (minSelection > maxSelection) {
+                throw new IllegalArgumentException("minSelection must be <= maxSelection");
+            }
             this.pickMode = pickMode;
-            this.maxSelection = maxSelectionCount;
+            this.minSelection = minSelection;
+            this.maxSelection = maxSelection;
             this.listener1 = listener1;
             this.listener2 = listener2;
         }

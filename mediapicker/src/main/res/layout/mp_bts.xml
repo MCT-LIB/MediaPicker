@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <RelativeLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/mp_bottom_bar"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
@@ -87,37 +87,35 @@
                 android:background="?colorSurface"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:translationY="64dp"
                 android:visibility="gone">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/mp_tv_selected_items"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@id/mp_btn_add"
+                    android:layout_weight="1"
                     android:drawableStart="@drawable/mp_ic_gallery"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingStart="4dp"
                     android:paddingEnd="8dp"
-                    android:text="@string/mp_selected_items"
                     android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                     android:textColor="?colorOnSurface"
-                    app:drawableTint="?colorOnSurface" />
+                    app:drawableTint="?colorOnSurface"
+                    tools:text="selected_items" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/mp_btn_add"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:id="@+id/mp_btn_continue"
+                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/mp_add_n"
+                    android:text="@string/mp_continue"
                     app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
 
-            </RelativeLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </FrameLayout>
 

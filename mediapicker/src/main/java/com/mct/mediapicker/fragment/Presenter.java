@@ -74,10 +74,6 @@ class Presenter {
         return getOption().getPickMode() == PICK_MODE_MULTI;
     }
 
-    public int getMaxSelection() {
-        return getOption().getMaxSelection();
-    }
-
     public void submitSelectedMedia() {
         if (isCallSubmitListener) {
             return;

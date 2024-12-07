@@ -4,9 +4,9 @@ import androidx.annotation.RestrictTo;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.adapter.MediaAdapter;
-import com.mct.mediapicker.adapter.decoration.GridSpacingItemDecoration;
 import com.mct.mediapicker.model.Album;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class MediaTabFragment extends BaseTabFragment {
 
     @Override
     protected RecyclerView.Adapter<?> onCreateAdapter(List<Album> albums) {
-        PhotoPickerFragment picker = getPhotoPickerFragment();
+        PickerFragment picker = getPhotoPickerFragment();
         return new MediaAdapter(picker.getPresenter().isMultipleSelect(), albums, picker, picker.getPresenter()::isSelectedMedia);
     }
 
@@ -32,7 +32,7 @@ public class MediaTabFragment extends BaseTabFragment {
 
     @Override
     protected RecyclerView.ItemDecoration onCreateItemDecoration() {
-        return new GridSpacingItemDecoration(3, Utils.dp2px(3), false, 0);
+        return new SpacingGridItemDecoration(3, MediaUtils.dp2px(3), false, 0);
     }
 
     public void invalidateSelectedMedia() {

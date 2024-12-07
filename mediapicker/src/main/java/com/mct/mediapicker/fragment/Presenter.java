@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -148,6 +149,7 @@ class Presenter {
                 return;
             }
             albumDisposable = Single.fromCallable(() -> loadMedia(context, getOption().getPickType()))
+                    .delay((long) (Math.random() * 100), TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnDispose(albumCallbacks::clear)

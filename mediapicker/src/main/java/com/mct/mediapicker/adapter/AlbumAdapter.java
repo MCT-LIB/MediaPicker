@@ -13,7 +13,7 @@ import com.mct.mediapicker.model.Album;
 
 import java.util.List;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
 
     private final List<Album> albums;
     private final OnClickItemListener listener;
@@ -25,13 +25,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AlbumViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(MpLayoutItemAlbumBinding.inflate(inflater, parent, false));
+        return new AlbumViewHolder(MpLayoutItemAlbumBinding.inflate(inflater, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
         Album album = albums.get(position);
         if (album == null) {
             return;
@@ -54,11 +54,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         return albums == null ? 0 : albums.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class AlbumViewHolder extends RecyclerView.ViewHolder {
 
         MpLayoutItemAlbumBinding binding;
 
-        public ViewHolder(@NonNull MpLayoutItemAlbumBinding binding) {
+        public AlbumViewHolder(@NonNull MpLayoutItemAlbumBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

@@ -4,9 +4,9 @@ import androidx.annotation.RestrictTo;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.adapter.AlbumAdapter;
-import com.mct.mediapicker.adapter.decoration.GridSpacingItemDecoration;
 import com.mct.mediapicker.model.Album;
 
 import java.util.List;
@@ -35,6 +35,6 @@ public class AlbumTabFragment extends BaseTabFragment {
 
     @Override
     protected RecyclerView.ItemDecoration onCreateItemDecoration() {
-        return new GridSpacingItemDecoration(2, Utils.dp2px(16), true, 0);
+        return new SpacingGridItemDecoration(2, MediaUtils.dp2px(16), true, 0);
     }
 }

@@ -1,4 +1,4 @@
-package com.mct.mediapicker.adapter.decoration;
+package com.mct.mediapicker.fragment;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -6,14 +6,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+class SpacingGridItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int spanCount;
     private final int spacing;
     private final boolean includeEdge;
     private final int headerNum;
 
-    public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge, int headerNum) {
+    public SpacingGridItemDecoration(int spanCount, int spacing, boolean includeEdge, int headerNum) {
         this.spanCount = spanCount;
         this.spacing = spacing;
         this.includeEdge = includeEdge;

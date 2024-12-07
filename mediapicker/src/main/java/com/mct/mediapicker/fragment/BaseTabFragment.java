@@ -13,6 +13,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.databinding.MpLayoutDataBinding;
 import com.mct.mediapicker.model.Album;
@@ -28,8 +29,8 @@ abstract class BaseTabFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (!(getParentFragment() instanceof PhotoPickerFragment)) {
-            throw new IllegalArgumentException("Parent fragment must be PhotoPickerFragment");
+        if (!(getParentFragment() instanceof PickerFragment)) {
+            throw new IllegalArgumentException("Parent fragment must be PickerFragment");
         }
         presenter = getPhotoPickerFragment().getPresenter();
     }
@@ -62,7 +63,7 @@ abstract class BaseTabFragment extends Fragment {
     @Override
     public LayoutInflater onGetLayoutInflater(@Nullable Bundle savedInstanceState) {
         Context context = requireContext();
-        if (!Utils.isMaterial3Theme(context)) {
+        if (!MediaUtils.isMaterial3Theme(context)) {
             context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
         }
         return super.onGetLayoutInflater(savedInstanceState).cloneInContext(context);
@@ -81,17 +82,20 @@ abstract class BaseTabFragment extends Fragment {
                 show(binding.mpRecyclerView);
                 RecyclerView rcv = binding.mpRecyclerView;
                 for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
-                    rcv.removeItemDecorationAt(i);
+                    if (rcv.getItemDecorationAt(i) instanceof SpacingGridItemDecoration) {
+                        rcv.removeItemDecorationAt(i);
+                    }
                 }
                 rcv.setAdapter(onCreateAdapter(albums));
                 rcv.setLayoutManager(onCreateLayoutManager());
                 rcv.addItemDecoration(onCreateItemDecoration());
+                ScrollHelper.attachTo(rcv);
             }
         });
     }
 
-    protected PhotoPickerFragment getPhotoPickerFragment() {
-        return (PhotoPickerFragment) getParentFragment();
+    protected PickerFragment getPhotoPickerFragment() {
+        return (PickerFragment) getParentFragment();
     }
 
     protected abstract String getEmptyMessage();

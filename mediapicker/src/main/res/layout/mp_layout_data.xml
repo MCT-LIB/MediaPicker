@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -17,14 +18,16 @@
             android:drawableTop="@drawable/mp_ic_folder"
             android:drawablePadding="8dp"
             android:text="@string/mp_empty_media"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <ProgressBar
             android:id="@+id/mp_progress_indicator"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
-            android:indeterminate="true" />
+            android:indeterminate="true"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mp_recycler_view"

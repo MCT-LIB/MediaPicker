@@ -36,9 +36,7 @@ import com.mct.mediapicker.MediaPickerOption;
 import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.adapter.MediaAdapter;
-import com.mct.mediapicker.adapter.decoration.GridSpacingItemDecoration;
 import com.mct.mediapicker.databinding.MpBtsBinding;
-import com.mct.mediapicker.databinding.MpLayoutDataBinding;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 
@@ -48,11 +46,11 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PhotoPickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener {
+public class PickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener {
 
     @NonNull
-    public static PhotoPickerFragment newInstance(@NonNull MediaPickerOption option) {
-        PhotoPickerFragment fragment = new PhotoPickerFragment();
+    public static PickerFragment newInstance(@NonNull MediaPickerOption option) {
+        PickerFragment fragment = new PickerFragment();
         fragment.option = option;
         return fragment;
     }
@@ -115,7 +113,7 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Context context = requireContext();
-        if (!Utils.isMaterial3Theme(context)) {
+        if (!MediaUtils.isMaterial3Theme(context)) {
             context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
         }
         BottomSheetDialog dialog = new BottomSheetDialog(context, getTheme());
@@ -259,29 +257,30 @@ public class PhotoPickerFragment extends BottomSheetDialogFragment implements Me
     void showDetailAlbum(@NonNull Album a) {
         album = a;
         binding.mpAlbumDetail.getRoot().setVisibility(View.VISIBLE);
+        binding.mpAlbumDetail.mpRecyclerView.setVisibility(View.VISIBLE);
         binding.mpViewpager.setVisibility(View.GONE);
         binding.mpTabLayout.setVisibility(View.GONE);
         binding.mpToolbar.setTitle(album.getBucketName());
         binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
         binding.mpToolbar.setNavigationOnClickListener(v -> dismissDetailAlbum());
 
-        MpLayoutDataBinding mpAlbumDetail = binding.mpAlbumDetail;
-        mpAlbumDetail.mpTvEmptyMessage.setVisibility(View.GONE);
-        mpAlbumDetail.mpProgressIndicator.setVisibility(View.GONE);
-        mpAlbumDetail.mpRecyclerView.setVisibility(View.VISIBLE);
-
-        RecyclerView rcv = mpAlbumDetail.mpRecyclerView;
+        RecyclerView rcv = binding.mpAlbumDetail.mpRecyclerView;
         for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
-            rcv.removeItemDecorationAt(i);
+            if (rcv.getItemDecorationAt(i) instanceof SpacingGridItemDecoration) {
+                rcv.removeItemDecorationAt(i);
+            }
         }
         rcv.setAdapter(new MediaAdapter(presenter.isMultipleSelect(), Collections.singletonList(album), this, presenter::isSelectedMedia));
         rcv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
-        rcv.addItemDecoration(new GridSpacingItemDecoration(3, Utils.dp2px(3), false, 0));
+        rcv.addItemDecoration(new SpacingGridItemDecoration(3, MediaUtils.dp2px(3), false, 0));
+        ScrollHelper.attachTo(rcv);
     }
 
     void dismissDetailAlbum() {
         album = null;
         binding.mpAlbumDetail.getRoot().setVisibility(View.GONE);
+        binding.mpAlbumDetail.mpRecyclerView.setVisibility(View.GONE);
+        binding.mpAlbumDetail.mpRecyclerView.setAdapter(null);
         binding.mpViewpager.setVisibility(View.VISIBLE);
         binding.mpTabLayout.setVisibility(View.VISIBLE);
         binding.mpToolbar.setTitle(null);

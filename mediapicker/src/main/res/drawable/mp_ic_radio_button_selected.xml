@@ -4,9 +4,9 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:fillColor="?colorPrimaryContainer"
+        android:fillColor="?colorControlActivated"
         android:pathData="M12 2A10 10 0 1 0 12 22 10 10 0 1 0 12 2z" />
     <path
-        android:fillColor="?colorOnPrimaryContainer"
+        android:fillColor="?android:attr/textColorPrimaryInverse"
         android:pathData="M17.72 8.28c-0.37-0.37-0.97-0.37-1.34 0l-6.06 6.06-2.7-2.7c-0.37-0.37-0.97-0.37-1.34 0-0.37 0.38-0.37 0.98 0 1.35l3.36 3.37c0.19 0.18 0.43 0.27 0.68 0.27 0.24 0 0.48-0.09 0.67-0.27l6.73-6.74c0.37-0.37 0.37-0.97 0-1.34Z" />
 </vector>

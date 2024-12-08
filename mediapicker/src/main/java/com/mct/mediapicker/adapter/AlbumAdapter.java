@@ -65,7 +65,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
         void loadImage(@NonNull Media media) {
             ImageView ivThumb = binding.mpIvThumb;
-            if (ivThumb.getHandler() == null) {
+            if (ivThumb.getWidth() == 0) {
                 ivThumb.post(() -> loadImage(media));
                 return;
             }

@@ -137,7 +137,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         void loadImage(@NonNull Media media, boolean dragging) {
             ImageView ivThumb = binding.mpIvThumb;
-            if (ivThumb.getHandler() == null) {
+            if (ivThumb.getWidth() == 0) {
                 ivThumb.post(() -> loadImage(media, dragging));
                 return;
             }

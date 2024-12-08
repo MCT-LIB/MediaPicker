@@ -8,7 +8,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,6 @@ import com.mct.mediapicker.model.Media;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -79,7 +77,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        OptionHolder.saveOption(option);
+        Presenter.saveOption(option);
         outState.putParcelable("album", album);
         outState.putString("optionId", option.getId());
         outState.putParcelableArrayList("selectedMedia", new ArrayList<>(presenter.getSelectedMedia()));
@@ -90,7 +88,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         super.onCreate(ss);
         if (ss != null) {
             album = ss.getParcelable("album");
-            option = OptionHolder.restoredOption(ss.getString("optionId"));
+            option = Presenter.restoredOption(ss.getString("optionId"));
             presenter.setSelectedMedia(ss.getParcelableArrayList("selectedMedia"));
         }
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -388,20 +386,5 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
                     ? getString(R.string.mp_media)
                     : getString(R.string.mp_album);
         }
-
     }
-
-    private static class OptionHolder {
-
-        private static final Map<String, MediaPickerOption> options = new ArrayMap<>();
-
-        private static void saveOption(@NonNull MediaPickerOption option) {
-            options.put(option.getId(), option);
-        }
-
-        private static MediaPickerOption restoredOption(String optionId) {
-            return options.remove(optionId);
-        }
-    }
-
 }

@@ -33,6 +33,7 @@ import com.mct.mediapicker.model.Media;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -495,6 +496,22 @@ class Presenter {
             bitmapsCache.evictAll();
         }
 
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Option holder
+    ///////////////////////////////////////////////////////////////////////////
+
+    static void saveOption(@NonNull MediaPickerOption option) {
+        OptionHolder.options.put(option.getId(), option);
+    }
+
+    static MediaPickerOption restoredOption(String optionId) {
+        return OptionHolder.options.remove(optionId);
+    }
+
+    static class OptionHolder {
+        private static final Map<String, MediaPickerOption> options = new ArrayMap<>();
     }
 
 }

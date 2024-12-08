@@ -123,5 +123,10 @@
 
         </FrameLayout>
 
+        <include
+            android:id="@+id/mp_media_preview"
+            layout="@layout/mp_layout_media_preview"
+            android:visibility="invisible" />
+
     </RelativeLayout>
 </layout>

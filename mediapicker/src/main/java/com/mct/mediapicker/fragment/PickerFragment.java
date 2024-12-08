@@ -7,12 +7,16 @@ import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_VIDEO;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.VideoView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -57,6 +61,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     private Presenter presenter;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
 
+    private Media media;
     private Album album;
     private MediaPickerOption option;
 
@@ -78,6 +83,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Presenter.saveOption(option);
+        outState.putParcelable("media", media);
         outState.putParcelable("album", album);
         outState.putString("optionId", option.getId());
         outState.putParcelableArrayList("selectedMedia", new ArrayList<>(presenter.getSelectedMedia()));
@@ -87,6 +93,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     public void onCreate(@Nullable Bundle ss) {
         super.onCreate(ss);
         if (ss != null) {
+            media = ss.getParcelable("media");
             album = ss.getParcelable("album");
             option = Presenter.restoredOption(ss.getString("optionId"));
             presenter.setSelectedMedia(ss.getParcelableArrayList("selectedMedia"));
@@ -102,6 +109,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     @Override
     public void onDestroy() {
         super.onDestroy();
+        media = null;
         album = null;
         option = null;
     }
@@ -173,7 +181,14 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         if (album != null) {
             showDetailAlbum(album);
         } else {
-            dismissDetailAlbum();
+            view.post(this::dismissDetailAlbum);
+        }
+
+        // show media preview if exist
+        if (media != null) {
+            showMediaPreview(media);
+        } else {
+            view.post(this::dismissMediaPreview);
         }
 
         // request permission
@@ -199,6 +214,11 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     }
 
     public void onBackPressed() {
+        if (media != null) {
+            dismissMediaPreview();
+            invalidateSelectedMediaTab();
+            return;
+        }
         if (album != null) {
             dismissDetailAlbum();
             invalidateSelectedMediaTab();
@@ -236,6 +256,14 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         }
     }
 
+    @Override
+    public void onItemLongClick(Media media, int position) {
+        if (media == null) {
+            return;
+        }
+        showMediaPreview(media);
+    }
+
     private void invalidateSelectedMedia() {
         int selectedCount = presenter.getSelectedMediaCount();
         int minSelection = presenter.getOption().getMinSelection();
@@ -260,16 +288,11 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
             dismissAllowingStateLoss();
         });
 
-        boolean show = selectedCount > 0 || (exactMode);
-        View bottomBar = binding.mpBottomBar;
-        bottomBar.animate().cancel();
-        bottomBar.animate()
-                .setDuration(200)
-                .translationY(show ? 0 : bottomBar.getHeight())
-                .setInterpolator(show ? new AccelerateInterpolator() : new DecelerateInterpolator())
-                .withStartAction(show ? () -> bottomBar.setVisibility(View.VISIBLE) : null)
-                .withEndAction(!show ? () -> bottomBar.setVisibility(View.GONE) : null)
-                .start();
+        if (selectedCount > 0 || exactMode) {
+            showFromBottom(binding.mpBottomBar);
+        } else {
+            hideToBottom(binding.mpBottomBar);
+        }
     }
 
     private void invalidateSelectedMediaTab() {
@@ -296,6 +319,46 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         binding.mpViewpager.setVisibility(View.VISIBLE);
         binding.mpTabLayout.setVisibility(View.VISIBLE);
         invalidateToolbar();
+    }
+
+    void showMediaPreview(@NonNull Media m) {
+        // TODO: 12/9/2024 change status bar color
+        media = m;
+        binding.mpMediaPreview.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        showFromBottom(binding.mpMediaPreview.getRoot());
+        ImageView imageView = binding.mpMediaPreview.mpIvMedia;
+        VideoView videoView = binding.mpMediaPreview.mpVvMedia;
+        if (media.isVideo()) {
+            videoView.setVisibility(View.VISIBLE);
+            videoView.setVideoURI(media.getUri());
+            videoView.seekTo(1);
+        } else {
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageURI(media.getUri());
+        }
+    }
+
+    void dismissMediaPreview() {
+        media = null;
+        hideToBottom(binding.mpMediaPreview.getRoot());
+        ImageView imageView = binding.mpMediaPreview.mpIvMedia;
+        VideoView videoView = binding.mpMediaPreview.mpVvMedia;
+
+        // release image
+        Drawable drawable = imageView.getDrawable();
+        imageView.setImageDrawable(null);
+        if (drawable instanceof BitmapDrawable) {
+            ((BitmapDrawable) drawable).getBitmap().recycle();
+        }
+        imageView.setVisibility(View.GONE);
+
+        // release video
+        videoView.stopPlayback();
+        videoView.setVisibility(View.GONE);
+    }
+
+    Presenter getPresenter() {
+        return presenter;
     }
 
     private void invalidateToolbar() {
@@ -349,8 +412,26 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         }
     }
 
-    Presenter getPresenter() {
-        return presenter;
+    private void showFromBottom(@NonNull View view) {
+        view.animate().cancel();
+        view.animate()
+                .setDuration(200)
+                .translationY(0)
+                .setInterpolator(new AccelerateInterpolator())
+                .withStartAction(() -> view.setVisibility(View.VISIBLE))
+                .withEndAction(null)
+                .start();
+    }
+
+    private void hideToBottom(@NonNull View view) {
+        view.animate().cancel();
+        view.animate()
+                .setDuration(200)
+                .translationY(view.getHeight())
+                .setInterpolator(new DecelerateInterpolator())
+                .withStartAction(null)
+                .withEndAction(() -> view.setVisibility(View.GONE))
+                .start();
     }
 
     private <F extends Fragment> Optional<F> findTabFragment(int index, @NonNull Class<F> clazz) {

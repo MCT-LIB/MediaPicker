@@ -2,6 +2,7 @@ package com.mct.mediapicker.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -88,6 +89,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 holder.setSelected(true, evaluateMediaPick.apply(media));
             }
         });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onItemLongClick(media, holder.getAdapterPosition());
+            }
+            return true;
+        });
         if (holder.isRecyclable()) {
             boundViewHolders.add(holder);
         }
@@ -126,6 +133,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             TouchUtils.setTouchListener(itemView, new TouchUtils.TouchScaleListener(){
                 protected float getPressScale() {return 0.075f;}
                 protected float getReleaseScale() {return 0.025f;}
+                protected int getMinTapTime() {return ViewConfiguration.getLongPressTimeout();}
             });
             // @formatter:on
             delegate = MediaLoaderDelegate.create(itemView.getContext());
@@ -155,5 +163,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     public interface OnItemClickListener {
         void onItemClick(Media media, int position);
+
+        void onItemLongClick(Media media, int position);
     }
 }

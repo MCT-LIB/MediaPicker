@@ -15,7 +15,7 @@ public class Media implements Parcelable {
 
     private int id;
     private int bucketId;
-    private Uri uri;
+    private String path;
     private String name;
     private String mimeType;
     private int dateModified;
@@ -30,7 +30,7 @@ public class Media implements Parcelable {
     protected Media(@NonNull Parcel in) {
         id = in.readInt();
         bucketId = in.readInt();
-        uri = in.readParcelable(Uri.class.getClassLoader());
+        path = in.readString();
         name = in.readString();
         mimeType = in.readString();
         dateModified = in.readInt();
@@ -44,7 +44,7 @@ public class Media implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(bucketId);
-        dest.writeParcelable(uri, flags);
+        dest.writeString(path);
         dest.writeString(name);
         dest.writeString(mimeType);
         dest.writeInt(dateModified);
@@ -82,12 +82,12 @@ public class Media implements Parcelable {
         this.bucketId = bucketId;
     }
 
-    public Uri getUri() {
-        return uri;
+    public String getPath() {
+        return path;
     }
 
-    public void setUri(Uri uri) {
-        this.uri = uri;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getName() {
@@ -154,6 +154,10 @@ public class Media implements Parcelable {
         return mimeType != null && mimeType.startsWith("video/");
     }
 
+    public Uri getUri() {
+        return Uri.parse("file://" + path);
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) {
@@ -161,7 +165,7 @@ public class Media implements Parcelable {
         }
         if (obj instanceof Media) {
             Media media = (Media) obj;
-            return Objects.equals(uri, media.uri);
+            return Objects.equals(path, media.path);
         }
         return false;
     }
@@ -170,7 +174,9 @@ public class Media implements Parcelable {
     @Override
     public String toString() {
         return "Media{" +
-                "uri=" + uri +
+                "id=" + id +
+                ", bucketId=" + bucketId +
+                ", path=" + path +
                 ", name=" + name +
                 ", mimeType=" + mimeType +
                 ", dateModified=" + dateModified +

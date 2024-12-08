@@ -244,7 +244,7 @@ class Presenter {
                     Media media = new Media();
                     media.setId(cursor.getInt(idIndex));
                     media.setBucketId(bucketId);
-                    media.setUri(Uri.parse("file://" + path));
+                    media.setPath(path);
                     media.setName(getFileName(path));
                     media.setMimeType(cursor.getString(mimeTypeIndex));
                     media.setDateModified(cursor.getInt(dateModified));
@@ -322,7 +322,7 @@ class Presenter {
                 return;
             }
 
-            final String newKey = media.getUri().getPath();
+            final String newKey = media.getPath();
             if (TextUtils.equals(newKey, key)) {
                 return;
             }

@@ -1,13 +1,10 @@
 package com.mct.mediapicker.common.fastscroll;
 
 import android.graphics.Rect;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mct.mediapicker.R;
@@ -15,54 +12,70 @@ import com.mct.mediapicker.R;
 public class FastScrollerBuilder {
 
     @NonNull
-    private final ViewGroup mView;
-
-    @Nullable
-    private FastScroller.ViewHelper mViewHelper;
-
-    @Nullable
-    private PopupTextProvider mPopupTextProvider;
-
-    @Nullable
-    private Rect mPadding;
-
-    @Nullable
-    private Integer mScrollOffsetRangeThreshold;
-
-    @Nullable
-    private Boolean mTrackDraggable = Boolean.TRUE;
-
-    @NonNull
-    private Integer mTrackDrawableRes;
-
-    @NonNull
-    private Integer mThumbDrawableRes;
-
-    @NonNull
-    private Consumer<TextView> mPopupStyle;
-
-    @Nullable
-    private FastScroller.AnimationHelper mAnimationHelper;
-
-    @Nullable
-    private FastScroller.DraggingListener mDraggingListener;
-
-    public FastScrollerBuilder(@NonNull ViewGroup view) {
-        mView = view;
-        mTrackDrawableRes = R.drawable.afs_md2_track;
-        mThumbDrawableRes = R.drawable.afs_md2_thumb;
-        mPopupStyle = PopupStyles.MD2;
+    public static FastScrollerBuilder from(@NonNull RecyclerView view) {
+        return new FastScrollerBuilder(view);
     }
 
     @NonNull
-    public FastScrollerBuilder setViewHelper(@Nullable FastScroller.ViewHelper viewHelper) {
-        mViewHelper = viewHelper;
+    final RecyclerView mRecyclerView;
+
+    @NonNull
+    Integer mThumbDrawableRes;
+
+    @NonNull
+    Integer mTrackDrawableRes;
+
+    @NonNull
+    Boolean mTrackDraggable = Boolean.TRUE;
+
+    @NonNull
+    Integer mScrollOffsetRangeThreshold = 0;
+
+    @Nullable
+    Rect mPadding;
+
+    @Nullable
+    FastScroller.ViewHelper mViewHelper;
+
+    @Nullable
+    FastScroller.AnimationHelper mAnimationHelper;
+
+    @Nullable
+    FastScroller.PopupStyleHelper mPopupStyleHelper;
+
+    @Nullable
+    FastScroller.PopupTextProvider mPopupTextProvider;
+
+    @Nullable
+    FastScroller.DraggingListener mDraggingListener;
+
+    private FastScrollerBuilder(@NonNull RecyclerView view) {
+        mRecyclerView = view;
+        mThumbDrawableRes = R.drawable.fs_thumb;
+        mTrackDrawableRes = R.drawable.fs_track;
+    }
+
+    @NonNull
+    public FastScrollerBuilder setThumbDrawable(@DrawableRes int thumbDrawableRes) {
+        mThumbDrawableRes = thumbDrawableRes;
         return this;
     }
 
     @NonNull
-    public FastScrollerBuilder setPopupTextProvider(@Nullable PopupTextProvider popupTextProvider) {
-        mPopupTextProvider = popupTextProvider;
+    public FastScrollerBuilder setTrackDrawable(@DrawableRes int trackDrawableRes) {
+        mTrackDrawableRes = trackDrawableRes;
+        return this;
+    }
+
+    @NonNull
+    public FastScrollerBuilder setTrackDraggable(boolean trackDraggable) {
+        mTrackDraggable = trackDraggable;
+        return this;
+    }
+
+    @NonNull
+    public FastScrollerBuilder setScrollOffsetRangeThreshold(int scrollOffsetRangeThreshold) {
+        mScrollOffsetRangeThreshold = scrollOffsetRangeThreshold;
         return this;
     }
 
@@ -88,33 +101,8 @@ public class FastScrollerBuilder {
         return this;
     }
 
-    @NonNull
-    public FastScrollerBuilder setScrollOffsetRangeThreshold(int scrollOffsetRangeThreshold) {
-        mScrollOffsetRangeThreshold = scrollOffsetRangeThreshold;
-        return this;
-    }
-
-    @NonNull
-    public FastScrollerBuilder setTrackDraggable(boolean trackDraggable) {
-        mTrackDraggable = trackDraggable;
-        return this;
-    }
-
-    @NonNull
-    public FastScrollerBuilder setTrackDrawable(@DrawableRes int trackDrawableRes) {
-        mTrackDrawableRes = trackDrawableRes;
-        return this;
-    }
-
-    @NonNull
-    public FastScrollerBuilder setThumbDrawable(@DrawableRes int thumbDrawableRes) {
-        mThumbDrawableRes = thumbDrawableRes;
-        return this;
-    }
-
-    @NonNull
-    public FastScrollerBuilder setPopupStyle(@NonNull Consumer<TextView> popupStyle) {
-        mPopupStyle = popupStyle;
+    public FastScrollerBuilder setViewHelper(@Nullable FastScroller.ViewHelper viewHelper) {
+        mViewHelper = viewHelper;
         return this;
     }
 
@@ -124,10 +112,16 @@ public class FastScrollerBuilder {
         return this;
     }
 
-    public void disableScrollbarAutoHide() {
-        DefaultAnimationHelper animationHelper = new DefaultAnimationHelper(mView);
-        animationHelper.setScrollbarAutoHideEnabled(false);
-        mAnimationHelper = animationHelper;
+    @NonNull
+    public FastScrollerBuilder setPopupStyle(@Nullable FastScroller.PopupStyleHelper popupStyle) {
+        mPopupStyleHelper = popupStyle;
+        return this;
+    }
+
+    @NonNull
+    public FastScrollerBuilder setPopupTextProvider(@Nullable FastScroller.PopupTextProvider popupTextProvider) {
+        mPopupTextProvider = popupTextProvider;
+        return this;
     }
 
     @NonNull
@@ -138,35 +132,19 @@ public class FastScrollerBuilder {
 
     @NonNull
     public FastScroller build() {
-        return new FastScroller(mView, getOrCreateViewHelper(),
-                mPadding, mScrollOffsetRangeThreshold,
-                mTrackDraggable, mTrackDrawableRes, mThumbDrawableRes,
-                mPopupStyle,
-                getOrCreateAnimationHelper(),
+        return new FastScroller(
+                mRecyclerView,
+                mThumbDrawableRes,
+                mTrackDrawableRes,
+                mTrackDraggable,
+                mScrollOffsetRangeThreshold,
+                mPadding,
+                mViewHelper,
+                mAnimationHelper,
+                mPopupStyleHelper,
+                mPopupTextProvider,
                 mDraggingListener
         );
     }
 
-    @NonNull
-    private FastScroller.ViewHelper getOrCreateViewHelper() {
-        if (mViewHelper != null) {
-            return mViewHelper;
-        }
-        if (mView instanceof ViewHelperProvider) {
-            return ((ViewHelperProvider) mView).getViewHelper();
-        } else if (mView instanceof RecyclerView) {
-            return new RecyclerViewHelper((RecyclerView) mView, mPopupTextProvider);
-        } else {
-            throw new UnsupportedOperationException(mView.getClass().getSimpleName()
-                    + " is not supported for fast scroll");
-        }
-    }
-
-    @NonNull
-    private FastScroller.AnimationHelper getOrCreateAnimationHelper() {
-        if (mAnimationHelper != null) {
-            return mAnimationHelper;
-        }
-        return new DefaultAnimationHelper(mView);
-    }
 }

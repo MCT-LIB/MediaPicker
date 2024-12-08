@@ -4,10 +4,7 @@ import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
 import static android.text.format.DateUtils.FORMAT_NO_MONTH_DAY;
 import static android.text.format.DateUtils.FORMAT_SHOW_YEAR;
 
-import android.graphics.Typeface;
 import android.text.format.DateUtils;
-import android.view.Gravity;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Supplier;
@@ -17,9 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.R;
 import com.mct.mediapicker.adapter.MediaAdapter;
-import com.mct.mediapicker.common.fastscroll.FastScroller;
 import com.mct.mediapicker.common.fastscroll.FastScrollerBuilder;
-import com.mct.mediapicker.common.fastscroll.PopupStyles;
 import com.mct.mediapicker.model.Album;
 
 import java.util.List;
@@ -56,36 +51,22 @@ class SetupDataHelper {
     }
 
     private static void attachFastScroller(@NonNull RecyclerView recyclerView) {
-        if (recyclerView.getTag(TAG_FAST_SCROLLER) instanceof FastScroller) {
+        if (recyclerView.getTag(TAG_FAST_SCROLLER) != null) {
             return;
         }
+        recyclerView.setTag(TAG_FAST_SCROLLER, 1);
 
         Supplier<Optional<MediaAdapter>> adapterSupplier = () -> Optional.of(recyclerView)
                 .map(RecyclerView::getAdapter)
                 .filter(MediaAdapter.class::isInstance)
                 .map(MediaAdapter.class::cast);
 
-        FastScroller scroller = new FastScrollerBuilder(recyclerView)
-                .setScrollOffsetRangeThreshold(400)
-                .setTrackDraggable(false)
-                .setDraggingListener(dragging -> adapterSupplier.get().ifPresent(a -> a.setDragging(dragging)))
+        FastScrollerBuilder.from(recyclerView)
                 .setTrackDrawable(R.drawable.mp_ic_fs_track)
                 .setThumbDrawable(R.drawable.mp_ic_fs_thumb)
-                .setPopupStyle(popupView -> {
-                    PopupStyles.MD2.accept(popupView);
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) popupView.getLayoutParams();
-                    layoutParams.gravity = Gravity.CENTER;
-                    layoutParams.setMarginEnd(MediaUtils.dp2px(8));
-                    popupView.setLayoutParams(layoutParams);
-                    int padStart = MediaUtils.dp2px(10);
-                    int padEnd = MediaUtils.dp2px(16);
-                    int padVertical = MediaUtils.dp2px(6);
-                    popupView.setPaddingRelative(padStart, padVertical, padEnd, padVertical);
-                    popupView.setMinWidth(0);
-                    popupView.setMinimumHeight(0);
-                    popupView.setTextSize(13);
-                    popupView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                })
+                .setTrackDraggable(false)
+                .setScrollOffsetRangeThreshold(400)
+                .setDraggingListener(dragging -> adapterSupplier.get().ifPresent(a -> a.setDragging(dragging)))
                 .setPopupTextProvider((view, position) -> adapterSupplier.get()
                         .map(a -> a.getMedia(position))
                         .map(m -> {
@@ -94,9 +75,8 @@ class SetupDataHelper {
                         })
                         .orElse(null)
                 )
-                .build();
-
-        recyclerView.setTag(TAG_FAST_SCROLLER, scroller);
+                .build()
+                .attach();
     }
 
 }

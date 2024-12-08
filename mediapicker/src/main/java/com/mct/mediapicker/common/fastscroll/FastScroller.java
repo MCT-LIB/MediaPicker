@@ -18,45 +18,48 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.math.MathUtils;
-import androidx.core.util.Consumer;
 import androidx.core.util.Predicate;
-
-import com.mct.mediapicker.R;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
 import java.util.Optional;
 
 public class FastScroller {
 
-    private final int mMinTouchTargetSize;
+    private static final int MIN_TOUCH_TARGET_SIZE = Utils.dp2px(48);
+
     private final int mTouchSlop;
 
     @NonNull
-    private final ViewGroup mView;
-    @NonNull
-    private final ViewHelper mViewHelper;
+    private final RecyclerView mView;
+    private final boolean mTrackDraggable;
+    private final int mScrollOffsetRangeThreshold;
     @Nullable
     private Rect mUserPadding;
     @NonNull
-    private final AnimationHelper mAnimationHelper;
-    @Nullable
-    private final DraggingListener mDraggingListener;
-
-    private final int mScrollOffsetRangeThreshold;
-    private final boolean mTrackDraggable;
-    private final int mTrackWidth;
-    private final int mThumbWidth;
-    private final int mThumbHeight;
-
+    private final FastScroller.ViewHelper mViewHelper;
     @NonNull
-    private final View mTrackView;
+    private final FastScroller.AnimationHelper mAnimationHelper;
+    @Nullable
+    private final FastScroller.PopupStyleHelper mPopupStyleHelper;
+    @Nullable
+    private final FastScroller.PopupTextProvider mPopupTextProvider;
+    @Nullable
+    private final FastScroller.DraggingListener mDraggingListener;
+
     @NonNull
     private final View mThumbView;
     @NonNull
+    private final View mTrackView;
+    @NonNull
     private final TextView mPopupView;
 
-    private boolean mScrollbarEnabled;
+    private int mTrackWidth;
+    private int mThumbWidth;
+    private int mThumbHeight;
     private int mThumbOffset;
+    private boolean mScrollbarEnabled;
+    private boolean mAttached;
 
     private float mDownX;
     private float mDownY;
@@ -68,53 +71,59 @@ public class FastScroller {
     @NonNull
     private final Rect mTempRect = new Rect();
 
-    public FastScroller(@NonNull ViewGroup view, @NonNull ViewHelper viewHelper,
-                        @Nullable Rect padding, @Nullable Integer scrollOffsetRangeThreshold,
-                        @Nullable Boolean trackDraggable, @NonNull Integer trackDrawableRes, @NonNull Integer thumbDrawableRes,
-                        @NonNull Consumer<TextView> popupStyle,
-                        @NonNull AnimationHelper animationHelper,
+    public FastScroller(@NonNull RecyclerView recyclerView,
+                        int thumbDrawableRes,
+                        int trackDrawableRes,
+                        boolean trackDraggable,
+                        int scrollOffsetRangeThreshold,
+                        @Nullable Rect userPadding,
+                        @Nullable ViewHelper viewHelper,
+                        @Nullable AnimationHelper animationHelper,
+                        @Nullable PopupStyleHelper popupStyleHelper,
+                        @Nullable PopupTextProvider popupTextProvider,
                         @Nullable DraggingListener draggingListener) {
 
-        mMinTouchTargetSize = view.getResources().getDimensionPixelSize(
-                R.dimen.afs_min_touch_target_size);
-        Context context = view.getContext();
+        Context context = recyclerView.getContext();
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
-        mView = view;
-        mViewHelper = viewHelper;
-        mUserPadding = padding;
-        mScrollOffsetRangeThreshold = Optional.ofNullable(scrollOffsetRangeThreshold).orElse(0);
-        mTrackDraggable = trackDraggable == Boolean.TRUE;
-        mAnimationHelper = animationHelper;
+        mView = recyclerView;
+        mUserPadding = userPadding;
+        mTrackDraggable = trackDraggable;
+        mScrollOffsetRangeThreshold = scrollOffsetRangeThreshold;
+
+        mViewHelper = Optional.ofNullable(viewHelper).orElseGet(() -> new DefaultViewHelper(recyclerView));
+        mAnimationHelper = Optional.ofNullable(animationHelper).orElseGet(() -> new DefaultAnimationHelper(recyclerView));
+        mPopupStyleHelper = popupStyleHelper;
+        mPopupTextProvider = popupTextProvider;
         mDraggingListener = draggingListener;
 
-        Drawable trackDrawable = Objects.requireNonNull(ContextCompat.getDrawable(context, trackDrawableRes));
-        Drawable thumbDrawable = Objects.requireNonNull(ContextCompat.getDrawable(context, thumbDrawableRes));
+        mThumbView = new View(context);
+        mTrackView = new View(context);
+        mPopupView = new AppCompatTextView(context);
 
-        mTrackWidth = requireNonNegative(trackDrawable.getIntrinsicWidth(), "trackDrawable.getIntrinsicWidth() < 0");
+        initScrollbar(context, thumbDrawableRes, trackDrawableRes);
+        postAutoHideScrollbar();
+    }
+
+    private void initScrollbar(Context context, int thumbDrawableRes, int trackDrawableRes) {
+        Drawable thumbDrawable = Objects.requireNonNull(ContextCompat.getDrawable(context, thumbDrawableRes));
+        Drawable trackDrawable = Objects.requireNonNull(ContextCompat.getDrawable(context, trackDrawableRes));
+
         mThumbWidth = requireNonNegative(thumbDrawable.getIntrinsicWidth(), "thumbDrawable.getIntrinsicWidth() < 0");
         mThumbHeight = requireNonNegative(thumbDrawable.getIntrinsicHeight(), "thumbDrawable.getIntrinsicHeight() < 0");
+        mTrackWidth = requireNonNegative(trackDrawable.getIntrinsicWidth(), "trackDrawable.getIntrinsicWidth() < 0");
 
-        mTrackView = new View(context);
-        mTrackView.setBackground(trackDrawable);
-        mThumbView = new View(context);
         mThumbView.setBackground(thumbDrawable);
-        mPopupView = new AppCompatTextView(context);
+        mTrackView.setBackground(trackDrawable);
         mPopupView.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        popupStyle.accept(mPopupView);
-
-        ViewGroupOverlay overlay = mView.getOverlay();
-        overlay.add(mTrackView);
-        overlay.add(mThumbView);
-        overlay.add(mPopupView);
-
-        postAutoHideScrollbar();
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+        );
+        new DefaultPopupStyleHelper().apply(mPopupView);
+        if (mPopupStyleHelper != null) {
+            mPopupStyleHelper.apply(mPopupView);
+        }
         mPopupView.setAlpha(0);
-
-        mViewHelper.addOnPreDrawListener(this::onPreDraw);
-        mViewHelper.addOnScrollChangedListener(this::onScrollChanged);
-        mViewHelper.addOnTouchEventListener(this::onTouchEvent);
     }
 
     private static int requireNonNegative(int value, @NonNull String message) {
@@ -122,6 +131,34 @@ public class FastScroller {
             throw new IllegalArgumentException(message);
         }
         return value;
+    }
+
+    public void attach() {
+        if (mAttached) {
+            return;
+        }
+        mAttached = true;
+        ViewGroupOverlay overlay = mView.getOverlay();
+        overlay.add(mThumbView);
+        overlay.add(mTrackView);
+        overlay.add(mPopupView);
+
+        mViewHelper.addOnPreDrawListener(this::onPreDraw);
+        mViewHelper.addOnScrollChangedListener(this::onScrollChanged);
+        mViewHelper.addOnTouchEventListener(this::onTouchEvent);
+    }
+
+    public void detach() {
+        if (!mAttached) {
+            return;
+        }
+        mAttached = false;
+        ViewGroupOverlay overlay = mView.getOverlay();
+        overlay.remove(mThumbView);
+        overlay.remove(mTrackView);
+        overlay.remove(mPopupView);
+
+        mViewHelper.clearListeners();
     }
 
     public void setPadding(int left, int top, int right, int bottom) {
@@ -194,7 +231,12 @@ public class FastScroller {
         layoutView(mThumbView, thumbLeft, thumbTop, thumbLeft + mThumbWidth,
                 thumbTop + mThumbHeight);
 
-        CharSequence popupText = mViewHelper.getPopupText();
+        CharSequence popupText;
+        if (mPopupTextProvider != null) {
+            popupText = mPopupTextProvider.getPopupText(mView, mViewHelper.getItemPosition());
+        } else {
+            popupText = null;
+        }
         boolean hasPopup = !TextUtils.isEmpty(popupText);
         mPopupView.setVisibility(hasPopup ? View.VISIBLE : View.INVISIBLE);
         if (hasPopup) {
@@ -343,26 +385,24 @@ public class FastScroller {
     private boolean isInViewTouchTarget(@NonNull View view, float x, float y) {
         int scrollX = mView.getScrollX();
         int scrollY = mView.getScrollY();
-        return isInTouchTarget(x, view.getLeft() - scrollX, view.getRight() - scrollX, 0,
-                mView.getWidth())
-                && isInTouchTarget(y, view.getTop() - scrollY, view.getBottom() - scrollY, 0,
-                mView.getHeight());
+        return isInTouchTarget(x, view.getLeft() - scrollX, view.getRight() - scrollX, 0, mView.getWidth())
+                && isInTouchTarget(y, view.getTop() - scrollY, view.getBottom() - scrollY, 0, mView.getHeight());
     }
 
     private boolean isInTouchTarget(float position, int viewStart, int viewEnd, int parentStart,
                                     int parentEnd) {
         int viewSize = viewEnd - viewStart;
-        if (viewSize >= mMinTouchTargetSize) {
+        if (viewSize >= MIN_TOUCH_TARGET_SIZE) {
             return position >= viewStart && position < viewEnd;
         }
-        int touchTargetStart = viewStart - (mMinTouchTargetSize - viewSize) / 2;
+        int touchTargetStart = viewStart - (MIN_TOUCH_TARGET_SIZE - viewSize) / 2;
         if (touchTargetStart < parentStart) {
             touchTargetStart = parentStart;
         }
-        int touchTargetEnd = touchTargetStart + mMinTouchTargetSize;
+        int touchTargetEnd = touchTargetStart + MIN_TOUCH_TARGET_SIZE;
         if (touchTargetEnd > parentEnd) {
             touchTargetEnd = parentEnd;
-            touchTargetStart = touchTargetEnd - mMinTouchTargetSize;
+            touchTargetStart = touchTargetEnd - MIN_TOUCH_TARGET_SIZE;
             if (touchTargetStart < parentStart) {
                 touchTargetStart = parentStart;
             }
@@ -452,15 +492,17 @@ public class FastScroller {
 
         void addOnTouchEventListener(@NonNull Predicate<MotionEvent> onTouchEvent);
 
+        void clearListeners();
+
         int getScrollRange();
 
         int getScrollOffset();
 
         void scrollTo(int offset);
 
-        @Nullable
-        default CharSequence getPopupText() {
-            return null;
+
+        default int getItemPosition() {
+            return -1;
         }
     }
 
@@ -481,7 +523,18 @@ public class FastScroller {
         int getPopupAutoHideDelayMillis();
     }
 
+    public interface PopupStyleHelper {
+
+        void apply(@NonNull TextView popupView);
+    }
+
+    public interface PopupTextProvider {
+
+        String getPopupText(@NonNull RecyclerView view, int position);
+    }
+
     public interface DraggingListener {
+
         void onDragging(boolean dragging);
     }
 }

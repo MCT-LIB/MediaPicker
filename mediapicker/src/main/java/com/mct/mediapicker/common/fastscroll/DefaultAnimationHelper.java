@@ -7,16 +7,14 @@ import androidx.annotation.NonNull;
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
-public class DefaultAnimationHelper implements FastScroller.AnimationHelper {
+class DefaultAnimationHelper implements FastScroller.AnimationHelper {
 
     private static final int SHOW_DURATION_MILLIS = 150;
     private static final int HIDE_DURATION_MILLIS = 200;
-    private static final Interpolator SHOW_SCROLLBAR_INTERPOLATOR =
-            new LinearOutSlowInInterpolator();
-    private static final Interpolator HIDE_SCROLLBAR_INTERPOLATOR =
-            new FastOutLinearInInterpolator();
+    private static final Interpolator SHOW_SCROLLBAR_INTERPOLATOR = new LinearOutSlowInInterpolator();
+    private static final Interpolator HIDE_SCROLLBAR_INTERPOLATOR = new FastOutLinearInInterpolator();
     private static final int AUTO_HIDE_SCROLLBAR_DELAY_MILLIS = 1500;
-    private static final int AUTO_HIDE_POPUP_DELAY_MILLIS = 1500;
+    private static final int AUTO_HIDE_POPUP_DELAY_MILLIS = 1400;
 
     @NonNull
     private final View mView;

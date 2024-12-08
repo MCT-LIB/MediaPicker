@@ -26,8 +26,20 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.tvHello).setOnClickListener(v -> {
             MediaPicker.pick(getSupportFragmentManager(), new MediaPickerOption.Builder()
+                    // @formatter:off
+                    /*mode*/
+                    //.single(uri -> {})
                     .multi(uris -> {})
-                    .all()
+                    //.multiExact(uris -> {}, 3)
+                    //.multiRange(uris -> {}, 1, 10)
+                    // @formatter:on
+
+                    /*type*/
+                    .image()
+                    //.video()
+                    //.all()
+
+                    /*build*/
                     .build()
             );
         });

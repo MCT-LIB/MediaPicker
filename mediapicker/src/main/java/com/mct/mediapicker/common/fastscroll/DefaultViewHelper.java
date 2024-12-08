@@ -12,58 +12,89 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-class RecyclerViewHelper implements FastScroller.ViewHelper {
+class DefaultViewHelper implements FastScroller.ViewHelper {
 
     @NonNull
     private final RecyclerView mView;
-    @Nullable
-    private final PopupTextProvider mPopupTextProvider;
 
     @NonNull
     private final Rect mTempRect = new Rect();
 
-    public RecyclerViewHelper(@NonNull RecyclerView view,
-                              @Nullable PopupTextProvider popupTextProvider) {
+    @Nullable
+    private RecyclerView.ItemDecoration mItemDecoration;
+    @Nullable
+    private RecyclerView.OnScrollListener mOnScrollListener;
+    @Nullable
+    private RecyclerView.SimpleOnItemTouchListener mOnItemTouchListener;
+
+    public DefaultViewHelper(@NonNull RecyclerView view) {
         mView = view;
-        mPopupTextProvider = popupTextProvider;
     }
 
     @Override
     public void addOnPreDrawListener(@NonNull Runnable onPreDraw) {
-        mView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent,
-                               @NonNull RecyclerView.State state) {
-                onPreDraw.run();
-            }
-        });
+        if (mItemDecoration == null) {
+            mItemDecoration = new RecyclerView.ItemDecoration() {
+                @Override
+                public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent,
+                                   @NonNull RecyclerView.State state) {
+                    onPreDraw.run();
+                }
+            };
+        }
+        mView.removeItemDecoration(mItemDecoration);
+        mView.addItemDecoration(mItemDecoration);
     }
 
     @Override
     public void addOnScrollChangedListener(@NonNull Runnable onScrollChanged) {
-        mView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                onScrollChanged.run();
-            }
-        });
+        if (mOnScrollListener == null) {
+            mOnScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    onScrollChanged.run();
+                }
+            };
+        }
+        mView.removeOnScrollListener(mOnScrollListener);
+        mView.addOnScrollListener(mOnScrollListener);
     }
 
     @Override
     public void addOnTouchEventListener(@NonNull Predicate<MotionEvent> onTouchEvent) {
-        mView.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView,
-                                                 @NonNull MotionEvent event) {
-                return onTouchEvent.test(event);
-            }
+        if (mOnItemTouchListener == null) {
+            mOnItemTouchListener = new RecyclerView.SimpleOnItemTouchListener() {
+                @Override
+                public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView,
+                                                     @NonNull MotionEvent event) {
+                    return onTouchEvent.test(event);
+                }
 
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView,
-                                     @NonNull MotionEvent event) {
-                onTouchEvent.test(event);
-            }
-        });
+                @Override
+                public void onTouchEvent(@NonNull RecyclerView recyclerView,
+                                         @NonNull MotionEvent event) {
+                    onTouchEvent.test(event);
+                }
+            };
+        }
+        mView.removeOnItemTouchListener(mOnItemTouchListener);
+        mView.addOnItemTouchListener(mOnItemTouchListener);
+    }
+
+    @Override
+    public void clearListeners() {
+        if (mItemDecoration != null) {
+            mView.removeItemDecoration(mItemDecoration);
+            mItemDecoration = null;
+        }
+        if (mOnScrollListener != null) {
+            mView.removeOnScrollListener(mOnScrollListener);
+            mOnScrollListener = null;
+        }
+        if (mOnItemTouchListener != null) {
+            mView.removeOnItemTouchListener(mOnItemTouchListener);
+            mOnItemTouchListener = null;
+        }
     }
 
     @Override
@@ -102,24 +133,9 @@ class RecyclerViewHelper implements FastScroller.ViewHelper {
         scrollToPositionWithOffset(firstItemPosition, firstItemTop);
     }
 
-    @Nullable
     @Override
-    public CharSequence getPopupText() {
-        PopupTextProvider popupTextProvider = mPopupTextProvider;
-        if (popupTextProvider == null) {
-            RecyclerView.Adapter<?> adapter = mView.getAdapter();
-            if (adapter instanceof PopupTextProvider) {
-                popupTextProvider = (PopupTextProvider) adapter;
-            }
-        }
-        if (popupTextProvider == null) {
-            return null;
-        }
-        int position = getFirstItemAdapterPosition();
-        if (position == RecyclerView.NO_POSITION) {
-            return null;
-        }
-        return popupTextProvider.getPopupText(mView, position);
+    public int getItemPosition() {
+        return getFirstItemAdapterPosition();
     }
 
     private int getItemCount() {

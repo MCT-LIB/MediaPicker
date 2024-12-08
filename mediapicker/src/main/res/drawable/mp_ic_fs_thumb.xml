@@ -4,15 +4,12 @@
     android:viewportWidth="32"
     android:viewportHeight="52">
     <path
-        android:fillColor="?colorSurfaceContainer"
-        android:pathData="M0.5 25.5c0-13.25 10.75-24 24-24h0c13.25 0 24 10.75 24 24v0c0 13.25-10.75 24-24 24h0c-13.25 0-24-10.75-24-24z"
-        android:strokeWidth="0.2"
-        android:strokeAlpha="0.5"
-        android:strokeColor="?colorSurfaceInverse" />
-    <path
         android:fillColor="?colorControlActivated"
+        android:pathData="M0.5 25.5c0-13.25 10.75-24 24-24h0c13.25 0 24 10.75 24 24v0c0 13.25-10.75 24-24 24h0c-13.25 0-24-10.75-24-24z" />
+    <path
+        android:fillColor="?android:attr/textColorPrimaryInverse"
         android:pathData="M22.9 22.15l-4.05-4.05c-0.2-0.2-0.5-0.2-0.7 0l-4.05 4.05C13.8 22.46 14.01 23 14.46 23h8.08c0.45 0 0.67-0.54 0.36-0.85Z" />
     <path
-        android:fillColor="?colorControlActivated"
+        android:fillColor="?android:attr/textColorPrimaryInverse"
         android:pathData="M14.1 29.85l4.05 4.05c0.2 0.2 0.5 0.2 0.7 0l4.05-4.05c0.3-0.31 0.09-0.85-0.36-0.85h-8.08c-0.45 0-0.67 0.54-0.36 0.85Z" />
 </vector>

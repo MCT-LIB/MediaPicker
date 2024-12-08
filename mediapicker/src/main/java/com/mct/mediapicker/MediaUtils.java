@@ -75,34 +75,22 @@ public class MediaUtils {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    /**
-     * Return the width of screen, in pixel.
-     *
-     * @return the width of screen, in pixel
-     */
     public static int getScreenWidth(@NonNull Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        if (wm == null) {
-            return -1;
-        }
-        Point point = new Point();
-        wm.getDefaultDisplay().getRealSize(point);
-        return point.x;
+        return getScreenSize(context).x;
     }
 
-    /**
-     * Return the height of screen, in pixel.
-     *
-     * @return the height of screen, in pixel
-     */
     public static int getScreenHeight(@NonNull Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        if (wm == null) {
-            return -1;
+        return getScreenSize(context).y;
+    }
+
+    private static Point screenSize;
+
+    private static Point getScreenSize(@NonNull Context context) {
+        if (screenSize == null) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            wm.getDefaultDisplay().getSize(screenSize = new Point());
         }
-        Point point = new Point();
-        wm.getDefaultDisplay().getRealSize(point);
-        return point.y;
+        return screenSize;
     }
 
     public static int dp2px(float dpValue) {

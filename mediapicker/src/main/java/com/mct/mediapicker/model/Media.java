@@ -13,6 +13,8 @@ import java.util.Objects;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class Media implements Parcelable {
 
+    private int id;
+    private int bucketId;
     private Uri uri;
     private String name;
     private String mimeType;
@@ -26,6 +28,8 @@ public class Media implements Parcelable {
     }
 
     protected Media(@NonNull Parcel in) {
+        id = in.readInt();
+        bucketId = in.readInt();
         uri = in.readParcelable(Uri.class.getClassLoader());
         name = in.readString();
         mimeType = in.readString();
@@ -38,6 +42,8 @@ public class Media implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(bucketId);
         dest.writeParcelable(uri, flags);
         dest.writeString(name);
         dest.writeString(mimeType);
@@ -59,6 +65,22 @@ public class Media implements Parcelable {
         public @NonNull Media[] newArray(int size) {return new Media[size];}
         // @formatter:on
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getBucketId() {
+        return bucketId;
+    }
+
+    public void setBucketId(int bucketId) {
+        this.bucketId = bucketId;
+    }
 
     public Uri getUri() {
         return uri;

@@ -1,20 +1,15 @@
 package com.mct.mediapicker.adapter;
 
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.AUTOMATIC;
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.NONE;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Function;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.ObjectKey;
 import com.mct.mediapicker.databinding.MpLayoutItemMediaBinding;
+import com.mct.mediapicker.fragment.MediaLoaderDelegate;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 import com.mct.touchutils.TouchUtils;
@@ -35,8 +30,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     private final List<Media> items;
     private final OnItemClickListener listener;
     private final Function<Media, Boolean> evaluateMediaPick;
-
-    private boolean dragging = false;
 
     public MediaAdapter(boolean isMultipleSelect, @NonNull List<Album> albums, OnItemClickListener listener, Function<Media, Boolean> evaluateMediaPick) {
         this.boundViewHolders = new HashSet<>();
@@ -64,18 +57,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         }
     }
 
-    public void setDragging(boolean dragging) {
-        this.dragging = dragging;
-        if (!dragging) {
-            for (MediaViewHolder holder : boundViewHolders) {
-                Media media = items.get(holder.getAdapterPosition());
-                if (media != null) {
-                    holder.loadImage(media, false);
-                }
-            }
-        }
-    }
-
     public void invalidateSelect() {
         for (MediaViewHolder holder : boundViewHolders) {
             Media media = items.get(holder.getAdapterPosition());
@@ -96,7 +77,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         if (media == null) {
             return;
         }
-        holder.loadImage(media, dragging);
+        holder.loadImage(media);
         holder.setDuration(media.isVideo(), media.getDuration());
         holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
         holder.itemView.setOnClickListener(v -> {
@@ -119,11 +100,25 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull MediaViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.delegate.onAttach(holder.itemView);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull MediaViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.delegate.onDetach(holder.itemView);
+    }
+
+    @Override
     public int getItemCount() {
         return items == null ? 0 : items.size();
     }
 
     public static class MediaViewHolder extends BindingViewHolder<MpLayoutItemMediaBinding> {
+
+        private final MediaLoaderDelegate delegate;
 
         public MediaViewHolder(@NonNull MpLayoutItemMediaBinding binding) {
             super(binding);
@@ -133,24 +128,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 protected float getReleaseScale() {return 0.025f;}
             });
             // @formatter:on
+            delegate = MediaLoaderDelegate.create(itemView.getContext());
+            delegate.setListener(binding.mpIvThumb::setImageBitmap);
         }
 
-        void loadImage(@NonNull Media media, boolean dragging) {
-            ImageView ivThumb = binding.mpIvThumb;
-            if (ivThumb.getWidth() == 0) {
-                ivThumb.post(() -> loadImage(media, dragging));
-                return;
-            }
-            if (dragging) {
-                ivThumb.setImageDrawable(null);
-            } else {
-                Glide.with(ivThumb)
-                        .load(media.getUri())
-                        .signature(new ObjectKey(media.getDateModified()))
-                        .diskCacheStrategy(media.isVideo() ? AUTOMATIC : NONE)
-                        .override(ivThumb.getWidth())
-                        .into(ivThumb);
-            }
+        void loadImage(Media media) {
+            delegate.loadThumbnail(media);
         }
 
         void setDuration(boolean video, Integer duration) {

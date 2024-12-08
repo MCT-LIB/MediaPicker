@@ -1,18 +1,13 @@
 package com.mct.mediapicker.adapter;
 
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.AUTOMATIC;
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.NONE;
-
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.ObjectKey;
 import com.mct.mediapicker.databinding.MpLayoutItemAlbumBinding;
+import com.mct.mediapicker.fragment.MediaLoaderDelegate;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 
@@ -42,7 +37,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             return;
         }
         Media media = album.getLastMedia();
-        holder.loadImage(media != null ? media : new Media());
+        holder.loadImage(media);
         holder.binding.mpTvTitle.setText(album.getBucketName());
         holder.binding.mpTvDesc.setText(String.valueOf(album.getMediaList().size()));
         holder.itemView.setOnClickListener(v -> {
@@ -53,28 +48,34 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull AlbumViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.delegate.onAttach(holder.itemView);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull AlbumViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.delegate.onDetach(holder.itemView);
+    }
+
+    @Override
     public int getItemCount() {
         return albums == null ? 0 : albums.size();
     }
 
     public static class AlbumViewHolder extends BindingViewHolder<MpLayoutItemAlbumBinding> {
 
+        private final MediaLoaderDelegate delegate;
+
         public AlbumViewHolder(@NonNull MpLayoutItemAlbumBinding binding) {
             super(binding);
+            delegate = MediaLoaderDelegate.create(itemView.getContext());
+            delegate.setListener(binding.mpIvThumb::setImageBitmap);
         }
 
-        void loadImage(@NonNull Media media) {
-            ImageView ivThumb = binding.mpIvThumb;
-            if (ivThumb.getWidth() == 0) {
-                ivThumb.post(() -> loadImage(media));
-                return;
-            }
-            Glide.with(ivThumb)
-                    .load(media.getUri())
-                    .signature(new ObjectKey(media.getDateModified()))
-                    .diskCacheStrategy(media.isVideo() ? AUTOMATIC : NONE)
-                    .override(ivThumb.getWidth())
-                    .into(ivThumb);
+        void loadImage(Media media) {
+            delegate.loadThumbnail(media);
         }
     }
 

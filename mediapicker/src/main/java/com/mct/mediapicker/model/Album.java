@@ -12,25 +12,25 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class Album implements Parcelable {
 
-    private String bucketId;
+    private int bucketId;
     private String bucketName;
     private final List<Media> mediaList;
 
-    public Album(String bucketId, String bucketName) {
+    public Album(int bucketId, String bucketName) {
         this.bucketId = bucketId;
         this.bucketName = bucketName;
         this.mediaList = new ArrayList<>();
     }
 
     protected Album(@NonNull Parcel in) {
-        bucketId = in.readString();
+        bucketId = in.readInt();
         bucketName = in.readString();
         mediaList = in.createTypedArrayList(Media.CREATOR);
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(bucketId);
+        dest.writeInt(bucketId);
         dest.writeString(bucketName);
         dest.writeTypedList(mediaList);
     }
@@ -47,11 +47,11 @@ public class Album implements Parcelable {
         // @formatter:on
     };
 
-    public String getBucketId() {
+    public int getBucketId() {
         return bucketId;
     }
 
-    public void setBucketId(String bucketId) {
+    public void setBucketId(int bucketId) {
         this.bucketId = bucketId;
     }
 

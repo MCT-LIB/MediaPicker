@@ -9,26 +9,34 @@ import static com.mct.mediapicker.MediaPickerOption.PickType;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.collection.LruCache;
 import androidx.core.util.Consumer;
 import androidx.core.util.Supplier;
 
 import com.mct.mediapicker.MediaPickerOption;
+import com.mct.mediapicker.common.DispatchQueue;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -64,6 +72,7 @@ class Presenter {
         albums.clear();
         selectedMedia.clear();
         optionSupplier = null;
+        MediaLoader.cleanupQueues();
     }
 
     public MediaPickerOption getOption() {
@@ -177,6 +186,7 @@ class Presenter {
         }
 
         String[] projections = {
+                MediaStore.MediaColumns._ID,
                 MediaStore.MediaColumns.BUCKET_ID,
                 MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
                 MediaStore.MediaColumns.DATA,
@@ -209,8 +219,9 @@ class Presenter {
             cursor = context.getContentResolver().query(contentUri, projections, selection, selectionArgs, orderBy);
         }
         try {
-            ArrayMap<String, Album> albums = new ArrayMap<>();
+            ArrayMap<Integer, Album> albums = new ArrayMap<>();
             if (cursor != null && cursor.moveToFirst()) {
+                int idIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
                 int bucketIdIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_ID);
                 int bucketNameIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
                 int mediaPathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
@@ -222,16 +233,17 @@ class Presenter {
                 int heightIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT);
 
                 do {
-                    String path = cursor.getString(mediaPathIndex);
-                    String bucketId = cursor.getString(bucketIdIndex);
+                    int bucketId = cursor.getInt(bucketIdIndex);
                     Album album = albums.get(bucketId);
-
                     if (album == null) {
-                        albums.put(bucketId, album = new Album(bucketId, cursor.getString(bucketNameIndex)));
+                        album = new Album(bucketId, cursor.getString(bucketNameIndex));
+                        albums.put(bucketId, album);
                     }
-
+                    String path = cursor.getString(mediaPathIndex);
                     Media media = new Media();
-                    media.setUri(Uri.fromFile(new File(path)));
+                    media.setId(cursor.getInt(idIndex));
+                    media.setBucketId(bucketId);
+                    media.setUri(Uri.parse("file://" + path));
                     media.setName(getFileName(path));
                     media.setMimeType(cursor.getString(mimeTypeIndex));
                     media.setDateModified(cursor.getInt(dateModified));
@@ -258,6 +270,231 @@ class Presenter {
             return path.substring(lastIndex + 1);
         }
         return path;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Media loader
+    ///////////////////////////////////////////////////////////////////////////
+
+    @NonNull
+    static MediaLoaderDelegate create(Context context) {
+        return new MediaLoader(context);
+    }
+
+    private static class MediaLoader implements MediaLoaderDelegate {
+
+        private static final Handler MAIN_THREAD = new Handler(Looper.getMainLooper());
+
+        private final ContentResolver contentResolver;
+        private Media media;
+        private MediaLoaderListener mediaLoaderListener;
+
+        private String key;
+        private Bitmap bitmap;
+        private DispatchQueue loadQueue;
+        private Runnable loadingTask;
+        private Runnable cancelTask;
+
+        private final Runnable unloadRunnable = () -> loadBitmap(null);
+
+        public MediaLoader(@NonNull Context context) {
+            contentResolver = context.getContentResolver();
+        }
+
+        private DispatchQueue getQueue() {
+            if (loadQueue != null) {
+                return loadQueue;
+            }
+            if (allQueues.size() < MAX_QUEUES) {
+                loadQueue = new DispatchQueue("gallery_load_" + allQueues.size());
+                allQueues.add(loadQueue);
+            } else {
+                currentQueueIndex = (currentQueueIndex + 1) % allQueues.size();
+                loadQueue = allQueues.get(currentQueueIndex);
+            }
+            return loadQueue;
+        }
+
+        private void loadBitmap(Media media) {
+            if (media == null) {
+                releaseCurrentBitmap();
+                return;
+            }
+
+            final String newKey = media.getUri().getPath();
+            if (TextUtils.equals(newKey, key)) {
+                return;
+            }
+
+            releaseCurrentBitmap();
+            key = newKey;
+
+            bitmap = getBitmap(key);
+            if (bitmap != null) {
+                onBitmapChanged();
+                return;
+            }
+
+            if (cancelTask != null) {
+                cancelTask.run();
+                cancelTask = null;
+            }
+            if (loadingTask != null) {
+                getQueue().cancelRunnable(loadingTask);
+                loadingTask = null;
+            }
+            cancelTask = createCancelTask(media);
+            loadingTask = createLoadingTask(media, key);
+            getQueue().postRunnable(loadingTask);
+        }
+
+        @NonNull
+        private Runnable createLoadingTask(@NonNull Media media, String key) {
+            return () -> {
+                AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
+                try {
+                    Bitmap bitmap;
+                    if (media.isVideo()) {
+                        bitmap = MediaStore.Video.Thumbnails.getThumbnail(contentResolver, media.getId(), media.getBucketId(), 1, null);
+                    } else {
+                        bitmap = MediaStore.Images.Thumbnails.getThumbnail(contentResolver, media.getId(), media.getBucketId(), 1, null);
+                    }
+                    bitmapRef.set(bitmap);
+                } catch (Exception e) {
+                    bitmapRef.set(null);
+                } finally {
+                    MAIN_THREAD.post(() -> afterLoad(key, bitmapRef.get()));
+                }
+            };
+        }
+
+        @NonNull
+        private Runnable createCancelTask(@NonNull Media media) {
+            return () -> {
+                if (media.isVideo()) {
+                    MediaStore.Video.Thumbnails.cancelThumbnailRequest(contentResolver, media.getId(), media.getBucketId());
+                } else {
+                    MediaStore.Images.Thumbnails.cancelThumbnailRequest(contentResolver, media.getId(), media.getBucketId());
+                }
+            };
+        }
+
+        private void afterLoad(String key, Bitmap loadedBitmap) {
+            if (loadedBitmap == null) return;
+
+            putBitmap(key, loadedBitmap);
+            if (!TextUtils.equals(key, this.key)) {
+                releaseBitmap(key);
+                return;
+            }
+
+            bitmap = loadedBitmap;
+            onBitmapChanged();
+        }
+
+        private void onBitmapChanged() {
+            if (mediaLoaderListener != null) {
+                mediaLoaderListener.onThumbnailLoaded(bitmap);
+            }
+        }
+
+        private void releaseCurrentBitmap() {
+            if (key != null) {
+                releaseBitmap(key);
+                key = null;
+            }
+            bitmap = null;
+            onBitmapChanged();
+        }
+
+        @Override
+        public void onAttach(View view) {
+            MAIN_THREAD.removeCallbacks(unloadRunnable);
+            if (media != null) {
+                loadBitmap(media);
+            }
+        }
+
+        @Override
+        public void onDetach(View view) {
+            MAIN_THREAD.postDelayed(unloadRunnable, 250);
+        }
+
+        @Override
+        public void loadThumbnail(Media media) {
+            this.media = media;
+            loadBitmap(media);
+        }
+
+        @Override
+        public void setListener(MediaLoaderListener listener) {
+            this.mediaLoaderListener = listener;
+        }
+
+        /* --- Queue and bitmap cache methods ---*/
+
+        private static final int MAX_QUEUES = 4;
+        private static int currentQueueIndex = 0;
+        private static final List<DispatchQueue> allQueues = new ArrayList<>();
+        private static final HashMap<String, Integer> bitmapsUseCounts = new HashMap<>();
+        private static final LruCache<String, Bitmap> bitmapsCache = new LruCache<String, Bitmap>(45) {
+            @Override
+            protected void entryRemoved(boolean evicted, @NonNull String key, @NonNull Bitmap oldValue, Bitmap newValue) {
+                if (oldValue.isRecycled() || bitmapsUseCounts.containsKey(key)) {
+                    return;
+                }
+                oldValue.recycle();
+            }
+        };
+
+        public static void cleanupQueues() {
+            releaseAllBitmaps();
+            for (DispatchQueue queue : allQueues) {
+                queue.cleanupQueue();
+                queue.recycle();
+            }
+            allQueues.clear();
+        }
+
+        private static Bitmap getBitmap(String key) {
+            if (key == null) {
+                return null;
+            }
+            Bitmap bitmap = bitmapsCache.get(key);
+            if (bitmap != null) {
+                bitmapsUseCounts.compute(key, (k, count) -> count == null ? 1 : count + 1);
+            }
+            return bitmap;
+        }
+
+        private static void releaseBitmap(String key) {
+            if (key == null) {
+                return;
+            }
+            Integer count = bitmapsUseCounts.get(key);
+            if (count != null) {
+                count--;
+                if (count <= 0) {
+                    bitmapsUseCounts.remove(key);
+                } else {
+                    bitmapsUseCounts.put(key, count);
+                }
+            }
+        }
+
+        private static void putBitmap(String key, Bitmap bitmap) {
+            if (key == null || bitmap == null) {
+                return;
+            }
+            bitmapsCache.put(key, bitmap);
+            bitmapsUseCounts.merge(key, 1, Integer::sum);
+        }
+
+        private static void releaseAllBitmaps() {
+            bitmapsUseCounts.clear();
+            bitmapsCache.evictAll();
+        }
+
     }
 
 }

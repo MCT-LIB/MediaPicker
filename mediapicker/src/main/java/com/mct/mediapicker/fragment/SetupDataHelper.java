@@ -8,6 +8,7 @@ import android.text.format.DateUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Supplier;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,10 +29,18 @@ class SetupDataHelper {
 
     public static void setup(@NonNull RecyclerView rcv, @NonNull Presenter presenter, List<Album> albums, MediaAdapter.OnItemClickListener listener) {
         MediaAdapter mediaAdapter = new MediaAdapter(presenter.isMultipleSelect(), albums, listener, presenter::isSelectedMedia);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(rcv.getContext(), MIN_SPAN_COUNT);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(rcv.getContext(), MIN_SPAN_COUNT) {
+            @Override
+            public boolean supportsPredictiveItemAnimations() {
+                return false;
+            }
+        };
         rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? MediaUtils.dp2px(72) : 0);
         rcv.setLayoutManager(gridLayoutManager);
         rcv.setAdapter(mediaAdapter);
+        Optional.ofNullable(rcv.getItemAnimator())
+                .map(DefaultItemAnimator.class::cast)
+                .ifPresent(a -> a.setSupportsChangeAnimations(false));
         attachItemDecoration(rcv);
         attachZoomGesture(rcv);
         attachFastScroller(rcv);
@@ -66,7 +75,6 @@ class SetupDataHelper {
                 .setThumbDrawable(R.drawable.mp_ic_fs_thumb)
                 .setTrackDraggable(false)
                 .setScrollOffsetRangeThreshold(400)
-                .setDraggingListener(dragging -> adapterSupplier.get().ifPresent(a -> a.setDragging(dragging)))
                 .setPopupTextProvider((view, position) -> adapterSupplier.get()
                         .map(a -> a.getMedia(position))
                         .map(m -> {

@@ -11,6 +11,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -282,13 +283,14 @@ class Presenter {
     ///////////////////////////////////////////////////////////////////////////
 
     @NonNull
-    static MediaLoaderDelegate create(Context context) {
-        return new MediaLoader(context);
+    static MediaLoaderDelegate create(Context context, boolean fullScreen) {
+        return new MediaLoader(context, fullScreen);
     }
 
     private static class MediaLoader implements MediaLoaderDelegate {
 
         private final Context context;
+        private final boolean fullScreen;
 
         private Media media;
         private MediaLoaderListener mediaLoaderListener;
@@ -301,8 +303,9 @@ class Presenter {
 
         private final Runnable unloadRunnable = () -> loadBitmap(null);
 
-        public MediaLoader(@NonNull Context context) {
+        private MediaLoader(@NonNull Context context, boolean fullScreen) {
             this.context = context.getApplicationContext();
+            this.fullScreen = fullScreen;
         }
 
         private DispatchQueue getQueue() {
@@ -325,7 +328,7 @@ class Presenter {
                 return;
             }
 
-            final String newKey = media.getPath();
+            final String newKey = media.getId() + "_fs_" + fullScreen;
             if (TextUtils.equals(newKey, key)) {
                 return;
             }
@@ -351,13 +354,19 @@ class Presenter {
             };
 
             // Create new task
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (fullScreen) {
                 CancellationSignal cancelTaskSignal = new CancellationSignal();
                 cancelTask = createCancelTask(context, media, cancelTaskSignal);
-                loadingTask = createLoadingTask(context, media, cancelTaskSignal, afterLoad);
+                loadingTask = createFullScreenLoadingTask(context, media, cancelTaskSignal, afterLoad);
             } else {
-                cancelTask = createCancelTask(context, media, null);
-                loadingTask = createLoadingTask(context, media, afterLoad);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    CancellationSignal cancelTaskSignal = new CancellationSignal();
+                    cancelTask = createCancelTask(context, media, cancelTaskSignal);
+                    loadingTask = createLoadingTask(context, media, cancelTaskSignal, afterLoad);
+                } else {
+                    cancelTask = createCancelTask(context, media, null);
+                    loadingTask = createLoadingTask(context, media, afterLoad);
+                }
             }
 
             // Start task
@@ -416,6 +425,48 @@ class Presenter {
             this.mediaLoaderListener = listener;
         }
 
+        @NonNull
+        private static Runnable createFullScreenLoadingTask(
+                @NonNull Context context,
+                @NonNull Media media,
+                @Nullable CancellationSignal cancelTaskSignal,
+                @NonNull Consumer<Bitmap> afterLoad) {
+            return () -> {
+                AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
+                try {
+                    if (media.isVideo()) {
+                        throw new UnsupportedOperationException("Video thumb full screen not support!");
+                    }
+
+                    // check cancel
+                    if (cancelTaskSignal != null) cancelTaskSignal.throwIfCanceled();
+
+                    Bitmap result;
+                    Bitmap bitmap = BitmapFactory.decodeFile(media.getPath());
+
+                    // check cancel
+                    if (cancelTaskSignal != null) cancelTaskSignal.throwIfCanceled();
+
+                    if (bitmap != null) {
+                        int screenWidth = MediaUtils.getScreenWidth(context);
+                        int originalWidth = bitmap.getWidth();
+                        int originalHeight = bitmap.getHeight();
+                        int w = screenWidth * 3 / 4;
+                        int h = (originalHeight * w) / originalWidth;
+                        result = Bitmap.createScaledBitmap(bitmap, w, h, true);
+                        bitmap.recycle();
+                    } else {
+                        result = null;
+                    }
+                    bitmapRef.set(result);
+                } catch (Exception e) {
+                    bitmapRef.set(null);
+                } finally {
+                    afterLoad.accept(bitmapRef.get());
+                }
+            };
+        }
+
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
         private static Runnable createLoadingTask(
@@ -424,11 +475,11 @@ class Presenter {
                 @Nullable CancellationSignal cancelTaskSignal,
                 @NonNull Consumer<Bitmap> afterLoad) {
             return () -> {
-                Bitmap bitmap;
                 AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
-                ContentResolver cr = context.getContentResolver();
                 try {
-                    int size = Math.min(MediaUtils.getScreenWidth(context) / 3, MediaUtils.dp2px(330));
+                    Bitmap bitmap;
+                    ContentResolver cr = context.getContentResolver();
+                    int size = Math.min(MediaUtils.getScreenWidth(context) / 3, 512);
                     if (media.isVideo()) {
                         Uri uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, media.getId());
                         bitmap = cr.loadThumbnail(uri, new Size(size, size), cancelTaskSignal);
@@ -452,10 +503,10 @@ class Presenter {
                 @NonNull Media media,
                 @NonNull Consumer<Bitmap> afterLoad) {
             return () -> {
-                Bitmap bitmap;
                 AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
-                ContentResolver cr = context.getContentResolver();
                 try {
+                    Bitmap bitmap;
+                    ContentResolver cr = context.getContentResolver();
                     if (media.isVideo()) {
                         int kind = MediaStore.Video.Thumbnails.MINI_KIND;
                         bitmap = MediaStore.Video.Thumbnails.getThumbnail(cr, media.getId(), media.getBucketId(), kind, null);

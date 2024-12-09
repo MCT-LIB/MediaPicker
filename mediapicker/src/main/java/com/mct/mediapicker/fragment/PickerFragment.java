@@ -7,14 +7,14 @@ import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_VIDEO;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.VideoView;
 
@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -50,6 +51,8 @@ import java.util.Optional;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener {
 
+    private static final int ANIM_DURATION = 200;
+
     @NonNull
     public static PickerFragment newInstance(@NonNull MediaPickerOption option) {
         PickerFragment fragment = new PickerFragment();
@@ -64,6 +67,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     private Media media;
     private Album album;
     private MediaPickerOption option;
+    private MediaLoaderDelegate delegate;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -121,13 +125,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         if (!MediaUtils.isMaterial3Theme(context)) {
             context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
         }
-        BottomSheetDialog dialog = new BottomSheetDialog(context, getTheme());
-        if (presenter.isMultipleSelect()) {
-            BottomSheetBehavior<?> behavior = dialog.getBehavior();
-            behavior.setSkipCollapsed(true);
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
-        return dialog;
+        return new BottomSheetDialog(context, getTheme());
     }
 
     @Nullable
@@ -174,6 +172,8 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
 
         // show selected media if exist
         if (presenter.isMultipleSelect()) {
+            setBottomSheetSkipCollapsed();
+            setBottomSheetExpanded();
             view.post(this::invalidateSelectedMedia);
         }
 
@@ -200,6 +200,8 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // clear media if exist
+        binding.mpMediaPreview.mpVvMedia.stopPlayback();
         binding = null;
     }
 
@@ -299,6 +301,10 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         findTabFragment(0, MediaTabFragment.class).ifPresent(MediaTabFragment::invalidateSelectedMedia);
     }
 
+    Presenter getPresenter() {
+        return presenter;
+    }
+
     void showDetailAlbum(@NonNull Album a) {
         album = a;
         binding.mpAlbumDetail.getRoot().setVisibility(View.VISIBLE);
@@ -322,43 +328,110 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     }
 
     void showMediaPreview(@NonNull Media m) {
-        // TODO: 12/9/2024 change status bar color
         media = m;
-        binding.mpMediaPreview.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        setBottomSheetExpanded();
+        setBottomSheetDraggable(false);
+        setStatusBarColor(Color.BLACK, ANIM_DURATION);
         showFromBottom(binding.mpMediaPreview.getRoot());
-        ImageView imageView = binding.mpMediaPreview.mpIvMedia;
-        VideoView videoView = binding.mpMediaPreview.mpVvMedia;
-        if (media.isVideo()) {
-            videoView.setVisibility(View.VISIBLE);
-            videoView.setVideoURI(media.getUri());
-            videoView.seekTo(1);
+
+        // set toolbar listener
+        binding.mpMediaPreview.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+
+        Button btnSelect = binding.mpMediaPreview.mpBtnSelect;
+        btnSelect.setText(presenter.isSelectedMedia(media) ? R.string.mp_unselect : R.string.mp_select);
+        btnSelect.setOnClickListener(v -> {
+            onItemClick(media, -1);
+            if (presenter.isMultipleSelect()) {
+                btnSelect.setText(presenter.isSelectedMedia(media) ? R.string.mp_unselect : R.string.mp_select);
+            }
+        });
+
+        if (media.isImage()) {
+            initImagePreview(media);
         } else {
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setImageURI(media.getUri());
+            initVideoPreview(media);
         }
     }
 
     void dismissMediaPreview() {
         media = null;
+        setBottomSheetDraggable(true);
+        setStatusBarColor(Color.TRANSPARENT, 0);
         hideToBottom(binding.mpMediaPreview.getRoot());
-        ImageView imageView = binding.mpMediaPreview.mpIvMedia;
-        VideoView videoView = binding.mpMediaPreview.mpVvMedia;
 
-        // release image
-        Drawable drawable = imageView.getDrawable();
-        imageView.setImageDrawable(null);
-        if (drawable instanceof BitmapDrawable) {
-            ((BitmapDrawable) drawable).getBitmap().recycle();
+        binding.mpMediaPreview.mpIvPlay.setVisibility(View.GONE);
+        binding.mpMediaPreview.mpIvSound.setVisibility(View.GONE);
+        binding.mpMediaPreview.mpVvMedia.setVisibility(View.GONE);
+        binding.mpMediaPreview.mpVvMedia.stopPlayback();
+
+        binding.mpMediaPreview.mpIvMedia.setVisibility(View.GONE);
+        if (delegate != null) {
+            delegate.onDetach(binding.mpMediaPreview.mpIvMedia);
+            delegate = null;
         }
-        imageView.setVisibility(View.GONE);
-
-        // release video
-        videoView.stopPlayback();
-        videoView.setVisibility(View.GONE);
     }
 
-    Presenter getPresenter() {
-        return presenter;
+    private void initImagePreview(@NonNull Media media) {
+        ImageView imageView = binding.mpMediaPreview.mpIvMedia;
+        imageView.setVisibility(View.VISIBLE);
+        if (delegate == null) {
+            delegate = MediaLoaderDelegate.create(requireContext(), true);
+            delegate.setListener(imageView::setImageBitmap);
+        }
+        delegate.loadThumbnail(media);
+        delegate.onAttach(imageView);
+    }
+
+    private void initVideoPreview(@NonNull Media media) {
+        VideoView videoView = binding.mpMediaPreview.mpVvMedia;
+        ImageView ivPlay = binding.mpMediaPreview.mpIvPlay;
+        ImageView ivSound = binding.mpMediaPreview.mpIvSound;
+
+        Consumer<Boolean> showControl = (visible) -> {
+            ivPlay.setVisibility(visible ? View.VISIBLE : View.GONE);
+            ivSound.setVisibility(visible ? View.VISIBLE : View.GONE);
+        };
+
+        // Initialize VideoView
+        videoView.setVisibility(View.VISIBLE);
+        videoView.setVideoURI(media.getUri());
+
+        // Toggle controls on click
+        videoView.setOnClickListener(v -> showControl.accept(ivPlay.getVisibility() != View.VISIBLE));
+
+        // Handle video completion
+        videoView.setOnCompletionListener(mp -> {
+            videoView.seekTo(1);
+            ivPlay.setSelected(false);
+            showControl.accept(true);
+        });
+
+        // Prepare video and handle playback
+        videoView.setOnPreparedListener(mp -> {
+            videoView.start();
+            ivPlay.setSelected(true);
+            showControl.accept(true);
+
+            ivSound.setOnClickListener(v -> {
+                boolean isSound = !ivSound.isSelected();
+                ivSound.setSelected(isSound);
+                mp.setVolume(isSound ? 1 : 0, isSound ? 1 : 0);
+            });
+            // Default to mute
+            ivSound.setSelected(true);
+            ivSound.performClick();
+        });
+
+        // Play/pause functionality
+        ivPlay.setOnClickListener(v -> {
+            if (videoView.isPlaying()) {
+                videoView.pause();
+                ivPlay.setSelected(false);
+            } else {
+                videoView.start();
+                ivPlay.setSelected(true);
+            }
+        });
     }
 
     private void invalidateToolbar() {
@@ -377,6 +450,30 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         binding.mpToolbar.setTitle("");
         binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_close);
         binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
+
+    private void setStatusBarColor(int color, int delayMillis) {
+        Runnable runnable = () -> Optional.ofNullable(getDialog()).map(Dialog::getWindow).ifPresent(w -> w.setStatusBarColor(color));
+        MediaUtils.runOnUiThreadDelayed(runnable, delayMillis);
+    }
+
+    private void setBottomSheetDraggable(boolean draggable) {
+        getBottomSheetBehavior().ifPresent(behavior -> behavior.setDraggable(draggable));
+    }
+
+    private void setBottomSheetExpanded() {
+        getBottomSheetBehavior().ifPresent(behavior -> behavior.setState(BottomSheetBehavior.STATE_EXPANDED));
+    }
+
+    private void setBottomSheetSkipCollapsed() {
+        getBottomSheetBehavior().ifPresent(behavior -> behavior.setSkipCollapsed(true));
+    }
+
+    private Optional<BottomSheetBehavior<?>> getBottomSheetBehavior() {
+        return Optional.ofNullable(getDialog())
+                .filter(BottomSheetDialog.class::isInstance)
+                .map(BottomSheetDialog.class::cast)
+                .map(BottomSheetDialog::getBehavior);
     }
 
     private void requestPermissions() {
@@ -415,7 +512,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     private void showFromBottom(@NonNull View view) {
         view.animate().cancel();
         view.animate()
-                .setDuration(200)
+                .setDuration(ANIM_DURATION)
                 .translationY(0)
                 .setInterpolator(new AccelerateInterpolator())
                 .withStartAction(() -> view.setVisibility(View.VISIBLE))
@@ -426,7 +523,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     private void hideToBottom(@NonNull View view) {
         view.animate().cancel();
         view.animate()
-                .setDuration(200)
+                .setDuration(ANIM_DURATION)
                 .translationY(view.getHeight())
                 .setInterpolator(new DecelerateInterpolator())
                 .withStartAction(null)

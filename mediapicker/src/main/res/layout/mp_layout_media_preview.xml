@@ -6,34 +6,85 @@
 
     </data>
 
-    <RelativeLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/mp_iv_media"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:visibility="gone" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <VideoView
-            android:id="@+id/mp_vv_media"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/mp_iv_media"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:visibility="gone" />
+
+            <VideoView
+                android:id="@+id/mp_vv_media"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/mp_iv_play"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:background="#80000000"
+                android:src="@drawable/mp_selector_play"
+                android:tint="@android:color/white"
+                android:visibility="gone"
+                app:contentPadding="8dp"
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/mp_iv_sound"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignEnd="@id/mp_vv_media"
+                android:layout_alignBottom="@id/mp_vv_media"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/mp_selector_sound"
+                android:tint="@android:color/white"
+                android:visibility="gone" />
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/mp_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:navigationIcon="@drawable/mp_ic_back"
+                app:navigationIconTint="@android:color/white" />
+
+        </RelativeLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:visibility="gone" />
+            android:layout_height="64dp"
+            android:paddingHorizontal="48dp">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/mp_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:navigationIcon="@drawable/mp_ic_back"
-            app:navigationIconTint="@android:color/white" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mp_btn_select"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/mp_select"
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
 
-    </RelativeLayout>
+        </FrameLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

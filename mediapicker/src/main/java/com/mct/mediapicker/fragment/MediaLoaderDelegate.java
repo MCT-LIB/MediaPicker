@@ -26,6 +26,11 @@ public interface MediaLoaderDelegate {
 
     @NonNull
     static MediaLoaderDelegate create(Context context) {
-        return Presenter.create(context);
+        return Presenter.create(context, false);
+    }
+
+    @NonNull
+    static MediaLoaderDelegate create(Context context, boolean fullScreen) {
+        return Presenter.create(context, fullScreen);
     }
 }

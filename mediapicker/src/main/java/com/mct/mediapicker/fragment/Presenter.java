@@ -7,25 +7,31 @@ import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_VIDEO;
 import static com.mct.mediapicker.MediaPickerOption.PickType;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.util.Size;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.collection.LruCache;
 import androidx.core.util.Consumer;
 import androidx.core.util.Supplier;
 
 import com.mct.mediapicker.MediaPickerOption;
+import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.common.DispatchQueue;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
@@ -286,20 +292,21 @@ class Presenter {
 
         private static final Handler MAIN_THREAD = new Handler(Looper.getMainLooper());
 
-        private final ContentResolver contentResolver;
+        private final Context context;
+
         private Media media;
         private MediaLoaderListener mediaLoaderListener;
 
         private String key;
         private Bitmap bitmap;
         private DispatchQueue loadQueue;
-        private Runnable loadingTask;
         private Runnable cancelTask;
+        private Runnable loadingTask;
 
         private final Runnable unloadRunnable = () -> loadBitmap(null);
 
         public MediaLoader(@NonNull Context context) {
-            contentResolver = context.getContentResolver();
+            this.context = context.getApplicationContext();
         }
 
         private DispatchQueue getQueue() {
@@ -336,48 +343,29 @@ class Presenter {
                 return;
             }
 
-            if (cancelTask != null) {
-                cancelTask.run();
-                cancelTask = null;
+            // Cancel previous task
+            Optional.ofNullable(cancelTask).ifPresent(Runnable::run);
+            Optional.ofNullable(loadingTask).ifPresent(getQueue()::cancelRunnable);
+
+            // Create listener
+            Consumer<Bitmap> afterLoad = bitmap -> {
+                this.cancelTask = null;
+                this.loadingTask = null;
+                MAIN_THREAD.post(() -> afterLoad(newKey, bitmap));
+            };
+
+            // Create new task
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                CancellationSignal cancelTaskSignal = new CancellationSignal();
+                cancelTask = createCancelTask(context, media, cancelTaskSignal);
+                loadingTask = createLoadingTask(context, media, cancelTaskSignal, afterLoad);
+            } else {
+                cancelTask = createCancelTask(context, media, null);
+                loadingTask = createLoadingTask(context, media, afterLoad);
             }
-            if (loadingTask != null) {
-                getQueue().cancelRunnable(loadingTask);
-                loadingTask = null;
-            }
-            cancelTask = createCancelTask(media);
-            loadingTask = createLoadingTask(media, key);
+
+            // Start task
             getQueue().postRunnable(loadingTask);
-        }
-
-        @NonNull
-        private Runnable createLoadingTask(@NonNull Media media, String key) {
-            return () -> {
-                AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
-                try {
-                    Bitmap bitmap;
-                    if (media.isVideo()) {
-                        bitmap = MediaStore.Video.Thumbnails.getThumbnail(contentResolver, media.getId(), media.getBucketId(), 1, null);
-                    } else {
-                        bitmap = MediaStore.Images.Thumbnails.getThumbnail(contentResolver, media.getId(), media.getBucketId(), 1, null);
-                    }
-                    bitmapRef.set(bitmap);
-                } catch (Exception e) {
-                    bitmapRef.set(null);
-                } finally {
-                    MAIN_THREAD.post(() -> afterLoad(key, bitmapRef.get()));
-                }
-            };
-        }
-
-        @NonNull
-        private Runnable createCancelTask(@NonNull Media media) {
-            return () -> {
-                if (media.isVideo()) {
-                    MediaStore.Video.Thumbnails.cancelThumbnailRequest(contentResolver, media.getId(), media.getBucketId());
-                } else {
-                    MediaStore.Images.Thumbnails.cancelThumbnailRequest(contentResolver, media.getId(), media.getBucketId());
-                }
-            };
         }
 
         private void afterLoad(String key, Bitmap loadedBitmap) {
@@ -393,12 +381,6 @@ class Presenter {
             onBitmapChanged();
         }
 
-        private void onBitmapChanged() {
-            if (mediaLoaderListener != null) {
-                mediaLoaderListener.onThumbnailLoaded(bitmap);
-            }
-        }
-
         private void releaseCurrentBitmap() {
             if (key != null) {
                 releaseBitmap(key);
@@ -406,6 +388,12 @@ class Presenter {
             }
             bitmap = null;
             onBitmapChanged();
+        }
+
+        private void onBitmapChanged() {
+            if (mediaLoaderListener != null) {
+                mediaLoaderListener.onThumbnailLoaded(bitmap);
+            }
         }
 
         @Override
@@ -430,6 +418,81 @@ class Presenter {
         @Override
         public void setListener(MediaLoaderListener listener) {
             this.mediaLoaderListener = listener;
+        }
+
+        @RequiresApi(Build.VERSION_CODES.Q)
+        @NonNull
+        private static Runnable createLoadingTask(
+                @NonNull Context context,
+                @NonNull Media media,
+                @Nullable CancellationSignal cancelTaskSignal,
+                @NonNull Consumer<Bitmap> afterLoad) {
+            return () -> {
+                Bitmap bitmap;
+                AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
+                ContentResolver cr = context.getContentResolver();
+                try {
+                    int size = Math.min(MediaUtils.getScreenWidth(context) / 3, MediaUtils.dp2px(330));
+                    if (media.isVideo()) {
+                        Uri uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, media.getId());
+                        bitmap = cr.loadThumbnail(uri, new Size(size, size), cancelTaskSignal);
+                    } else {
+                        Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, media.getId());
+                        bitmap = cr.loadThumbnail(uri, new Size(size, size), cancelTaskSignal);
+                    }
+                    bitmapRef.set(bitmap);
+                } catch (Exception e) {
+                    bitmapRef.set(null);
+                } finally {
+                    afterLoad.accept(bitmapRef.get());
+                }
+            };
+        }
+
+        @SuppressWarnings("deprecation")
+        @NonNull
+        private static Runnable createLoadingTask(
+                @NonNull Context context,
+                @NonNull Media media,
+                @NonNull Consumer<Bitmap> afterLoad) {
+            return () -> {
+                Bitmap bitmap;
+                AtomicReference<Bitmap> bitmapRef = new AtomicReference<>();
+                ContentResolver cr = context.getContentResolver();
+                try {
+                    if (media.isVideo()) {
+                        int kind = MediaStore.Video.Thumbnails.MINI_KIND;
+                        bitmap = MediaStore.Video.Thumbnails.getThumbnail(cr, media.getId(), media.getBucketId(), kind, null);
+                    } else {
+                        int kind = MediaStore.Images.Thumbnails.MINI_KIND;
+                        bitmap = MediaStore.Images.Thumbnails.getThumbnail(cr, media.getId(), media.getBucketId(), kind, null);
+                    }
+                    bitmapRef.set(bitmap);
+                } catch (Exception e) {
+                    bitmapRef.set(null);
+                } finally {
+                    afterLoad.accept(bitmapRef.get());
+                }
+            };
+        }
+
+        @NonNull
+        private static Runnable createCancelTask(
+                @NonNull Context context,
+                @NonNull Media media,
+                @Nullable CancellationSignal cancelTaskSignal) {
+            return () -> {
+                if (cancelTaskSignal != null) {
+                    cancelTaskSignal.cancel();
+                } else {
+                    ContentResolver cr = context.getContentResolver();
+                    if (media.isVideo()) {
+                        MediaStore.Video.Thumbnails.cancelThumbnailRequest(cr, media.getId(), media.getBucketId());
+                    } else {
+                        MediaStore.Images.Thumbnails.cancelThumbnailRequest(cr, media.getId(), media.getBucketId());
+                    }
+                }
+            };
         }
 
         /* --- Queue and bitmap cache methods ---*/

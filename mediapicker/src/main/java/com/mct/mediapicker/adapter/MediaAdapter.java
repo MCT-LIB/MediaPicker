@@ -2,18 +2,17 @@ package com.mct.mediapicker.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Function;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mct.mediapicker.common.dragselect.DragSelectTouchListener;
 import com.mct.mediapicker.databinding.MpLayoutItemMediaBinding;
 import com.mct.mediapicker.fragment.MediaLoaderDelegate;
 import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
-import com.mct.touchutils.TouchUtils;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -29,14 +28,22 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     private final boolean isMultipleSelect;
     private final List<Media> items;
-    private final OnItemClickListener listener;
+    private final OnItemClickListener onItemClickListener;
+    private final OnItemDragListener onItemDragListener;
     private final Function<Media, Boolean> evaluateMediaPick;
 
-    public MediaAdapter(boolean isMultipleSelect, @NonNull List<Album> albums, OnItemClickListener listener, Function<Media, Boolean> evaluateMediaPick) {
+    private DragSelectTouchListener dragSelectTouchListener;
+
+    public MediaAdapter(boolean isMultipleSelect,
+                        List<Album> albums,
+                        OnItemClickListener onItemClickListener,
+                        OnItemDragListener onItemDragListener,
+                        Function<Media, Boolean> evaluateMediaPick) {
         this.boundViewHolders = new HashSet<>();
         this.isMultipleSelect = isMultipleSelect;
         this.items = processAlbums(albums);
-        this.listener = listener;
+        this.onItemClickListener = onItemClickListener;
+        this.onItemDragListener = onItemDragListener;
         this.evaluateMediaPick = evaluateMediaPick;
     }
 
@@ -48,6 +55,14 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparingLong(m -> -m.getDateModified()))
                 .collect(Collectors.toList());
+    }
+
+    public OnItemDragListener getOnItemDragListener() {
+        return onItemDragListener;
+    }
+
+    public void setDragSelectTouchListener(DragSelectTouchListener listener) {
+        dragSelectTouchListener = listener;
     }
 
     public Media getMedia(int position) {
@@ -82,16 +97,19 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         holder.setDuration(media.isVideo(), media.getDuration());
         holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(media, holder.getAdapterPosition());
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(media, holder.getAdapterPosition());
             }
             if (isMultipleSelect) {
                 holder.setSelected(true, evaluateMediaPick.apply(media));
             }
         });
         holder.itemView.setOnLongClickListener(v -> {
-            if (listener != null) {
-                listener.onItemLongClick(media, holder.getAdapterPosition());
+//            if (onItemClickListener != null) {
+//                onItemClickListener.onItemLongClick(media, holder.getAdapterPosition());
+//            }
+            if (dragSelectTouchListener != null) {
+                dragSelectTouchListener.startDragSelection(holder.getAdapterPosition());
             }
             return true;
         });
@@ -130,11 +148,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         public MediaViewHolder(@NonNull MpLayoutItemMediaBinding binding) {
             super(binding);
             // @formatter:off
-            TouchUtils.setTouchListener(itemView, new TouchUtils.TouchScaleListener(){
-                protected float getPressScale() {return 0.075f;}
-                protected float getReleaseScale() {return 0.025f;}
-                protected int getMinTapTime() {return ViewConfiguration.getLongPressTimeout();}
-            });
+//            TouchUtils.setTouchListener(itemView, new TouchUtils.TouchScaleListener(){
+//                protected float getPressScale() {return 0.075f;}
+//                protected float getReleaseScale() {return 0.025f;}
+//                protected int getMinTapTime() {return ViewConfiguration.getLongPressTimeout();}
+//            });
             // @formatter:on
             delegate = MediaLoaderDelegate.create(itemView.getContext());
             delegate.setListener(binding.mpIvThumb::setImageBitmap);
@@ -165,5 +183,13 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         void onItemClick(Media media, int position);
 
         void onItemLongClick(Media media, int position);
+    }
+
+    public interface OnItemDragListener {
+        void onStartDrag(int position);
+
+        void onFinishDrag(int position);
+
+        void onDragSelectionChanged(List<Media> media, boolean isSelected);
     }
 }

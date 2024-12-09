@@ -23,7 +23,8 @@ public class MediaTabFragment extends BaseTabFragment {
         if (presenter == null) {
             return;
         }
-        SetupDataHelper.setup(rcv, presenter, albums, getPhotoPickerFragment());
+        PickerFragment f = getPhotoPickerFragment();
+        SetupDataHelper.setup(rcv, presenter, albums, f, f);
     }
 
     public void invalidateSelectedMedia() {

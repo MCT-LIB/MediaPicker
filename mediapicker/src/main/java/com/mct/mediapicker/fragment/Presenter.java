@@ -130,8 +130,22 @@ class Presenter {
         selectedMedia.add(media);
     }
 
+    public void addSelectedMedia(List<Media> media) {
+        if (media == null) {
+            return;
+        }
+        media.forEach(this::addSelectedMedia);
+    }
+
     public void removeSelectedMedia(Media media) {
         selectedMedia.remove(media);
+    }
+
+    public void removeSelectedMedia(List<Media> media) {
+        if (media == null) {
+            return;
+        }
+        media.forEach(this::removeSelectedMedia);
     }
 
     public List<Media> getSelectedMedia() {

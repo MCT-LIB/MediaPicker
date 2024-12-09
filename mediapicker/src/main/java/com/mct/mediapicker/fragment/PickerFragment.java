@@ -45,11 +45,12 @@ import com.mct.mediapicker.model.Media;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener {
+public class PickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener, MediaAdapter.OnItemDragListener {
 
     private static final int ANIM_DURATION = 200;
 
@@ -266,6 +267,27 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         showMediaPreview(media);
     }
 
+    @Override
+    public void onStartDrag(int position) {
+
+    }
+
+    @Override
+    public void onFinishDrag(int position) {
+
+    }
+
+    @Override
+    public void onDragSelectionChanged(List<Media> media, boolean isSelected) {
+        if (isSelected) {
+            presenter.addSelectedMedia(media);
+        } else {
+            presenter.removeSelectedMedia(media);
+        }
+        invalidateToolbar();
+        invalidateSelectedMedia();
+    }
+
     private void invalidateSelectedMedia() {
         int selectedCount = presenter.getSelectedMediaCount();
         int minSelection = presenter.getOption().getMinSelection();
@@ -314,7 +336,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         invalidateToolbar();
 
         RecyclerView rcv = binding.mpAlbumDetail.mpRecyclerView;
-        SetupDataHelper.setup(rcv, presenter, Collections.singletonList(album), this);
+        SetupDataHelper.setup(rcv, presenter, Collections.singletonList(album), this, this);
     }
 
     void dismissDetailAlbum() {

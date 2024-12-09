@@ -22,11 +22,15 @@ public class AlbumTabFragment extends BaseTabFragment {
 
     @Override
     protected void displayData(@NonNull RecyclerView rcv, List<Album> albums) {
+        if (presenter == null) {
+            return;
+        }
         for (int i = 0; i < rcv.getItemDecorationCount(); i++) {
             if (rcv.getItemDecorationAt(i) instanceof SpacingGridItemDecoration) {
                 rcv.removeItemDecorationAt(i);
             }
         }
+        rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? MediaUtils.dp2px(72) : 0);
         rcv.addItemDecoration(new SpacingGridItemDecoration(2, MediaUtils.dp2px(16), true, 0));
         rcv.setLayoutManager(new GridLayoutManager(getContext(), 2));
         rcv.setAdapter(new AlbumAdapter(albums, (album, position) -> {

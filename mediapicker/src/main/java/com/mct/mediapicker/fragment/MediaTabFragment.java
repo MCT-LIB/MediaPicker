@@ -20,8 +20,10 @@ public class MediaTabFragment extends BaseTabFragment {
 
     @Override
     protected void displayData(@NonNull RecyclerView rcv, List<Album> albums) {
-        PickerFragment picker = getPhotoPickerFragment();
-        SetupDataHelper.setup(rcv, picker.getPresenter(), albums, picker);
+        if (presenter == null) {
+            return;
+        }
+        SetupDataHelper.setup(rcv, presenter, albums, getPhotoPickerFragment());
     }
 
     public void invalidateSelectedMedia() {

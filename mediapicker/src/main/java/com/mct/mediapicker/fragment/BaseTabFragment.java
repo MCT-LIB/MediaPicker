@@ -24,7 +24,7 @@ import java.util.List;
 abstract class BaseTabFragment extends Fragment {
 
     protected MpLayoutDataBinding binding;
-    private Presenter presenter;
+    protected Presenter presenter;
 
     @Override
     public void onAttach(@NonNull Context context) {

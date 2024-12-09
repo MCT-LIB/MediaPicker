@@ -246,9 +246,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
             if (presenter.isSelectedMedia(media)) {
                 presenter.removeSelectedMedia(media);
             } else {
-                if (presenter.getSelectedMediaCount() < presenter.getOption().getMaxSelection()) {
-                    presenter.addSelectedMedia(media);
-                }
+                presenter.addSelectedMedia(media);
             }
             invalidateToolbar();
             invalidateSelectedMedia();
@@ -260,7 +258,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     }
 
     @Override
-    public void onItemLongClick(Media media, int position) {
+    public void onScaleClick(Media media, int position) {
         if (media == null) {
             return;
         }
@@ -269,23 +267,25 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
 
     @Override
     public void onStartDrag(int position) {
-
+        setBottomSheetDraggable(false);
     }
 
     @Override
     public void onFinishDrag(int position) {
-
+        setBottomSheetDraggable(true);
     }
 
     @Override
-    public void onDragSelectionChanged(List<Media> media, boolean isSelected) {
+    public boolean onDragSelectionChanged(List<Media> media, boolean isSelected) {
+        boolean handled;
         if (isSelected) {
-            presenter.addSelectedMedia(media);
+            handled = presenter.addSelectedMedia(media);
         } else {
-            presenter.removeSelectedMedia(media);
+            handled = presenter.removeSelectedMedia(media);
         }
         invalidateToolbar();
         invalidateSelectedMedia();
+        return handled;
     }
 
     private void invalidateSelectedMedia() {

@@ -9,7 +9,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.OverScroller;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener {
@@ -26,7 +25,7 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
     private OnDragSelectListener mSelectListener;
     private RecyclerView mRecyclerView;
     private OverScroller mScroller;
-    private Runnable mScrollRunnable = new Runnable() {
+    private final Runnable mScrollRunnable = new Runnable() {
         @Override
         public void run() {
             if (mScroller != null && mScroller.computeScrollOffset()) {
@@ -171,10 +170,10 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-        if (!mIsActive || rv.getAdapter().getItemCount() == 0)
+        if (!mIsActive || rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
             return false;
 
-        int action = MotionEventCompat.getActionMasked(e);
+        int action = e.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_DOWN:
@@ -327,13 +326,15 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
         } else {
             if (newStart > mLastStart)
                 mSelectListener.onSelectChange(mLastStart, newStart - 1, false);
-            else if (newStart < mLastStart)
+
+            if (newEnd < mLastEnd)
+                mSelectListener.onSelectChange(newEnd + 1, mLastEnd, false);
+
+            if (newStart < mLastStart)
                 mSelectListener.onSelectChange(newStart, mLastStart - 1, true);
 
             if (newEnd > mLastEnd)
                 mSelectListener.onSelectChange(mLastEnd + 1, newEnd, true);
-            else if (newEnd < mLastEnd)
-                mSelectListener.onSelectChange(newEnd + 1, mLastEnd, false);
         }
 
         mLastStart = newStart;

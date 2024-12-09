@@ -5,19 +5,20 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
 
-public class MPSquareImageView extends AppCompatImageView {
+import com.google.android.material.imageview.ShapeableImageView;
 
-    public MPSquareImageView(@NonNull Context context) {
+public class MPSquareShapeableImageView extends ShapeableImageView {
+
+    public MPSquareShapeableImageView(@NonNull Context context) {
         super(context);
     }
 
-    public MPSquareImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public MPSquareShapeableImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MPSquareImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MPSquareShapeableImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

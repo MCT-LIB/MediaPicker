@@ -123,29 +123,40 @@ class Presenter {
         return selectedMedia.contains(media);
     }
 
-    public void addSelectedMedia(Media media) {
+    public boolean addSelectedMedia(Media media) {
         if (media == null || selectedMedia.contains(media)) {
-            return;
+            return false;
         }
-        selectedMedia.add(media);
+        if (getSelectedMediaCount() >= getOption().getMaxSelection()) {
+            return false;
+        }
+        return selectedMedia.add(media);
     }
 
-    public void addSelectedMedia(List<Media> media) {
+    public boolean addSelectedMedia(List<Media> media) {
         if (media == null) {
-            return;
+            return false;
         }
-        media.forEach(this::addSelectedMedia);
+        boolean result = false;
+        for (Media m : media) {
+            result |= addSelectedMedia(m);
+        }
+        return result;
     }
 
-    public void removeSelectedMedia(Media media) {
-        selectedMedia.remove(media);
+    public boolean removeSelectedMedia(Media media) {
+        return selectedMedia.remove(media);
     }
 
-    public void removeSelectedMedia(List<Media> media) {
+    public boolean removeSelectedMedia(List<Media> media) {
         if (media == null) {
-            return;
+            return false;
         }
-        media.forEach(this::removeSelectedMedia);
+        boolean result = false;
+        for (Media m : media) {
+            result |= removeSelectedMedia(m);
+        }
+        return result;
     }
 
     public List<Media> getSelectedMedia() {

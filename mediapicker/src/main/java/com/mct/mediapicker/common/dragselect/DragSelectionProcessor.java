@@ -53,7 +53,16 @@ public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvance
     }
 
     /**
-     * @param startFinishedListener a listener that get's notified when the drag selection is started or finished
+     * @param selectionHandler the handler that takes care to handle the selection events
+     * @return this
+     */
+    public DragSelectionProcessor withSelectionHandler(ISelectionHandler selectionHandler) {
+        mSelectionHandler = selectionHandler;
+        return this;
+    }
+
+    /**
+     * @param startFinishedListener a listener that get notified when the drag selection is started or finished
      * @return this
      */
     public DragSelectionProcessor withStartFinishedListener(ISelectionStartFinishedListener startFinishedListener) {

@@ -19,13 +19,9 @@ import com.mct.mediapicker.common.dragselect.DragSelectionProcessor;
 import com.mct.mediapicker.common.fastscroll.FastScroller;
 import com.mct.mediapicker.common.fastscroll.FastScrollerBuilder;
 import com.mct.mediapicker.model.Album;
-import com.mct.mediapicker.model.Media;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 class SetupDataHelper {
 
@@ -76,48 +72,7 @@ class SetupDataHelper {
         }
 
         DragSelectTouchListener dragSelectTouchListener = new DragSelectTouchListener()
-                .withSelectListener(new DragSelectionProcessor(new DragSelectionProcessor.ISelectionHandler() {
-                    @Override
-                    public Set<Integer> getSelection() {
-                        return Collections.emptySet();
-                    }
-
-                    @Override
-                    public boolean isSelected(int index) {
-                        return false;
-                    }
-
-                    @Override
-                    public void updateSelection(int start, int end, boolean isSelected, boolean calledFromOnStart) {
-                        MediaAdapter.OnItemDragListener listener = mediaAdapter.getOnItemDragListener();
-                        if (listener != null) {
-                            List<Media> media = new ArrayList<>();
-                            for (int i = start; i <= end; i++) {
-                                media.add(mediaAdapter.getMedia(i));
-                            }
-                            listener.onDragSelectionChanged(media, isSelected);
-                            mediaAdapter.invalidateSelect();
-                        }
-                    }
-                }).withStartFinishedListener(new DragSelectionProcessor.ISelectionStartFinishedListener() {
-                    @Override
-                    public void onSelectionStarted(int start, boolean originalSelectionState) {
-                        recyclerView.getParent().requestDisallowInterceptTouchEvent(true);
-                        MediaAdapter.OnItemDragListener listener = mediaAdapter.getOnItemDragListener();
-                        if (listener != null) {
-                            listener.onStartDrag(start);
-                        }
-                    }
-
-                    @Override
-                    public void onSelectionFinished(int end) {
-                        recyclerView.getParent().requestDisallowInterceptTouchEvent(false);
-                        MediaAdapter.OnItemDragListener listener = mediaAdapter.getOnItemDragListener();
-                        if (listener != null) {
-                            listener.onFinishDrag(end);
-                        }
-                    }
-                }))
+                .withSelectListener(new DragSelectionProcessor(mediaAdapter).withStartFinishedListener(mediaAdapter))
                 // default: 16; - defines the speed of the auto scrolling
                 .withMaxScrollDistance(24)
                 // default: 0; - set an offset for the touch region on top of the RecyclerView

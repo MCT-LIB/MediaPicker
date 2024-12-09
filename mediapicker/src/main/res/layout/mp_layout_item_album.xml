@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.mct.mediapicker.common.MPSquareImageView
+        <com.mct.mediapicker.common.MPSquareShapeableImageView
             android:id="@+id/mp_iv_thumb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:layout_marginStart="4dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/mp_bg_shape_corn_4"
             android:backgroundTint="#80000000"
             android:drawableStart="@drawable/mp_ic_play"
@@ -41,12 +41,19 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/mp_iv_selected"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:src="@drawable/mp_selector_radio_button" />
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:src="@drawable/mp_selector_check" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/mp_iv_scale"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="bottom|end"
+            android:background="?selectableItemBackground"
+            android:padding="4dp"
+            android:src="@drawable/mp_ic_scale" />
 
     </FrameLayout>
 </layout>

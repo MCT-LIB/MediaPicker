@@ -15,8 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -290,8 +288,6 @@ class Presenter {
 
     private static class MediaLoader implements MediaLoaderDelegate {
 
-        private static final Handler MAIN_THREAD = new Handler(Looper.getMainLooper());
-
         private final Context context;
 
         private Media media;
@@ -351,7 +347,7 @@ class Presenter {
             Consumer<Bitmap> afterLoad = bitmap -> {
                 this.cancelTask = null;
                 this.loadingTask = null;
-                MAIN_THREAD.post(() -> afterLoad(newKey, bitmap));
+                MediaUtils.runOnUiThread(() -> afterLoad(newKey, bitmap));
             };
 
             // Create new task
@@ -398,7 +394,7 @@ class Presenter {
 
         @Override
         public void onAttach(View view) {
-            MAIN_THREAD.removeCallbacks(unloadRunnable);
+            MediaUtils.removeOnUiThread(unloadRunnable);
             if (media != null) {
                 loadBitmap(media);
             }
@@ -406,7 +402,7 @@ class Presenter {
 
         @Override
         public void onDetach(View view) {
-            MAIN_THREAD.postDelayed(unloadRunnable, 250);
+            MediaUtils.runOnUiThreadDelayed(unloadRunnable, 250);
         }
 
         @Override

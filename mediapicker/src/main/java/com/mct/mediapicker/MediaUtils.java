@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
@@ -73,6 +75,20 @@ public class MediaUtils {
 
     private static boolean isGranted(Context context, String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+
+    public static void runOnUiThread(Runnable runnable) {
+        MAIN_HANDLER.post(runnable);
+    }
+
+    public static void runOnUiThreadDelayed(Runnable runnable, long delayMillis) {
+        MAIN_HANDLER.postDelayed(runnable, delayMillis);
+    }
+
+    public static void removeOnUiThread(Runnable runnable) {
+        MAIN_HANDLER.removeCallbacks(runnable);
     }
 
     public static int getScreenWidth(@NonNull Context context) {

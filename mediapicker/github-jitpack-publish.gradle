@@ -1,0 +1,83 @@
+/**
+ * <b>How to use:</b>
+
+ * <pre>
+ * - Step 1: apply file to build.gradle
+ * apply from: './github-jitpack-publish.gradle'
+ *
+ * - Step 2: define groupId, artifactId and version
+ * GithubJitPackPublish {
+ *    it.userName = "{github-username}"
+ *    it.repositoryName = "{repository-name}"
+ *    it.version = "1.0.0" (optional)
+ *    it.release = true (optional)
+ * }
+ * </pre>
+ * @author MCT-LIB
+ */
+
+class Config {
+    public String userName
+    public String repositoryName
+    public String version = "1.0.0"
+    public boolean release = true
+}
+
+ext.GithubJitPackPublish = { Closure<Config> configClosure ->
+    if (configClosure == null) {
+        return
+    }
+    // Prepare config
+    Config config = new Config()
+    configClosure.call(config)
+
+    // Validate config
+    Objects.requireNonNull(config, "Config cannot be null!")
+    Objects.requireNonNull(config.userName, "Config invalid! Set your github username.")
+    Objects.requireNonNull(config.repositoryName, "Config invalid! Set your repository name.")
+    Objects.requireNonNull(config.version, "Config invalid! Set your version.")
+
+    // Define configuration
+    String _groupId = "com.github." + config.userName
+    String _artifactId = config.repositoryName
+    String _version = config.version
+    boolean _release = config.release
+
+    // Add plugin maven-publish
+    if (!getPlugins().hasPlugin('maven-publish')) {
+        getPlugins().apply('maven-publish')
+    }
+
+    // Configure maven-publish
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // define groupId, artifactId and version
+                groupId = _groupId
+                artifactId = _artifactId
+                version = _version
+
+                // define artifact file
+                afterEvaluate {
+                    artifact(tasks.getByName(_release ? "bundleReleaseAar" : "bundleDebugAar"))
+                }
+
+                // Define this explicitly if using implementation or api configurations
+                pom.withXml {
+                    def dependenciesNode = asNode()['dependencies'][0] ?: asNode().appendNode('dependencies')
+
+                    // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                    configurations.implementation.allDependencies.each {
+                        // Ensure dependencies such as fileTree are not included.
+                        if (it.name != 'unspecified') {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

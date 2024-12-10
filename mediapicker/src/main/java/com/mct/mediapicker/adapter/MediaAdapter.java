@@ -10,6 +10,7 @@ import androidx.core.util.Function;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mct.mediapicker.MediaUtils;
+import com.mct.mediapicker.R;
 import com.mct.mediapicker.common.dragselect.DragSelectTouchListener;
 import com.mct.mediapicker.common.dragselect.DragSelectionProcessor;
 import com.mct.mediapicker.databinding.MpLayoutItemMediaBinding;
@@ -108,9 +109,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         if (media == null) {
             return;
         }
-        holder.loadImage(media);
-        holder.setDuration(media.isVideo(), media.getDuration());
-        holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
+        holder.load(media, isMultipleSelect, evaluateMediaPick.apply(media));
         holder.binding.mpIvScale.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onScaleClick(media, holder.getAdapterPosition());
@@ -232,7 +231,14 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         public MediaViewHolder(@NonNull MpLayoutItemMediaBinding binding) {
             super(binding);
             delegate = MediaLoaderDelegate.create(itemView.getContext());
-            delegate.setListener(binding.mpIvThumb::setImageBitmap);
+            delegate.setListener(bitmap -> {
+                binding.mpIvThumb.setImageBitmap(bitmap);
+                if (bitmap != null) {
+                    runAfterLoadTask(binding.mpTvDuration);
+                    runAfterLoadTask(binding.mpIvSelected);
+                    runAfterLoadTask(binding.mpIvScale);
+                }
+            });
             // @formatter:off
             TouchUtils.setTouchListener(itemView, new TouchUtils.TouchScaleListener(){
                 protected float getPressScale() {return 0.05f;}
@@ -241,18 +247,32 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
             // @formatter:on
         }
 
-        void loadImage(Media media) {
+        void load(Media media, boolean selectVisible, boolean isSelected) {
+            // prepare task
+            setAfterLoadTask(binding.mpTvDuration, () -> setDuration(media.isVideo(), media.getDuration()));
+            setAfterLoadTask(binding.mpIvSelected, () -> setSelected(selectVisible, isSelected));
+            setAfterLoadTask(binding.mpIvScale, this::setScaleVisible);
+
+            // hide unnecessary views
+            binding.mpTvDuration.setVisibility(View.GONE);
+            binding.mpIvSelected.setVisibility(View.GONE);
+            binding.mpIvScale.setVisibility(View.GONE);
+
+            // load thumbnail
             delegate.loadThumbnail(media);
         }
 
         void setDuration(boolean video, Integer duration) {
+            // clear task
+            setAfterLoadTask(binding.mpTvDuration, null);
+
             if (video && duration != null) {
                 if (duration == 0) {
                     binding.mpTvDuration.setText("");
                     binding.mpTvDuration.setCompoundDrawablePadding(0);
                 } else {
-                    duration /= 1000;
-                    String txt = String.format(Locale.getDefault(), "%d:%02d", duration / 60, duration % 60);
+                    int d = duration / 1000;
+                    String txt = String.format(Locale.getDefault(), "%d:%02d", d / 60, d % 60);
                     binding.mpTvDuration.setText(txt);
                     binding.mpTvDuration.setCompoundDrawablePadding(MediaUtils.dp2px(2));
                 }
@@ -263,9 +283,31 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
         }
 
         void setSelected(boolean visible, boolean selected) {
+            // clear task
+            setAfterLoadTask(binding.mpIvSelected, null);
+
             binding.mpIvSelected.setVisibility(visible ? View.VISIBLE : View.GONE);
             binding.mpIvSelected.setSelected(selected);
         }
+
+        void setScaleVisible() {
+            // clear task
+            setAfterLoadTask(binding.mpIvScale, null);
+
+            binding.mpIvScale.setVisibility(View.VISIBLE);
+        }
+
+        private void runAfterLoadTask(@NonNull View view) {
+            Object object = view.getTag(R.id.mp_tag_task_after_load);
+            if (object instanceof Runnable) {
+                ((Runnable) object).run();
+            }
+        }
+
+        private void setAfterLoadTask(@NonNull View view, Runnable runnable) {
+            view.setTag(R.id.mp_tag_task_after_load, runnable);
+        }
+
     }
 
     public interface OnItemClickListener {

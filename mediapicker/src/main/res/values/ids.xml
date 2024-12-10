@@ -2,4 +2,5 @@
 <resources>
     <item name="mp_tag_drag_selection" type="id"/>
     <item name="mp_tag_fast_scroller" type="id"/>
+    <item name="mp_tag_task_after_load" type="id"/>
 </resources>

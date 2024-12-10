@@ -51,8 +51,10 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="bottom|end"
-            android:background="?selectableItemBackground"
-            android:padding="4dp"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="4dp"
             android:src="@drawable/mp_ic_scale" />
 
     </FrameLayout>

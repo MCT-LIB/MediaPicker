@@ -38,6 +38,7 @@ public class MediaPickerOption {
     private final int maxSelection;
     private final PickListener<Uri> listener1;
     private final PickListener<List<Uri>> listener2;
+    private final M3ThemeStrategy themeStrategy;
 
     MediaPickerOption(@NonNull Builder builder) {
         id = UUID.randomUUID().toString();
@@ -47,6 +48,7 @@ public class MediaPickerOption {
         maxSelection = builder.maxSelection;
         listener1 = builder.listener1;
         listener2 = builder.listener2;
+        themeStrategy = builder.themeStrategy;
     }
 
     @NonNull
@@ -82,6 +84,10 @@ public class MediaPickerOption {
         return listener2;
     }
 
+    public M3ThemeStrategy getThemeStrategy() {
+        return themeStrategy;
+    }
+
     @SuppressWarnings("UnusedReturnValue")
     public static class Builder {
 
@@ -91,9 +97,11 @@ public class MediaPickerOption {
         private int maxSelection;
         private PickListener<Uri> listener1;
         private PickListener<List<Uri>> listener2;
+        private M3ThemeStrategy themeStrategy;
 
         public Builder() {
             single(null).image();
+            themeStrategy = M3ThemeStrategy.DYNAMIC_OR_INHERIT;
         }
 
         /**
@@ -150,6 +158,16 @@ public class MediaPickerOption {
                 @IntRange(from = 1) int minSelection,
                 @IntRange(from = 1) int maxSelection) {
             set(PICK_MODE_MULTI, minSelection, maxSelection, null, listener);
+            return this;
+        }
+
+        /**
+         * Theme strategy for this picker
+         *
+         * @see M3ThemeStrategy
+         */
+        public Builder themeStrategy(@NonNull M3ThemeStrategy themeStrategy) {
+            this.themeStrategy = themeStrategy;
             return this;
         }
 

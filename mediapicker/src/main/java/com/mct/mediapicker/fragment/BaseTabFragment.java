@@ -9,12 +9,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mct.mediapicker.MediaUtils;
-import com.mct.mediapicker.R;
 import com.mct.mediapicker.databinding.MpLayoutDataBinding;
 import com.mct.mediapicker.model.Album;
 
@@ -62,10 +59,7 @@ abstract class BaseTabFragment extends Fragment {
     @NonNull
     @Override
     public LayoutInflater onGetLayoutInflater(@Nullable Bundle savedInstanceState) {
-        Context context = requireContext();
-        if (!MediaUtils.isMaterial3Theme(context)) {
-            context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
-        }
+        Context context = presenter.getOption().getThemeStrategy().wrapContext(requireContext());
         return super.onGetLayoutInflater(savedInstanceState).cloneInContext(context);
     }
 

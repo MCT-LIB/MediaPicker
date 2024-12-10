@@ -8,6 +8,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.mct.mediapicker.M3ThemeStrategy;
 import com.mct.mediapicker.MediaPicker;
 import com.mct.mediapicker.MediaPickerOption;
 
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
                     .image()
                     //.video()
                     //.all()
+
+                    /*theme*/
+                    .themeStrategy(M3ThemeStrategy.DYNAMIC)
 
                     /*build*/
                     .build()

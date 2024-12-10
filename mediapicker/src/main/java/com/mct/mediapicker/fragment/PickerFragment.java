@@ -24,7 +24,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -122,10 +121,7 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Context context = requireContext();
-        if (!MediaUtils.isMaterial3Theme(context)) {
-            context = new ContextThemeWrapper(context, R.style.PhotoPickerTheme);
-        }
+        Context context = presenter.getOption().getThemeStrategy().wrapContext(requireContext());
         return new BottomSheetDialog(context, getTheme());
     }
 

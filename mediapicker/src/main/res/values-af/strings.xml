@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Leë media</string>
+	<string name="mp_empty_album">Leë album</string>
+	<string name="mp_selected">Gekies %s</string>
+	<string name="mp_select">Kies</string>
+	<string name="mp_unselect">Ontkies</string>
+	<string name="mp_continue">Gaan voort</string>
+</resources>

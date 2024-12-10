@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">ສື່ມວນຊົນ</string>
+	<string name="mp_album">ອະລະບໍ້າ</string>
+	<string name="mp_empty_media">ສື່ຫວ່າງເປົ່າ</string>
+	<string name="mp_empty_album">ອະລະບໍ້າຫວ່າງເປົ່າ</string>
+	<string name="mp_selected">ເລືອກ %s</string>
+	<string name="mp_select">ເລືອກ</string>
+	<string name="mp_unselect">ຍົກເລີກການເລືອກ</string>
+	<string name="mp_continue">ສືບຕໍ່</string>
+</resources>

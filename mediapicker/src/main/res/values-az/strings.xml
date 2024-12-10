@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Albom</string>
+	<string name="mp_empty_media">Boş media</string>
+	<string name="mp_empty_album">Boş albom</string>
+	<string name="mp_selected">Seçilmiş %s</string>
+	<string name="mp_select">Seç</string>
+	<string name="mp_unselect">Seçimi ləğv et</string>
+	<string name="mp_continue">Davam et</string>
+</resources>

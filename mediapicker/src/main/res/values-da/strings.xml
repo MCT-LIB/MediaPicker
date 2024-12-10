@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Medier</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Tomme medier</string>
+	<string name="mp_empty_album">Tomt album</string>
+	<string name="mp_selected">Valgt %s</string>
+	<string name="mp_select">Vælge</string>
+	<string name="mp_unselect">Fravælg</string>
+	<string name="mp_continue">Fortsætte</string>
+</resources>

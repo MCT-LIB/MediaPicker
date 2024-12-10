@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Մեդիա</string>
+	<string name="mp_album">Ալբոմ</string>
+	<string name="mp_empty_media">Դատարկ լրատվամիջոցներ</string>
+	<string name="mp_empty_album">Դատարկ ալբոմ</string>
+	<string name="mp_selected">Ընտրված է %s</string>
+	<string name="mp_select">Ընտրել</string>
+	<string name="mp_unselect">Ապաընտրել</string>
+	<string name="mp_continue">Շարունակեք</string>
+</resources>

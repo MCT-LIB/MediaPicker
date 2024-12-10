@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">ሚዲያ</string>
+	<string name="mp_album">አልበም</string>
+	<string name="mp_empty_media">ባዶ ሚዲያ</string>
+	<string name="mp_empty_album">ባዶ አልበም</string>
+	<string name="mp_selected">ተመርጧል %s</string>
+	<string name="mp_select">ይምረጡ</string>
+	<string name="mp_unselect">አንሳ</string>
+	<string name="mp_continue">ቀጥል</string>
+</resources>

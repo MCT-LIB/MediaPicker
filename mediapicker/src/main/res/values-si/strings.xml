@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">මාධ්ය</string>
+	<string name="mp_album">ඇල්බමය</string>
+	<string name="mp_empty_media">හිස් මාධ්‍ය</string>
+	<string name="mp_empty_album">හිස් ඇල්බමය</string>
+	<string name="mp_selected">%s තෝරන ලදී</string>
+	<string name="mp_select">තෝරන්න</string>
+	<string name="mp_unselect">තේරීම ඉවත් කරන්න</string>
+	<string name="mp_continue">දිගටම කරගෙන යන්න</string>
+</resources>

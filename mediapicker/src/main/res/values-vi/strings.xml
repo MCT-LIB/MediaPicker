@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Media trống</string>
+	<string name="mp_empty_album">Album trống</string>
+	<string name="mp_selected">Đã chọn %s</string>
+	<string name="mp_select">Chọn</string>
+	<string name="mp_unselect">Bỏ chọn</string>
+	<string name="mp_continue">Tiếp tục</string>
+</resources>

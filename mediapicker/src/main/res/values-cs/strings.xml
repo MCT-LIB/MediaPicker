@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Média</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Prázdná média</string>
+	<string name="mp_empty_album">Prázdné album</string>
+	<string name="mp_selected">Vybráno %s</string>
+	<string name="mp_select">Vybrat</string>
+	<string name="mp_unselect">Zrušte výběr</string>
+	<string name="mp_continue">Pokračovat</string>
+</resources>

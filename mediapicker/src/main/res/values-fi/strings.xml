@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Albumi</string>
+	<string name="mp_empty_media">Tyhjä media</string>
+	<string name="mp_empty_album">Tyhjä albumi</string>
+	<string name="mp_selected">Valittu %s</string>
+	<string name="mp_select">Valitse</string>
+	<string name="mp_unselect">Poista valinta</string>
+	<string name="mp_continue">Jatkaa</string>
+</resources>

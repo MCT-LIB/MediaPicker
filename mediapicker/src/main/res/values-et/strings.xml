@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Meedia</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Tühi kandja</string>
+	<string name="mp_empty_album">Tühi album</string>
+	<string name="mp_selected">Valitud %s</string>
+	<string name="mp_select">Valige</string>
+	<string name="mp_unselect">Tühista valik</string>
+	<string name="mp_continue">Jätka</string>
+</resources>

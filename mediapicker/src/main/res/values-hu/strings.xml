@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Média</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Üres adathordozó</string>
+	<string name="mp_empty_album">Üres album</string>
+	<string name="mp_selected">Kijelölve %s</string>
+	<string name="mp_select">Válassza ki</string>
+	<string name="mp_unselect">Törölje a kijelölést</string>
+	<string name="mp_continue">Folytatás</string>
+</resources>

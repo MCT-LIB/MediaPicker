@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Plašsaziņas līdzekļi</string>
+	<string name="mp_album">Albums</string>
+	<string name="mp_empty_media">Tukšs datu nesējs</string>
+	<string name="mp_empty_album">Tukšs albums</string>
+	<string name="mp_selected">Atlasīti %s</string>
+	<string name="mp_select">Izvēlieties</string>
+	<string name="mp_unselect">Noņemiet atlasi</string>
+	<string name="mp_continue">Turpināt</string>
+</resources>

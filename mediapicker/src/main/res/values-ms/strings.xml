@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Media kosong</string>
+	<string name="mp_empty_album">Album kosong</string>
+	<string name="mp_selected">Dipilih %s</string>
+	<string name="mp_select">Pilih</string>
+	<string name="mp_unselect">Nyahpilih</string>
+	<string name="mp_continue">teruskan</string>
+</resources>

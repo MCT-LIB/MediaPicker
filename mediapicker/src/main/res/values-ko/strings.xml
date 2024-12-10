@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">메디아</string>
+	<string name="mp_album">앨범</string>
+	<string name="mp_empty_media">빈 미디어</string>
+	<string name="mp_empty_album">빈 앨범</string>
+	<string name="mp_selected">선택됨 %s</string>
+	<string name="mp_select">선택하다</string>
+	<string name="mp_unselect">선택 취소</string>
+	<string name="mp_continue">계속하다</string>
+</resources>

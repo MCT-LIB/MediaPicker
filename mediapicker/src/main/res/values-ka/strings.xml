@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">მედია</string>
+	<string name="mp_album">ალბომი</string>
+	<string name="mp_empty_media">ცარიელი მედია</string>
+	<string name="mp_empty_album">ცარიელი ალბომი</string>
+	<string name="mp_selected">არჩეული %s</string>
+	<string name="mp_select">აირჩიეთ</string>
+	<string name="mp_unselect">მონიშვნის გაუქმება</string>
+	<string name="mp_continue">განაგრძეთ</string>
+</resources>

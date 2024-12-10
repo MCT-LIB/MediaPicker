@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Хэвлэл мэдээлэл</string>
+	<string name="mp_album">Цомог</string>
+	<string name="mp_empty_media">Хоосон медиа</string>
+	<string name="mp_empty_album">Хоосон цомог</string>
+	<string name="mp_selected">Сонгосон %s</string>
+	<string name="mp_select">Сонго</string>
+	<string name="mp_unselect">Сонголтыг болиулах</string>
+	<string name="mp_continue">Үргэлжлүүлэх</string>
+</resources>

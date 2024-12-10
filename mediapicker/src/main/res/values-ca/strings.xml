@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Mitjans de comunicació</string>
+	<string name="mp_album">Àlbum</string>
+	<string name="mp_empty_media">Mitjans buits</string>
+	<string name="mp_empty_album">Àlbum buit</string>
+	<string name="mp_selected">Seleccionat %s</string>
+	<string name="mp_select">Seleccioneu</string>
+	<string name="mp_unselect">Desseleccioneu</string>
+	<string name="mp_continue">Continua</string>
+</resources>

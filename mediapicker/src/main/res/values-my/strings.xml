@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">မီဒီယာ</string>
+	<string name="mp_album">အခွေ</string>
+	<string name="mp_empty_media">မီဒီယာချည်း</string>
+	<string name="mp_empty_album">အခွေချည်း</string>
+	<string name="mp_selected">%s ရွေးထားသည်။</string>
+	<string name="mp_select">ရွေးချယ်ပါ။</string>
+	<string name="mp_unselect">ရွေးဖြုတ်ပါ။</string>
+	<string name="mp_continue">ဆက်ရန်</string>
+</resources>

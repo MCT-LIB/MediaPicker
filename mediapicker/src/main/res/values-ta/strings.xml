@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">ஊடகம்</string>
+	<string name="mp_album">ஆல்பம்</string>
+	<string name="mp_empty_media">வெற்று ஊடகம்</string>
+	<string name="mp_empty_album">வெற்று ஆல்பம்</string>
+	<string name="mp_selected">%s தேர்ந்தெடுக்கப்பட்டது</string>
+	<string name="mp_select">தேர்ந்தெடு</string>
+	<string name="mp_unselect">தேர்வுநீக்கு</string>
+	<string name="mp_continue">தொடரவும்</string>
+</resources>

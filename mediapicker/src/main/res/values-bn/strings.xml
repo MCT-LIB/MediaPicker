@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">মিডিয়া</string>
+	<string name="mp_album">অ্যালবাম</string>
+	<string name="mp_empty_media">ফাঁকা মিডিয়া</string>
+	<string name="mp_empty_album">খালি অ্যালবাম</string>
+	<string name="mp_selected">নির্বাচিত %s</string>
+	<string name="mp_select">নির্বাচন করুন</string>
+	<string name="mp_unselect">অনির্বাচন করুন</string>
+	<string name="mp_continue">চালিয়ে যান</string>
+</resources>

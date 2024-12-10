@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Albumi</string>
+	<string name="mp_empty_media">Media bosh</string>
+	<string name="mp_empty_album">Albumi bosh</string>
+	<string name="mp_selected">Zgjedhur %s</string>
+	<string name="mp_select">Zgjidhni</string>
+	<string name="mp_unselect">Zhzgjidh</string>
+	<string name="mp_continue">Vazhdoni</string>
+</resources>

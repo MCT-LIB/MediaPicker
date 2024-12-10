@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Vyombo vya habari</string>
+	<string name="mp_album">Albamu</string>
+	<string name="mp_empty_media">Vyombo vya habari vya bure</string>
+	<string name="mp_empty_album">Albamu tupu</string>
+	<string name="mp_selected">Imechaguliwa %s</string>
+	<string name="mp_select">Chagua</string>
+	<string name="mp_unselect">Batilisha uteuzi</string>
+	<string name="mp_continue">Endelea</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">ប្រព័ន្ធផ្សព្វផ្សាយ</string>
+	<string name="mp_album">អាល់ប៊ុម</string>
+	<string name="mp_empty_media">ប្រព័ន្ធផ្សព្វផ្សាយទទេ</string>
+	<string name="mp_empty_album">អាល់ប៊ុមទទេ</string>
+	<string name="mp_selected">បានជ្រើសរើស %s</string>
+	<string name="mp_select">ជ្រើសរើស</string>
+	<string name="mp_unselect">ឈប់ជ្រើសរើស</string>
+	<string name="mp_continue">បន្ត</string>
+</resources>

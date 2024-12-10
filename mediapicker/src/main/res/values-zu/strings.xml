@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Imidiya</string>
+	<string name="mp_album">I-albhamu</string>
+	<string name="mp_empty_media">Imidiya engenalutho</string>
+	<string name="mp_empty_album">I-albhamu engenalutho</string>
+	<string name="mp_selected">Okukhethiwe %s</string>
+	<string name="mp_select">Khetha</string>
+	<string name="mp_unselect">Yeka ukukhetha</string>
+	<string name="mp_continue">Qhubeka</string>
+</resources>

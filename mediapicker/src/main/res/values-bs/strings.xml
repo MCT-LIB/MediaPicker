@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Mediji</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Prazan medij</string>
+	<string name="mp_empty_album">Prazan album</string>
+	<string name="mp_selected">Odabrano %s</string>
+	<string name="mp_select">Odaberite</string>
+	<string name="mp_unselect">Poništi odabir</string>
+	<string name="mp_continue">Nastavi</string>
+</resources>

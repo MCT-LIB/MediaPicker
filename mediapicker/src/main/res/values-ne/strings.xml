@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">मिडिया</string>
+	<string name="mp_album">एल्बम</string>
+	<string name="mp_empty_media">खाली मिडिया</string>
+	<string name="mp_empty_album">खाली एल्बम</string>
+	<string name="mp_selected">%s चयन गरियो</string>
+	<string name="mp_select">चयन गर्नुहोस्</string>
+	<string name="mp_unselect">अचयन गर्नुहोस्</string>
+	<string name="mp_continue">जारी राख्नुहोस्</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Fjölmiðlar</string>
+	<string name="mp_album">Albúm</string>
+	<string name="mp_empty_media">Tómir fjölmiðlar</string>
+	<string name="mp_empty_album">Tóm plata</string>
+	<string name="mp_selected">Valið %s</string>
+	<string name="mp_select">Veldu</string>
+	<string name="mp_unselect">Afvelja</string>
+	<string name="mp_continue">Halda áfram</string>
+</resources>

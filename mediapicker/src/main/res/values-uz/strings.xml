@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">OAV</string>
+	<string name="mp_album">Albom</string>
+	<string name="mp_empty_media">Bo\'sh media</string>
+	<string name="mp_empty_album">Bo\'sh albom</string>
+	<string name="mp_selected">Tanlangan %s</string>
+	<string name="mp_select">Tanlang</string>
+	<string name="mp_unselect">Tanlovni bekor qiling</string>
+	<string name="mp_continue">Davom eting</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Žiniasklaida</string>
+	<string name="mp_album">Albumas</string>
+	<string name="mp_empty_media">Tuščia laikmena</string>
+	<string name="mp_empty_album">Tuščias albumas</string>
+	<string name="mp_selected">Pasirinkta %s</string>
+	<string name="mp_select">Pasirinkite</string>
+	<string name="mp_unselect">Atšaukti pasirinkimą</string>
+	<string name="mp_continue">Tęsti</string>
+</resources>

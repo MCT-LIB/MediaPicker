@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">رسانه ها</string>
+	<string name="mp_album">آلبوم</string>
+	<string name="mp_empty_media">رسانه های خالی</string>
+	<string name="mp_empty_album">آلبوم خالی</string>
+	<string name="mp_selected">انتخاب شده %s</string>
+	<string name="mp_select">انتخاب کنید</string>
+	<string name="mp_unselect">لغو انتخاب کنید</string>
+	<string name="mp_continue">ادامه دهید</string>
+</resources>

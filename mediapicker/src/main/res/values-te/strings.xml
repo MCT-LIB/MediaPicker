@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">మీడియా</string>
+	<string name="mp_album">ఆల్బమ్</string>
+	<string name="mp_empty_media">ఖాళీ మీడియా</string>
+	<string name="mp_empty_album">ఖాళీ ఆల్బమ్</string>
+	<string name="mp_selected">%s ఎంచుకోబడింది</string>
+	<string name="mp_select">ఎంచుకోండి</string>
+	<string name="mp_unselect">ఎంపికను తీసివేయండి</string>
+	<string name="mp_continue">కొనసాగించు</string>
+</resources>

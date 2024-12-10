@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">כְּלֵי תִקְשׁוֹרֶת</string>
+	<string name="mp_album">אַלבּוֹם</string>
+	<string name="mp_empty_media">מדיה ריקה</string>
+	<string name="mp_empty_album">אלבום ריק</string>
+	<string name="mp_selected">נבחר %s</string>
+	<string name="mp_select">לִבחוֹר</string>
+	<string name="mp_unselect">בטל בחירה</string>
+	<string name="mp_continue">לְהַמשִׁיך</string>
+</resources>

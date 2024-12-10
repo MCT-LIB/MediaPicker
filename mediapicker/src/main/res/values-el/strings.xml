@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Μέσα ενημέρωσης</string>
+	<string name="mp_album">Αλμπουμ</string>
+	<string name="mp_empty_media">Κενά μέσα</string>
+	<string name="mp_empty_album">Άδειο άλμπουμ</string>
+	<string name="mp_selected">Επιλεγμένα %s</string>
+	<string name="mp_select">Επιλέγω</string>
+	<string name="mp_unselect">Αποεπιλογή</string>
+	<string name="mp_continue">Συνεχίζω</string>
+</resources>

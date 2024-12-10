@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Puste media</string>
+	<string name="mp_empty_album">Pusty album</string>
+	<string name="mp_selected">Wybrane %s</string>
+	<string name="mp_select">Wybierz</string>
+	<string name="mp_unselect">Anuluj wybór</string>
+	<string name="mp_continue">Kontynuuj</string>
+</resources>

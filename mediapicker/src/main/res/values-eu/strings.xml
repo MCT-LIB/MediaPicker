@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Komunikabideak</string>
+	<string name="mp_album">Albuma</string>
+	<string name="mp_empty_media">Komunikabide hutsak</string>
+	<string name="mp_empty_album">Album hutsa</string>
+	<string name="mp_selected">%s hautatuta</string>
+	<string name="mp_select">Hautatu</string>
+	<string name="mp_unselect">Deshautatu</string>
+	<string name="mp_continue">Jarraitu</string>
+</resources>

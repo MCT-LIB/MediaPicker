@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Tomme medier</string>
+	<string name="mp_empty_album">Tomt album</string>
+	<string name="mp_selected">Valgt %s</string>
+	<string name="mp_select">Velge</string>
+	<string name="mp_unselect">Fjern valget</string>
+	<string name="mp_continue">Fortsette</string>
+</resources>

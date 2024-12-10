@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">وسائط</string>
+	<string name="mp_album">ألبوم</string>
+	<string name="mp_empty_media">وسائط فارغة</string>
+	<string name="mp_empty_album">ألبوم فارغ</string>
+	<string name="mp_selected">المحدد %s</string>
+	<string name="mp_select">اختيار</string>
+	<string name="mp_unselect">إلغاء التحديد</string>
+	<string name="mp_continue">متابعة</string>
+</resources>

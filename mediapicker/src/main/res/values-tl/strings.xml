@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Walang laman ang media</string>
+	<string name="mp_empty_album">Walang laman na album</string>
+	<string name="mp_selected">Pinili ang %s</string>
+	<string name="mp_select">Pumili</string>
+	<string name="mp_unselect">Alisin sa pagkakapili</string>
+	<string name="mp_continue">Magpatuloy</string>
+</resources>

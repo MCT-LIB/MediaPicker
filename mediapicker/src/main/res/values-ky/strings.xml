@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Медиа</string>
+	<string name="mp_album">Альбом</string>
+	<string name="mp_empty_media">Бош медиа</string>
+	<string name="mp_empty_album">Бош альбом</string>
+	<string name="mp_selected">Тандалган %s</string>
+	<string name="mp_select">Тандоо</string>
+	<string name="mp_unselect">Тандоодон баш тартуу</string>
+	<string name="mp_continue">Улантуу</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Lege media</string>
+	<string name="mp_empty_album">Leeg album</string>
+	<string name="mp_selected">Geselecteerd %s</string>
+	<string name="mp_select">Selecteer</string>
+	<string name="mp_unselect">Deselecteer</string>
+	<string name="mp_continue">Doorgaan</string>
+</resources>

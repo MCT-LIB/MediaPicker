@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">สื่อ</string>
+	<string name="mp_album">อัลบั้ม</string>
+	<string name="mp_empty_media">สื่อว่างเปล่า</string>
+	<string name="mp_empty_album">อัลบั้มเปล่า</string>
+	<string name="mp_selected">เลือก %s</string>
+	<string name="mp_select">เลือก</string>
+	<string name="mp_unselect">ยกเลิกการเลือก</string>
+	<string name="mp_continue">ดำเนินการต่อ</string>
+</resources>

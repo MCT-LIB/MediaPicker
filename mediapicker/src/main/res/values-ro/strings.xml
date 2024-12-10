@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">Media</string>
+	<string name="mp_album">Album</string>
+	<string name="mp_empty_media">Media goale</string>
+	<string name="mp_empty_album">Album gol</string>
+	<string name="mp_selected">Selectat %s</string>
+	<string name="mp_select">Selecta</string>
+	<string name="mp_unselect">Deselectați</string>
+	<string name="mp_continue">Continua</string>
+</resources>

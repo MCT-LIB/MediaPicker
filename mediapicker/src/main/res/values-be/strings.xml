@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">СМІ</string>
+	<string name="mp_album">Альбом</string>
+	<string name="mp_empty_media">Пусты носьбіт</string>
+	<string name="mp_empty_album">Пусты альбом</string>
+	<string name="mp_selected">Выбраны %s</string>
+	<string name="mp_select">Выберыце</string>
+	<string name="mp_unselect">Адмяніць выбар</string>
+	<string name="mp_continue">Працягнуць</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">メディア</string>
+	<string name="mp_album">アルバム</string>
+	<string name="mp_empty_media">空のメディア</string>
+	<string name="mp_empty_album">空のアルバム</string>
+	<string name="mp_selected">選択した %s</string>
+	<string name="mp_select">選択</string>
+	<string name="mp_unselect">選択解除</string>
+	<string name="mp_continue">続ける</string>
+</resources>

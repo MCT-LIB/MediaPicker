@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">മാധ്യമങ്ങൾ</string>
+	<string name="mp_album">ആൽബം</string>
+	<string name="mp_empty_media">ശൂന്യമായ മീഡിയ</string>
+	<string name="mp_empty_album">ശൂന്യമായ ആൽബം</string>
+	<string name="mp_selected">%s തിരഞ്ഞെടുത്തു</string>
+	<string name="mp_select">തിരഞ്ഞെടുക്കുക</string>
+	<string name="mp_unselect">തിരഞ്ഞെടുത്തത് മാറ്റുക</string>
+	<string name="mp_continue">തുടരുക</string>
+</resources>

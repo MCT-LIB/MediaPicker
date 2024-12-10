@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mp_media">ମିଡିଆ |</string>
+	<string name="mp_album">ଆଲବମ୍</string>
+	<string name="mp_empty_media">ଖାଲି ମିଡିଆ |</string>
+	<string name="mp_empty_album">ଖାଲି ଆଲବମ୍ |</string>
+	<string name="mp_selected">ମନୋନୀତ %s</string>
+	<string name="mp_select">ଚୟନ କରନ୍ତୁ |</string>
+	<string name="mp_unselect">ଅଣସଂରକ୍ଷିତ |</string>
+	<string name="mp_continue">ଜାରି ରଖ |</string>
+</resources>

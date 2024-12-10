@@ -20,9 +20,9 @@ public class Media implements Parcelable {
     private String mimeType;
     private int dateModified;
     private int size;
-    private int duration;
     private int width;
     private int height;
+    private int duration;
 
     public Media() {
     }
@@ -35,9 +35,9 @@ public class Media implements Parcelable {
         mimeType = in.readString();
         dateModified = in.readInt();
         size = in.readInt();
-        duration = in.readInt();
         width = in.readInt();
         height = in.readInt();
+        duration = in.readInt();
     }
 
     @Override
@@ -49,9 +49,9 @@ public class Media implements Parcelable {
         dest.writeString(mimeType);
         dest.writeInt(dateModified);
         dest.writeInt(size);
-        dest.writeInt(duration);
         dest.writeInt(width);
         dest.writeInt(height);
+        dest.writeInt(duration);
     }
 
     @Override
@@ -122,14 +122,6 @@ public class Media implements Parcelable {
         this.size = size;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
     public int getWidth() {
         return width;
     }
@@ -144,6 +136,14 @@ public class Media implements Parcelable {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public boolean isImage() {

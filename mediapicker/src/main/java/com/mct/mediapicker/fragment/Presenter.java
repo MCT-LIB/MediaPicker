@@ -36,6 +36,7 @@ import com.mct.mediapicker.model.Album;
 import com.mct.mediapicker.model.Media;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,7 +195,7 @@ class Presenter {
                             return;
                         }
                         albums.clear();
-                        albums.addAll(loadedAlbums);
+                        albums.addAll(loadedAlbums == null ? Collections.emptyList() : loadedAlbums);
                         albumDisposable = null;
                         albumCallbacks.forEach(c -> c.accept(albums));
                         albumCallbacks.clear();
@@ -216,18 +217,7 @@ class Presenter {
             // @formatter:on
         }
 
-        String[] projections = {
-                MediaStore.MediaColumns._ID,
-                MediaStore.MediaColumns.BUCKET_ID,
-                MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.MediaColumns.DATA,
-                MediaStore.MediaColumns.MIME_TYPE,
-                MediaStore.MediaColumns.DATE_MODIFIED,
-                MediaStore.MediaColumns.SIZE,
-                MediaStore.MediaColumns.DURATION,
-                MediaStore.MediaColumns.WIDTH,
-                MediaStore.MediaColumns.HEIGHT,
-        };
+        String[] projections = getProjections();
         String selection = null;
         String[] selectionArgs = null;
         String orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
@@ -259,9 +249,9 @@ class Presenter {
                 int mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
                 int dateModified = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED);
                 int sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE);
-                int durationIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DURATION);
                 int widthIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH);
                 int heightIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT);
+                int durationIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DURATION);
 
                 do {
                     int bucketId = cursor.getInt(bucketIdIndex);
@@ -279,9 +269,9 @@ class Presenter {
                     media.setMimeType(cursor.getString(mimeTypeIndex));
                     media.setDateModified(cursor.getInt(dateModified));
                     media.setSize(cursor.getInt(sizeIndex));
-                    media.setDuration(cursor.getInt(durationIndex));
                     media.setWidth(cursor.getInt(widthIndex));
                     media.setHeight(cursor.getInt(heightIndex));
+                    media.setDuration(durationIndex == -1 ? 0 : cursor.getInt(durationIndex));
 
                     album.addMedia(media);
                 } while (cursor.moveToNext());
@@ -292,6 +282,26 @@ class Presenter {
                 cursor.close();
             }
         }
+    }
+
+    @NonNull
+    private static String[] getProjections() {
+        List<String> projections = new ArrayList<>();
+        projections.add(MediaStore.MediaColumns._ID);
+        projections.add(MediaStore.MediaColumns.BUCKET_ID);
+        projections.add(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
+        projections.add(MediaStore.MediaColumns.DATA);
+        projections.add(MediaStore.MediaColumns.MIME_TYPE);
+        projections.add(MediaStore.MediaColumns.DATE_MODIFIED);
+        projections.add(MediaStore.MediaColumns.SIZE);
+        projections.add(MediaStore.MediaColumns.WIDTH);
+        projections.add(MediaStore.MediaColumns.HEIGHT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            projections.add(MediaStore.MediaColumns.DURATION);
+        }
+
+        return projections.toArray(new String[0]);
     }
 
     @NonNull

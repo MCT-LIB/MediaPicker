@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.core.util.Function;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mct.mediapicker.MediaUtils;
 import com.mct.mediapicker.common.dragselect.DragSelectTouchListener;
 import com.mct.mediapicker.common.dragselect.DragSelectionProcessor;
 import com.mct.mediapicker.databinding.MpLayoutItemMediaBinding;
@@ -259,9 +260,15 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
         void setDuration(boolean video, Integer duration) {
             if (video && duration != null) {
-                duration /= 1000;
-                String txt = String.format(Locale.getDefault(), "%d:%02d", duration / 60, duration % 60);
-                binding.mpTvDuration.setText(txt);
+                if (duration == 0) {
+                    binding.mpTvDuration.setText("");
+                    binding.mpTvDuration.setCompoundDrawablePadding(0);
+                } else {
+                    duration /= 1000;
+                    String txt = String.format(Locale.getDefault(), "%d:%02d", duration / 60, duration % 60);
+                    binding.mpTvDuration.setText(txt);
+                    binding.mpTvDuration.setCompoundDrawablePadding(MediaUtils.dp2px(2));
+                }
                 binding.mpTvDuration.setVisibility(View.VISIBLE);
             } else {
                 binding.mpTvDuration.setVisibility(View.GONE);

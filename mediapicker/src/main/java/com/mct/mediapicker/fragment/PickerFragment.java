@@ -262,12 +262,12 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     }
 
     @Override
-    public void onStartDrag(int position) {
+    public void onDragSelectionStart(int position) {
         setBottomSheetDraggable(false);
     }
 
     @Override
-    public void onFinishDrag(int position) {
+    public void onDragSelectionFinish(int position) {
         setBottomSheetDraggable(true);
     }
 
@@ -282,6 +282,24 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         invalidateToolbar();
         invalidateSelectedMedia();
         return handled;
+    }
+
+    private void invalidateToolbar() {
+        if (album != null) {
+            binding.mpToolbar.setTitle(album.getBucketName());
+            binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
+            binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+            return;
+        }
+        if (presenter.getSelectedMediaCount() > 0) {
+            binding.mpToolbar.setTitle("");
+            binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
+            binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
+            return;
+        }
+        binding.mpToolbar.setTitle("");
+        binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_close);
+        binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void invalidateSelectedMedia() {
@@ -310,13 +328,37 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
 
         if (selectedCount > 0 || exactMode) {
             showFromBottom(binding.mpBottomBar);
+            updateRecyclerViewsPaddingBottom(MediaUtils.dp2px(72));
         } else {
             hideToBottom(binding.mpBottomBar);
+            updateRecyclerViewsPaddingBottom(0);
         }
     }
 
     private void invalidateSelectedMediaTab() {
         findTabFragment(0, MediaTabFragment.class).ifPresent(MediaTabFragment::invalidateSelectedMedia);
+    }
+
+    private void updateRecyclerViewsPaddingBottom(int paddingBottom) {
+        List<RecyclerView> recyclerViews = new ArrayList<>();
+
+        recyclerViews.add(binding.mpAlbumDetail.mpRecyclerView);
+
+        for (int i = 0; i < binding.mpViewpager.getChildCount(); i++) {
+            View v = binding.mpViewpager.getChildAt(i).findViewById(R.id.mp_recycler_view);
+            if (v instanceof RecyclerView) {
+                recyclerViews.add((RecyclerView) v);
+            }
+        }
+
+        for (RecyclerView recyclerView : recyclerViews) {
+            recyclerView.setPadding(
+                    recyclerView.getPaddingLeft(),
+                    recyclerView.getPaddingTop(),
+                    recyclerView.getPaddingRight(),
+                    paddingBottom
+            );
+        }
     }
 
     Presenter getPresenter() {
@@ -450,24 +492,6 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
                 ivPlay.setSelected(true);
             }
         });
-    }
-
-    private void invalidateToolbar() {
-        if (album != null) {
-            binding.mpToolbar.setTitle(album.getBucketName());
-            binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
-            binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
-            return;
-        }
-        if (presenter.getSelectedMediaCount() > 0) {
-            binding.mpToolbar.setTitle("");
-            binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_back);
-            binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
-            return;
-        }
-        binding.mpToolbar.setTitle("");
-        binding.mpToolbar.setNavigationIcon(R.drawable.mp_ic_close);
-        binding.mpToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void setStatusBarColor(int color, int delayMillis) {

@@ -1,8 +1,5 @@
 package com.mct.mediapicker.common.dragselect;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvancedDragSelectListener {
 
     /**
@@ -30,7 +27,6 @@ public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvance
     private Mode mMode;
     private ISelectionHandler mSelectionHandler;
     private ISelectionStartFinishedListener mStartFinishedListener;
-    private HashSet<Integer> mOriginalSelection;
     private boolean mFirstWasSelected;
     private boolean mCheckSelectionState = false;
 
@@ -81,30 +77,17 @@ public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvance
         return this;
     }
 
-    /**
-     * @noinspection DuplicateBranchesInSwitch
-     */
     @Override
     public void onSelectionStarted(int start) {
-        mOriginalSelection = new HashSet<>();
-        Set<Integer> selected = mSelectionHandler.getSelection();
-        if (selected != null)
-            mOriginalSelection.addAll(selected);
-        mFirstWasSelected = mOriginalSelection.contains(start);
+        mFirstWasSelected = mSelectionHandler.isSelected(start);
 
         switch (mMode) {
             case Simple: {
                 mSelectionHandler.updateSelection(start, start, true, true);
                 break;
             }
-            case ToggleAndUndo: {
-                mSelectionHandler.updateSelection(start, start, !mOriginalSelection.contains(start), true);
-                break;
-            }
-            case FirstItemDependent: {
-                mSelectionHandler.updateSelection(start, start, !mFirstWasSelected, true);
-                break;
-            }
+            case ToggleAndUndo:
+            case FirstItemDependent:
             case FirstItemDependentToggleAndUndo: {
                 mSelectionHandler.updateSelection(start, start, !mFirstWasSelected, true);
                 break;
@@ -116,8 +99,6 @@ public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvance
 
     @Override
     public void onSelectionFinished(int end) {
-        mOriginalSelection = null;
-
         if (mStartFinishedListener != null)
             mStartFinishedListener.onSelectionFinished(end);
     }
@@ -126,24 +107,21 @@ public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvance
     public void onSelectChange(int start, int end, boolean isSelected) {
         switch (mMode) {
             case Simple: {
-                if (mCheckSelectionState)
-                    checkedUpdateSelection(start, end, isSelected);
-                else
-                    mSelectionHandler.updateSelection(start, end, isSelected, false);
+                checkedUpdateSelection(start, end, isSelected);
                 break;
             }
             case ToggleAndUndo: {
                 for (int i = start; i <= end; i++)
-                    checkedUpdateSelection(i, i, isSelected != mOriginalSelection.contains(i));
+                    checkedUpdateSelection(i, i, isSelected != mSelectionHandler.isSelected(i));
                 break;
             }
             case FirstItemDependent: {
-                checkedUpdateSelection(start, end, isSelected != mFirstWasSelected);
+                checkedUpdateSelection(start, end, !mFirstWasSelected && isSelected);
                 break;
             }
             case FirstItemDependentToggleAndUndo: {
                 for (int i = start; i <= end; i++)
-                    checkedUpdateSelection(i, i, isSelected ? !mFirstWasSelected : mOriginalSelection.contains(i));
+                    checkedUpdateSelection(i, i, isSelected ? !mFirstWasSelected : mSelectionHandler.isSelected(i));
                 break;
             }
         }
@@ -161,12 +139,7 @@ public class DragSelectionProcessor implements DragSelectTouchListener.OnAdvance
 
     public interface ISelectionHandler {
         /**
-         * @return the currently selected items => can be ignored for {@link Mode#Simple} and {@link Mode#FirstItemDependent}
-         */
-        Set<Integer> getSelection();
-
-        /**
-         * only used, if {@link DragSelectionProcessor#withCheckSelectionState(boolean)} was enabled
+         * Can be ignored for {@link Mode#Simple}         *
          *
          * @param index the index which selection state wants to be known
          * @return the current selection state of the passed in index

@@ -19,7 +19,6 @@ import com.mct.mediapicker.model.Media;
 import com.mct.touchutils.TouchUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -80,8 +79,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     public void invalidateSelect() {
         for (MediaViewHolder holder : boundViewHolders) {
-            Media media = items.get(holder.getAdapterPosition());
-            holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(media));
+            holder.setSelected(isMultipleSelect, isSelected(holder.getAdapterPosition()));
         }
     }
 
@@ -124,7 +122,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 onItemClickListener.onItemClick(media, holder.getAdapterPosition());
             }
             if (isMultipleSelect) {
-                holder.setSelected(true, evaluateMediaPick.apply(media));
+                holder.setSelected(true, isSelected(holder.getAdapterPosition()));
                 performHapticFeedback(holder.itemView);
             }
         });
@@ -170,13 +168,8 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     private int startPosition = -1;
 
     @Override
-    public Set<Integer> getSelection() {
-        return Collections.emptySet();
-    }
-
-    @Override
     public boolean isSelected(int index) {
-        return false;
+        return evaluateMediaPick.apply(getMedia(index));
     }
 
     @Override
@@ -196,7 +189,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
                 for (MediaViewHolder holder : boundViewHolders) {
                     int position = holder.getAdapterPosition();
                     if (position > start || position <= end) {
-                        holder.setSelected(isMultipleSelect, evaluateMediaPick.apply(getMedia(position)));
+                        holder.setSelected(isMultipleSelect, isSelected(position));
                     }
                 }
                 performHapticFeedback(recyclerView);
@@ -211,21 +204,15 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     @Override
     public void onSelectionStarted(int start, boolean originalSelectionState) {
         startPosition = start;
-        if (recyclerView != null) {
-            recyclerView.getParent().requestDisallowInterceptTouchEvent(true);
-        }
         if (onItemDragListener != null) {
-            onItemDragListener.onStartDrag(start);
+            onItemDragListener.onDragSelectionStart(start);
         }
     }
 
     @Override
     public void onSelectionFinished(int end) {
-        if (recyclerView != null) {
-            recyclerView.getParent().requestDisallowInterceptTouchEvent(false);
-        }
         if (onItemDragListener != null) {
-            onItemDragListener.onFinishDrag(end);
+            onItemDragListener.onDragSelectionFinish(end);
         }
     }
 
@@ -288,9 +275,9 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     }
 
     public interface OnItemDragListener {
-        void onStartDrag(int position);
+        void onDragSelectionStart(int position);
 
-        void onFinishDrag(int position);
+        void onDragSelectionFinish(int position);
 
         boolean onDragSelectionChanged(List<Media> media, boolean isSelected);
     }

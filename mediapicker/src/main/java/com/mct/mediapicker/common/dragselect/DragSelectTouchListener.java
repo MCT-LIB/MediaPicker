@@ -1,6 +1,5 @@
 package com.mct.mediapicker.common.dragselect;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -164,6 +163,27 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
             ((OnAdvancedDragSelectListener) mSelectListener).onSelectionStarted(position);
     }
 
+    public void startAutoScroll() {
+        if (mRecyclerView == null)
+            return;
+
+        if (mScroller == null) {
+            mScroller = new OverScroller(mRecyclerView.getContext(), new LinearInterpolator());
+        }
+        if (mScroller.isFinished()) {
+            mRecyclerView.removeCallbacks(mScrollRunnable);
+            mScroller.startScroll(0, mScroller.getCurrY(), 0, 5000, 100000);
+            mRecyclerView.postOnAnimation(mScrollRunnable);
+        }
+    }
+
+    public void stopAutoScroll() {
+        if (mScroller != null && !mScroller.isFinished()) {
+            mRecyclerView.removeCallbacks(mScrollRunnable);
+            mScroller.abortAnimation();
+        }
+    }
+
     // -----------------------
     // Functions
     // -----------------------
@@ -182,37 +202,13 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
         }
 
         mRecyclerView = rv;
+        mRecyclerView.getParent().requestDisallowInterceptTouchEvent(true);
         int height = rv.getHeight();
         mTopBoundFrom = mTouchRegionTopOffset;
         mTopBoundTo = mTouchRegionTopOffset + mAutoScrollDistance;
         mBottomBoundFrom = height + mTouchRegionBottomOffset - mAutoScrollDistance;
         mBottomBoundTo = height + mTouchRegionBottomOffset;
         return true;
-    }
-
-    public void startAutoScroll() {
-        if (mRecyclerView == null)
-            return;
-
-        initScroller(mRecyclerView.getContext());
-        if (mScroller.isFinished()) {
-            mRecyclerView.removeCallbacks(mScrollRunnable);
-            mScroller.startScroll(0, mScroller.getCurrY(), 0, 5000, 100000);
-            mRecyclerView.postOnAnimation(mScrollRunnable);
-        }
-    }
-
-    private void initScroller(Context context) {
-        if (mScroller == null) {
-            mScroller = new OverScroller(context, new LinearInterpolator());
-        }
-    }
-
-    public void stopAutoScroll() {
-        if (mScroller != null && !mScroller.isFinished()) {
-            mRecyclerView.removeCallbacks(mScrollRunnable);
-            mScroller.abortAnimation();
-        }
     }
 
     @Override
@@ -235,6 +231,11 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
         }
     }
 
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // no-op
+    }
+
     private void updateSelectedRange(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
         updateSelectedRange(rv, e.getX(), e.getY());
     }
@@ -249,7 +250,6 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
             }
         }
     }
-
 
     private void processAutoScroll(@NonNull MotionEvent event) {
         int y = (int) event.getY();
@@ -354,11 +354,6 @@ public class DragSelectTouchListener implements RecyclerView.OnItemTouchListener
         mLastX = Float.MIN_VALUE;
         mLastY = Float.MIN_VALUE;
         stopAutoScroll();
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        // ignore
     }
 
     private void scrollBy(int distance) {

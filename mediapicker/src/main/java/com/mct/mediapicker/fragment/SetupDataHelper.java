@@ -25,8 +25,8 @@ import java.util.Optional;
 
 class SetupDataHelper {
 
-    private static final int TAG_DRAG_SELECTION = R.id.tag_drag_selection;
-    private static final int TAG_FAST_SCROLLER = R.id.tag_fast_scroller;
+    private static final int TAG_DRAG_SELECTION = R.id.mp_tag_drag_selection;
+    private static final int TAG_FAST_SCROLLER = R.id.mp_tag_fast_scroller;
 
     public static void setup(@NonNull RecyclerView rcv,
                              @NonNull Presenter presenter,
@@ -45,7 +45,6 @@ class SetupDataHelper {
                 return false;
             }
         };
-        rcv.setPadding(0, 0, 0, presenter.isMultipleSelect() ? MediaUtils.dp2px(72) : 0);
         rcv.setLayoutManager(gridLayoutManager);
         rcv.setAdapter(mediaAdapter);
         Optional.ofNullable(rcv.getItemAnimator())
@@ -72,13 +71,18 @@ class SetupDataHelper {
         }
 
         DragSelectTouchListener dragSelectTouchListener = new DragSelectTouchListener()
-                .withSelectListener(new DragSelectionProcessor(mediaAdapter).withStartFinishedListener(mediaAdapter))
+                .withSelectListener(new DragSelectionProcessor(mediaAdapter)
+                        .withStartFinishedListener(mediaAdapter)
+                        .withMode(DragSelectionProcessor.Mode.FirstItemDependent)
+                )
                 // default: 16; - defines the speed of the auto scrolling
                 .withMaxScrollDistance(24)
+                // default: 0; - defines the size of the touch region
+                .withTouchRegion(MediaUtils.dp2px(32))
                 // default: 0; - set an offset for the touch region on top of the RecyclerView
                 .withTopOffset(0)
                 // default: 0; - set an offset for the touch region on bottom of the RecyclerView
-                .withBottomOffset(-recyclerView.getPaddingBottom())
+                .withBottomOffset(-MediaUtils.dp2px(64))
                 // default: true; - enable auto scrolling, even if the finger is moved above the top region
                 .withScrollAboveTopRegion(true)
                 // default: true; - enable auto scrolling, even if the finger is moved below the top region

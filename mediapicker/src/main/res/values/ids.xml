@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="tag_drag_selection" type="id"/>
-    <item name="tag_fast_scroller" type="id"/>
+    <item name="mp_tag_drag_selection" type="id"/>
+    <item name="mp_tag_fast_scroller" type="id"/>
 </resources>

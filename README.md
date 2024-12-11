@@ -1,4 +1,5 @@
-## Material MediaPicker
+## Material MediaPicker 
+[![](https://jitpack.io/v/MCT-LIB/MediaPicker.svg)](https://jitpack.io/#MCT-LIB/MediaPicker)
 
 ### Support:
 - Pick image, video from gallery
@@ -6,6 +7,16 @@
 - Support fast scroll
 - Support drag selection
 - Support preview media
+- Support custom theme, dynamic color theme
+- Support light, dark mode base on your theme
+
+### Demo:
+
+https://github.com/user-attachments/assets/6dbf21f3-a3ec-48d7-b421-a3d732a9ae02
+
+|       Empty        |        Media       |        Album       |        Multi       |       Detail       |       Preview      |
+|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
+| ![](example/1.jpg) | ![](example/2.jpg) | ![](example/3.jpg) | ![](example/4.jpg) | ![](example/5.jpg) | ![](example/6.jpg) |
 
 ### Install:
 <pre>

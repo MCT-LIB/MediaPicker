@@ -1,5 +1,6 @@
 plugins {
     id "com.android.library"
+//    id "com.vanniktech.maven.publish" version "0.30.0"
 }
 
 android {
@@ -52,3 +53,56 @@ GithubJitPackPublish {
     it.userName = "MCT-LIB"
     it.repositoryName = "MediaPicker"
 }
+
+/* --- Maven Publishing --- */
+
+//mavenPublishing {
+//
+//    // run script to publish (no auto release): ./gradlew publishToMavenCentral --no-configuration-cache
+//    // run script to publish (auto release):    ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+//
+//    String GROUP_ID = "io.github.mct-lib"
+//    String ARTIFACT_ID = "media-picker"
+//    String VERSION = "1.0.0"
+//
+//    String PROJECT_NAME = "MediaPicker"
+//    String PROJECT_DESCRIPTION = "Powerful media picker for android"
+//    String PROJECT_INCEPTION_YEAR = "2024"
+//
+//    String GITHUB_USERNAME = "MCT-LIB"
+//    String GITHUB_REPOSITORY_NAME = "MediaPicker"
+//    String DEV_ID = "MCT-LIB"
+//    String DEV_NAME = "mct"
+//
+//    //noinspection UnnecessaryQualifiedReference
+//    configure(new com.vanniktech.maven.publish.AndroidSingleVariantLibrary("debug", true, true))
+//    //noinspection UnnecessaryQualifiedReference
+//    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+//    signAllPublications()
+//    coordinates(GROUP_ID, ARTIFACT_ID, VERSION)
+//    pom {
+//        name = PROJECT_NAME
+//        description = PROJECT_DESCRIPTION
+//        inceptionYear = PROJECT_INCEPTION_YEAR
+//        url = "https://github.com/${GITHUB_USERNAME}/${GITHUB_REPOSITORY_NAME}"
+//        licenses {
+//            license {
+//                name = "The Apache License, Version 2.0"
+//                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+//                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+//            }
+//        }
+//        developers {
+//            developer {
+//                id = DEV_ID
+//                name = DEV_NAME
+//                url = "https://github.com/${GITHUB_USERNAME}"
+//            }
+//        }
+//        scm {
+//            url = "https://github.com/${GITHUB_USERNAME}/${GITHUB_REPOSITORY_NAME}"
+//            connection = "scm:git:git://github.com/${GITHUB_USERNAME}/${GITHUB_REPOSITORY_NAME}.git"
+//            developerConnection = "scm:git:ssh://git@github.com/${GITHUB_USERNAME}/${GITHUB_REPOSITORY_NAME}.git"
+//        }
+//    }
+//}

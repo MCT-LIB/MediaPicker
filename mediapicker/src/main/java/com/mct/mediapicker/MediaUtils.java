@@ -1,76 +1,145 @@
 package com.mct.mediapicker;
 
-import android.Manifest;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
+import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_ALL;
+import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_IMAGE;
+import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_VIDEO;
+import static com.mct.mediapicker.MediaPickerOption.PickType;
+
+import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+/**
+ * @noinspection RedundantIfStatement
+ */
 public class MediaUtils {
 
-    public static boolean canLoadImages(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
+    @NonNull
+    public static String[] getRequestPermissions(@PickType int type) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            switch (type) {
+                case PICK_TYPE_IMAGE:
+                    return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VISUAL_USER_SELECTED};
+                case PICK_TYPE_VIDEO:
+                    return new String[]{READ_MEDIA_VIDEO, READ_MEDIA_VISUAL_USER_SELECTED};
+                case PICK_TYPE_ALL:
+                    return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_VISUAL_USER_SELECTED};
+            }
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            switch (type) {
+                case PICK_TYPE_IMAGE:
+                    return new String[]{READ_MEDIA_IMAGES};
+                case PICK_TYPE_VIDEO:
+                    return new String[]{READ_MEDIA_VIDEO};
+                case PICK_TYPE_ALL:
+                    return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
+            }
+        }
+        return new String[]{READ_EXTERNAL_STORAGE};
+    }
+
+    public static boolean isPermissionsGranted(Context context, @PickType int type) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            // Full access via all files manager
+            return true;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Full access on Android 13 (API level 33) or higher
+            boolean granted = false;
+            switch (type) {
+                case MediaPickerOption.PICK_TYPE_IMAGE:
+                    granted = isGranted(context, READ_MEDIA_IMAGES);
+                    break;
+                case MediaPickerOption.PICK_TYPE_VIDEO:
+                    granted = isGranted(context, READ_MEDIA_VIDEO);
+                    break;
+                case MediaPickerOption.PICK_TYPE_ALL:
+                    granted = isGranted(context, READ_MEDIA_IMAGES) && isGranted(context, READ_MEDIA_VIDEO);
+                    break;
+            }
+            if (granted) {
                 return true;
             }
         }
-        return isGranted(context, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                ? Manifest.permission.READ_MEDIA_IMAGES
-                : Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && isGranted(context, READ_MEDIA_VISUAL_USER_SELECTED)) {
+            // Partial access on Android 14 (API level 34) or higher
+            return true;
+        }
+        if (isGranted(context, READ_EXTERNAL_STORAGE)) {
+            // Full access up to Android 12 (API level 32)
+            return true;
+        }
+        // Access denied
+        return false;
     }
 
-    public static boolean canLoadVideos(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
-                return true;
+    public static boolean shouldReselection(Context context, @PickType int type) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            // Full access via all files manager
+            return false;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Full access on Android 13 (API level 33) or higher
+            boolean granted = false;
+            switch (type) {
+                case MediaPickerOption.PICK_TYPE_IMAGE:
+                    granted = isGranted(context, READ_MEDIA_IMAGES);
+                    break;
+                case MediaPickerOption.PICK_TYPE_VIDEO:
+                    granted = isGranted(context, READ_MEDIA_VIDEO);
+                    break;
+                case MediaPickerOption.PICK_TYPE_ALL:
+                    granted = isGranted(context, READ_MEDIA_IMAGES) && isGranted(context, READ_MEDIA_VIDEO);
+                    break;
+            }
+            if (granted) {
+                return false;
             }
         }
-        return isGranted(context, Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                ? Manifest.permission.READ_MEDIA_VIDEO
-                : Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    public static boolean canLoadMedia(Context context) {
-        return canLoadImages(context) && canLoadVideos(context);
-    }
-
-    @NonNull
-    public static String[] getImagesPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{Manifest.permission.READ_MEDIA_IMAGES};
-        } else {
-            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && isGranted(context, READ_MEDIA_VISUAL_USER_SELECTED)) {
+            // Partial access on Android 14 (API level 34) or higher
+            return true;
         }
+        return false;
     }
 
-    @NonNull
-    public static String[] getVideosPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{Manifest.permission.READ_MEDIA_VIDEO};
-        } else {
-            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+    public static boolean shouldGoToSettings(Activity activity, @PickType int type) {
+        for (String permission : getRequestPermissions(type)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+                return false;
+            }
         }
+        return true;
     }
 
-    @NonNull
-    public static String[] getMediaPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
-        } else {
-            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+    public static void gotoSettings(Activity activity) {
+        if (activity != null) {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + activity.getPackageName()));
+            activity.startActivity(intent);
         }
     }
 
     private static boolean isGranted(Context context, String permission) {
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(context, permission) == PERMISSION_GRANTED;
     }
 
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());

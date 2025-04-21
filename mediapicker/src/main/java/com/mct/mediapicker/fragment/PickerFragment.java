@@ -1,8 +1,6 @@
 package com.mct.mediapicker.fragment;
 
-import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_ALL;
-import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_IMAGE;
-import static com.mct.mediapicker.MediaPickerOption.PICK_TYPE_VIDEO;
+import static androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -20,7 +18,6 @@ import android.widget.VideoView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -48,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+// TODO: 21/04/2025 Translate string res
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener, MediaAdapter.OnItemDragListener {
 
@@ -68,6 +66,8 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     private Album album;
     private MediaPickerOption option;
     private MediaLoaderDelegate delegate;
+
+    private boolean pendingLoadData;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -102,12 +102,33 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
             option = Presenter.restoredOption(ss.getString("optionId"));
             presenter.setSelectedMedia(ss.getParcelableArrayList("selectedMedia"));
         }
-        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-            if (isPermissionGranted()) {
-                findTabFragment(0, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
-                findTabFragment(1, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
-            }
-        });
+        requestPermissionLauncher = registerForActivityResult(new RequestMultiplePermissions(), result -> loadData());
+    }
+
+    private void loadData() {
+        // check valid state
+        if (getContext() == null || presenter == null) {
+            return;
+        }
+        // clear album
+        presenter.resetAlbums();
+
+        // load data
+        if (isPermissionsGranted()) {
+            findTabFragment(0, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
+            findTabFragment(1, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
+        }
+
+        // init reselection view
+        initReselection();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (pendingLoadData) {
+            loadData();
+        }
     }
 
     @Override
@@ -188,10 +209,13 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
             view.post(this::dismissMediaPreview);
         }
 
-        // request permission
-        if (!isPermissionGranted()) {
-            requestPermissions();
+        // check permission
+        if (!isPermissionsGranted()) {
+            requestPermission();
         }
+
+        // load data
+        loadData();
     }
 
     @Override
@@ -431,6 +455,39 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         }
     }
 
+    boolean isPermissionsGranted() {
+        return MediaUtils.isPermissionsGranted(requireContext(), option.getPickType());
+    }
+
+    void requestPermission() {
+        if (getActivity() == null) {
+            return;
+        }
+        requestPermissionLauncher.launch(MediaUtils.getRequestPermissions(option.getPickType()));
+    }
+
+    void requestPermission2() {
+        if (getActivity() == null) {
+            return;
+        }
+        if (MediaUtils.shouldGoToSettings(getActivity(), option.getPickType())) {
+            pendingLoadData = true;
+            MediaUtils.gotoSettings(getActivity());
+            return;
+        }
+        requestPermissionLauncher.launch(MediaUtils.getRequestPermissions(option.getPickType()));
+    }
+
+    private void initReselection() {
+        if (MediaUtils.shouldReselection(requireContext(), option.getPickType())) {
+            binding.mpFrameReselection.setVisibility(View.VISIBLE);
+            binding.mpBtnManage.setOnClickListener(v -> requestPermission());
+        } else {
+            binding.mpFrameReselection.setVisibility(View.GONE);
+            binding.mpBtnManage.setOnClickListener(null);
+        }
+    }
+
     private void initImagePreview(@NonNull Media media) {
         ImageView imageView = binding.mpMediaPreview.mpIvMedia;
         imageView.setVisibility(View.VISIBLE);
@@ -516,39 +573,6 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
                 .filter(BottomSheetDialog.class::isInstance)
                 .map(BottomSheetDialog.class::cast)
                 .map(BottomSheetDialog::getBehavior);
-    }
-
-    private void requestPermissions() {
-        String[] permissions;
-        int pickType = presenter.getOption().getPickType();
-        switch (pickType) {
-            case PICK_TYPE_IMAGE:
-                permissions = MediaUtils.getImagesPermissions();
-                break;
-            case PICK_TYPE_VIDEO:
-                permissions = MediaUtils.getVideosPermissions();
-                break;
-            case PICK_TYPE_ALL:
-                permissions = MediaUtils.getMediaPermissions();
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown pick type: " + pickType);
-        }
-        requestPermissionLauncher.launch(permissions);
-    }
-
-    private boolean isPermissionGranted() {
-        int pickType = presenter.getOption().getPickType();
-        switch (pickType) {
-            case PICK_TYPE_IMAGE:
-                return MediaUtils.canLoadImages(requireContext());
-            case PICK_TYPE_VIDEO:
-                return MediaUtils.canLoadVideos(requireContext());
-            case PICK_TYPE_ALL:
-                return MediaUtils.canLoadMedia(requireContext());
-            default:
-                throw new IllegalArgumentException("Unknown pick type: " + pickType);
-        }
     }
 
     private void showFromBottom(@NonNull View view) {

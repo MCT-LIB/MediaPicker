@@ -67,6 +67,19 @@ abstract class BaseTabFragment extends Fragment {
         if (getContext() == null || presenter == null) {
             return;
         }
+        if (!getPhotoPickerFragment().isPermissionsGranted()) {
+            show(binding.mpTvNotGrantPermission);
+            binding.mpTvNotGrantPermission.setOnClickListener(v -> {
+                if (getContext() == null) {
+                    return;
+                }
+                if (getPhotoPickerFragment().isPermissionsGranted()) {
+                    return;
+                }
+                getPhotoPickerFragment().requestPermission2();
+            });
+            return;
+        }
         show(binding.mpProgressIndicator);
         presenter.getAlbums(getContext(), albums -> {
             if (albums == null || albums.isEmpty()) {
@@ -90,6 +103,7 @@ abstract class BaseTabFragment extends Fragment {
     private void show(@NonNull View show) {
         View[] views = new View[]{
                 binding.mpProgressIndicator,
+                binding.mpTvNotGrantPermission,
                 binding.mpTvEmptyMessage,
                 binding.mpRecyclerView
         };

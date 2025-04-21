@@ -10,16 +10,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/mp_tv_not_grant_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/mp_ic_media"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:maxWidth="240dp"
+            android:text="@string/mp_permission_not_granted"
+            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/mp_tv_empty_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableTop="@drawable/mp_ic_folder"
             android:drawablePadding="8dp"
+            android:maxWidth="240dp"
             android:text="@string/mp_empty_media"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/mp_progress_indicator"

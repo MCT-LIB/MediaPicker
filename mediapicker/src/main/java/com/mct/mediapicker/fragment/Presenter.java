@@ -174,6 +174,13 @@ class Presenter {
 
     private final List<Consumer<List<Album>>> albumCallbacks = new ArrayList<>();
 
+    public void resetAlbums() {
+        if (isEmptyOption()) {
+            return;
+        }
+        albums.clear();
+    }
+
     public void getAlbums(Context context, @NonNull Consumer<List<Album>> callback) {
         if (isEmptyOption()) {
             return;
@@ -207,12 +214,21 @@ class Presenter {
     private static List<Album> loadMedia(Context context, @PickType int pickType) {
         Uri contentUri;
         switch (pickType) {
-            // @formatter:off
-            case PICK_TYPE_IMAGE:   contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;  break;
-            case PICK_TYPE_VIDEO:   contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;   break;
-            case PICK_TYPE_ALL:     contentUri = MediaStore.Files.getContentUri("external");    break;
-            default: throw new IllegalArgumentException("Unknown pick type: " + pickType);
-            // @formatter:on
+            case PICK_TYPE_IMAGE:
+                contentUri = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                        ? MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+                        : MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                break;
+            case PICK_TYPE_VIDEO:
+                contentUri = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                        ? MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+                        : MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                break;
+            case PICK_TYPE_ALL:
+                contentUri = MediaStore.Files.getContentUri("external");
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown pick type: " + pickType);
         }
 
         String[] projections = getProjections();
@@ -313,7 +329,8 @@ class Presenter {
 
     ///////////////////////////////////////////////////////////////////////////
     // Media loader
-    ///////////////////////////////////////////////////////////////////////////
+
+    /// ////////////////////////////////////////////////////////////////////////
 
     @NonNull
     static MediaLoaderDelegate create(Context context, boolean fullScreen) {
@@ -643,7 +660,8 @@ class Presenter {
 
     ///////////////////////////////////////////////////////////////////////////
     // Option holder
-    ///////////////////////////////////////////////////////////////////////////
+
+    /// ////////////////////////////////////////////////////////////////////////
 
     static void saveOption(@NonNull MediaPickerOption option) {
         OptionHolder.options.put(option.getId(), option);

@@ -19,10 +19,64 @@
             app:tint="?attr/colorPrimary" />
 
         <FrameLayout
+            android:id="@+id/mp_frame_reselection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mp_drag_handle"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="6dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:gravity="center"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:text="@string/mp_manage_explain"
+                        android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+
+                    <Space
+                        android:layout_width="4dp"
+                        android:layout_height="0dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/mp_btn_manage"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:paddingHorizontal="16dp"
+                        android:text="@string/mp_manage"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/mp_frame_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/mp_drag_handle">
+            android:layout_below="@id/mp_frame_reselection">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/mp_toolbar"

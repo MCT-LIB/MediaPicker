@@ -329,8 +329,7 @@ class Presenter {
 
     ///////////////////////////////////////////////////////////////////////////
     // Media loader
-
-    /// ////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
     @NonNull
     static MediaLoaderDelegate create(Context context, boolean fullScreen) {
@@ -660,11 +659,18 @@ class Presenter {
 
     ///////////////////////////////////////////////////////////////////////////
     // Option holder
+    ///////////////////////////////////////////////////////////////////////////
 
-    /// ////////////////////////////////////////////////////////////////////////
+    static void saveOption(MediaPickerOption option) {
+        if (option != null) {
+            OptionHolder.options.put(option.getId(), option);
+        }
+    }
 
-    static void saveOption(@NonNull MediaPickerOption option) {
-        OptionHolder.options.put(option.getId(), option);
+    public static void removeOption(MediaPickerOption option) {
+        if (option != null) {
+            OptionHolder.options.remove(option.getId());
+        }
     }
 
     static MediaPickerOption restoredOption(String optionId) {

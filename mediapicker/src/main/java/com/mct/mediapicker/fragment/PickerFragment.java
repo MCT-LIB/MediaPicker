@@ -94,49 +94,25 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            media = savedInstanceState.getParcelable("media");
+            album = savedInstanceState.getParcelable("album");
+            option = Presenter.restoredOption(savedInstanceState.getString("optionId"));
+            presenter.setSelectedMedia(savedInstanceState.getParcelableArrayList("selectedMedia"));
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle ss) {
         super.onCreate(ss);
-        if (ss != null) {
-            media = ss.getParcelable("media");
-            album = ss.getParcelable("album");
-            option = Presenter.restoredOption(ss.getString("optionId"));
-            presenter.setSelectedMedia(ss.getParcelableArrayList("selectedMedia"));
-        }
         requestPermissionLauncher = registerForActivityResult(new RequestMultiplePermissions(), result -> loadData());
-    }
 
-    private void loadData() {
-        // check valid state
-        if (getContext() == null || presenter == null) {
-            return;
+        // check valid state (maybe remove granted permission)
+        if (option == null) {
+            dismissAllowingStateLoss();
         }
-        // clear album
-        presenter.resetAlbums();
-
-        // load data
-        if (isPermissionsGranted()) {
-            findTabFragment(0, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
-            findTabFragment(1, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
-        }
-
-        // init reselection view
-        initReselection();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (pendingLoadData) {
-            loadData();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        media = null;
-        album = null;
-        option = null;
     }
 
     @NonNull
@@ -219,11 +195,28 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (pendingLoadData) {
+            loadData();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         // clear media if exist
         binding.mpMediaPreview.mpVvMedia.stopPlayback();
         binding = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Presenter.removeOption(option);
+        media = null;
+        album = null;
+        option = null;
     }
 
     @Override
@@ -478,7 +471,21 @@ public class PickerFragment extends BottomSheetDialogFragment implements MediaAd
         requestPermissionLauncher.launch(MediaUtils.getRequestPermissions(option.getPickType()));
     }
 
-    private void initReselection() {
+    private void loadData() {
+        // check valid state
+        if (getContext() == null || presenter == null) {
+            return;
+        }
+        // clear album
+        presenter.resetAlbums();
+
+        // load data
+        if (isPermissionsGranted()) {
+            findTabFragment(0, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
+            findTabFragment(1, BaseTabFragment.class).ifPresent(BaseTabFragment::loadData);
+        }
+
+        // init reselection view
         if (MediaUtils.shouldReselection(requireContext(), option.getPickType())) {
             binding.mpFrameReselection.setVisibility(View.VISIBLE);
             binding.mpBtnManage.setOnClickListener(v -> requestPermission());

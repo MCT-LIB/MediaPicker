@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -14,34 +15,49 @@
             android:id="@+id/mp_tv_not_grant_permission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:drawableTop="@drawable/mp_ic_media"
             android:drawablePadding="8dp"
             android:gravity="center"
             android:maxWidth="240dp"
-            android:text="@string/mp_permission_not_granted"
-            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+            android:text="@string/mp_permission_explain"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2"
             tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/mp_tv_empty_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:drawableTop="@drawable/mp_ic_folder"
             android:drawablePadding="8dp"
+            android:gravity="center"
             android:maxWidth="240dp"
             android:text="@string/mp_empty_media"
-            android:visibility="gone" />
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
 
         <ProgressBar
             android:id="@+id/mp_progress_indicator"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="center"
             android:indeterminate="true"
-            android:visibility="gone" />
+            android:indeterminateTint="?colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mp_recycler_view"
@@ -50,5 +66,5 @@
             android:clipToPadding="false"
             android:visibility="gone" />
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

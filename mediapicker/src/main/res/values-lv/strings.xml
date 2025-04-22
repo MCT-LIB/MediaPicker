@@ -8,4 +8,7 @@
 	<string name="mp_select">Izvēlieties</string>
 	<string name="mp_unselect">Noņemiet atlasi</string>
 	<string name="mp_continue">Turpināt</string>
+	<string name="mp_manage">Pārvaldīt</string>
+	<string name="mp_manage_explain">Jūs esat piešķīris piekļuvi noteiktam skaitam fotoattēlu un videoklipu</string>
+	<string name="mp_permission_explain">Lūdzu, atļaujiet lietotnei piekļūt jūsu fotoattēliem un videoklipiem</string>
 </resources>

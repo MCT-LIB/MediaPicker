@@ -8,4 +8,7 @@
 	<string name="mp_select">Odaberite</string>
 	<string name="mp_unselect">Poništi odabir</string>
 	<string name="mp_continue">Nastavi</string>
+	<string name="mp_manage">Upravljaj</string>
+	<string name="mp_manage_explain">Dali ste pristup odabranom broju fotografija i video zapisa</string>
+	<string name="mp_permission_explain">Dozvolite aplikaciji pristup vašim fotografijama i videozapisima</string>
 </resources>

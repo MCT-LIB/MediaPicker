@@ -8,4 +8,7 @@
 	<string name="mp_select">Välja</string>
 	<string name="mp_unselect">Avmarkera</string>
 	<string name="mp_continue">Fortsätta</string>
+	<string name="mp_manage">Hantera</string>
+	<string name="mp_manage_explain">Du har gett tillgång till ett utvalt antal foton och videor</string>
+	<string name="mp_permission_explain">Tillåt appen att komma åt dina foton och videor</string>
 </resources>

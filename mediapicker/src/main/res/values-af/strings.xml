@@ -8,4 +8,7 @@
 	<string name="mp_select">Kies</string>
 	<string name="mp_unselect">Ontkies</string>
 	<string name="mp_continue">Gaan voort</string>
+	<string name="mp_manage">Bestuur</string>
+	<string name="mp_manage_explain">Jy het toegang tot \'n uitgesoekte aantal foto\'s en video\'s gegee</string>
+	<string name="mp_permission_explain">Laat asseblief die toepassing toe om toegang tot jou foto\'s en video\'s te kry</string>
 </resources>

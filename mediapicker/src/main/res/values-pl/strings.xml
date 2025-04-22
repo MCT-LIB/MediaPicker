@@ -8,4 +8,7 @@
 	<string name="mp_select">Wybierz</string>
 	<string name="mp_unselect">Anuluj wybór</string>
 	<string name="mp_continue">Kontynuuj</string>
+	<string name="mp_manage">Zarządzać</string>
+	<string name="mp_manage_explain">Przyznałeś dostęp do wybranej liczby zdjęć i filmów</string>
+	<string name="mp_permission_explain">Zezwól aplikacji na dostęp do Twoich zdjęć i filmów</string>
 </resources>

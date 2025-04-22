@@ -8,4 +8,7 @@
 	<string name="mp_select">Auswählen</string>
 	<string name="mp_unselect">Abwählen</string>
 	<string name="mp_continue">Weiter</string>
+	<string name="mp_manage">Verwalten</string>
+	<string name="mp_manage_explain">Sie haben Zugriff auf eine ausgewählte Anzahl von Fotos und Videos gewährt</string>
+	<string name="mp_permission_explain">Bitte erlauben Sie der App den Zugriff auf Ihre Fotos und Videos</string>
 </resources>

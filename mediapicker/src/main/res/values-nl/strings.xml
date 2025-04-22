@@ -8,4 +8,7 @@
 	<string name="mp_select">Selecteer</string>
 	<string name="mp_unselect">Deselecteer</string>
 	<string name="mp_continue">Doorgaan</string>
+	<string name="mp_manage">Beheren</string>
+	<string name="mp_manage_explain">Je hebt toegang gegeven tot een select aantal foto\'s en video\'s</string>
+	<string name="mp_permission_explain">Geef de app toegang tot uw foto\'s en video\'s</string>
 </resources>

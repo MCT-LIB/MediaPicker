@@ -8,4 +8,7 @@
 	<string name="mp_select">منتخب کریں۔</string>
 	<string name="mp_unselect">غیر منتخب کریں۔</string>
 	<string name="mp_continue">جاری رکھیں</string>
+	<string name="mp_manage">انتظام کریں۔</string>
+	<string name="mp_manage_explain">آپ نے تصاویر اور ویڈیوز کی منتخب تعداد تک رسائی دی ہے۔</string>
+	<string name="mp_permission_explain">براہ کرم ایپ کو اپنی تصاویر اور ویڈیوز تک رسائی کی اجازت دیں۔</string>
 </resources>

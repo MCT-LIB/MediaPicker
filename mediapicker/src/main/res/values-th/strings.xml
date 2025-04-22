@@ -8,4 +8,7 @@
 	<string name="mp_select">เลือก</string>
 	<string name="mp_unselect">ยกเลิกการเลือก</string>
 	<string name="mp_continue">ดำเนินการต่อ</string>
+	<string name="mp_manage">จัดการ</string>
+	<string name="mp_manage_explain">คุณได้ให้สิทธิ์เข้าถึงรูปภาพและวิดีโอจำนวนหนึ่ง</string>
+	<string name="mp_permission_explain">โปรดอนุญาตให้แอปเข้าถึงรูปภาพและวิดีโอของคุณ</string>
 </resources>

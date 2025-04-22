@@ -8,4 +8,7 @@
 	<string name="mp_select">Válassza ki</string>
 	<string name="mp_unselect">Törölje a kijelölést</string>
 	<string name="mp_continue">Folytatás</string>
+	<string name="mp_manage">Kezelése</string>
+	<string name="mp_manage_explain">Hozzáférést adott bizonyos számú fotóhoz és videóhoz</string>
+	<string name="mp_permission_explain">Kérjük, engedélyezze az alkalmazás számára, hogy hozzáférjen fotóihoz és videóihoz</string>
 </resources>

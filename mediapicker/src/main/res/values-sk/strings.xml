@@ -8,4 +8,7 @@
 	<string name="mp_select">Vybrať</string>
 	<string name="mp_unselect">Zrušiť výber</string>
 	<string name="mp_continue">Pokračovať</string>
+	<string name="mp_manage">Spravovať</string>
+	<string name="mp_manage_explain">Poskytli ste prístup k vybranému počtu fotografií a videí</string>
+	<string name="mp_permission_explain">Povoľte aplikácii prístup k vašim fotografiám a videám</string>
 </resources>

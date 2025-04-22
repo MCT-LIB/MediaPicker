@@ -8,4 +8,7 @@
 	<string name="mp_select">Select</string>
 	<string name="mp_unselect">Unselect</string>
 	<string name="mp_continue">Continue</string>
+	<string name="mp_manage">Manage</string>
+	<string name="mp_manage_explain">You have given access to a select number of photos and videos</string>
+	<string name="mp_permission_explain">Please allow the app to access your photos and videos</string>
 </resources>

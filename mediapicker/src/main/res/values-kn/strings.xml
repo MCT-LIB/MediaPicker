@@ -8,4 +8,7 @@
 	<string name="mp_select">ಆಯ್ಕೆ ಮಾಡಿ</string>
 	<string name="mp_unselect">ಆಯ್ಕೆ ರದ್ದುಮಾಡಿ</string>
 	<string name="mp_continue">ಮುಂದುವರಿಸಿ</string>
+	<string name="mp_manage">ನಿರ್ವಹಿಸಿ</string>
+	<string name="mp_manage_explain">ನೀವು ಆಯ್ದ ಸಂಖ್ಯೆಯ ಫೋಟೋಗಳು ಮತ್ತು ವೀಡಿಯೊಗಳಿಗೆ ಪ್ರವೇಶವನ್ನು ನೀಡಿದ್ದೀರಿ</string>
+	<string name="mp_permission_explain">ದಯವಿಟ್ಟು ನಿಮ್ಮ ಫೋಟೋಗಳು ಮತ್ತು ವೀಡಿಯೊಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಅನುಮತಿಸಿ</string>
 </resources>

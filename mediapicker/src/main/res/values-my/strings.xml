@@ -8,4 +8,7 @@
 	<string name="mp_select">ရွေးချယ်ပါ။</string>
 	<string name="mp_unselect">ရွေးဖြုတ်ပါ။</string>
 	<string name="mp_continue">ဆက်ရန်</string>
+	<string name="mp_manage">စီမံပါ။</string>
+	<string name="mp_manage_explain">သင်သည် ရွေးချယ်ထားသော ဓာတ်ပုံနှင့် ဗီဒီယို အရေအတွက်ကို အသုံးပြုခွင့်ပေးထားသည်။</string>
+	<string name="mp_permission_explain">သင့်ဓာတ်ပုံနှင့် ဗီဒီယိုများကို ဝင်ရောက်ကြည့်ရှုရန် အက်ပ်အား ခွင့်ပြုပါ။</string>
 </resources>

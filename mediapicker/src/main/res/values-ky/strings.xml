@@ -8,4 +8,7 @@
 	<string name="mp_select">Тандоо</string>
 	<string name="mp_unselect">Тандоодон баш тартуу</string>
 	<string name="mp_continue">Улантуу</string>
+	<string name="mp_manage">Башкаруу</string>
+	<string name="mp_manage_explain">Сиз сүрөттөр менен видеолордун тандалган санын көрүү мүмкүнчүлүгүн бердиңиз</string>
+	<string name="mp_permission_explain">Колдонмого сүрөттөрүңүз менен видеолоруңузга кирүүгө уруксат бериңиз</string>
 </resources>

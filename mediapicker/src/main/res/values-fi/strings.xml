@@ -8,4 +8,7 @@
 	<string name="mp_select">Valitse</string>
 	<string name="mp_unselect">Poista valinta</string>
 	<string name="mp_continue">Jatkaa</string>
+	<string name="mp_manage">Hallitse</string>
+	<string name="mp_manage_explain">Olet antanut pääsyn tiettyyn määrään valokuvia ja videoita</string>
+	<string name="mp_permission_explain">Anna sovelluksen käyttää kuviasi ja videoitasi</string>
 </resources>

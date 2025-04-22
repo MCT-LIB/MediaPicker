@@ -8,4 +8,7 @@
 	<string name="mp_select">აირჩიეთ</string>
 	<string name="mp_unselect">მონიშვნის გაუქმება</string>
 	<string name="mp_continue">განაგრძეთ</string>
+	<string name="mp_manage">მართვა</string>
+	<string name="mp_manage_explain">თქვენ მიანიჭეთ წვდომა ფოტოებისა და ვიდეოების შერჩეულ რაოდენობაზე</string>
+	<string name="mp_permission_explain">გთხოვთ, დაუშვათ აპს თქვენს ფოტოებსა და ვიდეოებზე წვდომა</string>
 </resources>

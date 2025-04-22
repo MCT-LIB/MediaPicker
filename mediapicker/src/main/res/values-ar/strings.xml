@@ -8,4 +8,7 @@
 	<string name="mp_select">اختيار</string>
 	<string name="mp_unselect">إلغاء التحديد</string>
 	<string name="mp_continue">متابعة</string>
+	<string name="mp_manage">يدير</string>
+	<string name="mp_manage_explain">لقد منحت حق الوصول إلى عدد محدد من الصور ومقاطع الفيديو</string>
+	<string name="mp_permission_explain">يرجى السماح للتطبيق بالوصول إلى الصور ومقاطع الفيديو الخاصة بك</string>
 </resources>

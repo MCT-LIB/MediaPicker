@@ -8,4 +8,7 @@
 	<string name="mp_select">Ընտրել</string>
 	<string name="mp_unselect">Ապաընտրել</string>
 	<string name="mp_continue">Շարունակեք</string>
+	<string name="mp_manage">Կառավարել</string>
+	<string name="mp_manage_explain">Դուք մուտք եք գործել ընտրված թվով լուսանկարներ և տեսանյութեր</string>
+	<string name="mp_permission_explain">Թույլ տվեք հավելվածին մուտք գործել ձեր լուսանկարներն ու տեսանյութերը</string>
 </resources>

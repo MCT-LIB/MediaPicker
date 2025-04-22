@@ -8,4 +8,7 @@
 	<string name="mp_select">ଚୟନ କରନ୍ତୁ |</string>
 	<string name="mp_unselect">ଅଣସଂରକ୍ଷିତ |</string>
 	<string name="mp_continue">ଜାରି ରଖ |</string>
+	<string name="mp_manage">ପରିଚାଳନା କରନ୍ତୁ |</string>
+	<string name="mp_manage_explain">ଆପଣ ଏକ ସଂଖ୍ୟକ ସଂଖ୍ୟକ ଫଟୋ ଏବଂ ଭିଡିଓକୁ ପ୍ରବେଶ ପ୍ରଦାନ କରିଛନ୍ତି |</string>
+	<string name="mp_permission_explain">ଦୟାକରି ଆପଣଙ୍କର ଫଟୋ ଏବଂ ଭିଡିଓଗୁଡିକୁ ପ୍ରବେଶ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ |</string>
 </resources>

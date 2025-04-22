@@ -8,4 +8,7 @@
 	<string name="mp_select">Veldu</string>
 	<string name="mp_unselect">Afvelja</string>
 	<string name="mp_continue">Halda áfram</string>
+	<string name="mp_manage">Stjórna</string>
+	<string name="mp_manage_explain">Þú hefur veitt aðgang að völdum fjölda mynda og myndskeiða</string>
+	<string name="mp_permission_explain">Vinsamlegast leyfðu forritinu að fá aðgang að myndunum þínum og myndböndum</string>
 </resources>

@@ -8,4 +8,7 @@
 	<string name="mp_select">Zgjidhni</string>
 	<string name="mp_unselect">Zhzgjidh</string>
 	<string name="mp_continue">Vazhdoni</string>
+	<string name="mp_manage">Menaxhoni</string>
+	<string name="mp_manage_explain">Ju keni dhënë akses në një numër të zgjedhur fotografish dhe videosh</string>
+	<string name="mp_permission_explain">Ju lutemi, lejoni që aplikacioni të ketë qasje në fotot dhe videot tuaja</string>
 </resources>

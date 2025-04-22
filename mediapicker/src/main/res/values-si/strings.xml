@@ -8,4 +8,7 @@
 	<string name="mp_select">තෝරන්න</string>
 	<string name="mp_unselect">තේරීම ඉවත් කරන්න</string>
 	<string name="mp_continue">දිගටම කරගෙන යන්න</string>
+	<string name="mp_manage">කළමනාකරණය කරන්න</string>
+	<string name="mp_manage_explain">ඔබ තෝරාගත් ඡායාරූප සහ වීඩියෝ ගණනකට ප්‍රවේශය ලබා දී ඇත</string>
+	<string name="mp_permission_explain">කරුණාකර ඔබගේ ඡායාරූප සහ වීඩියෝ වෙත ප්‍රවේශ වීමට යෙදුමට ඉඩ දෙන්න</string>
 </resources>

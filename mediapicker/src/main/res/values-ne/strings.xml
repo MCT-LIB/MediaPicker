@@ -8,4 +8,7 @@
 	<string name="mp_select">चयन गर्नुहोस्</string>
 	<string name="mp_unselect">अचयन गर्नुहोस्</string>
 	<string name="mp_continue">जारी राख्नुहोस्</string>
+	<string name="mp_manage">व्यवस्थापन गर्नुहोस्</string>
+	<string name="mp_manage_explain">तपाईंले फोटो र भिडियोहरूको चयन संख्यामा पहुँच दिनुभएको छ</string>
+	<string name="mp_permission_explain">कृपया तपाईंको फोटो र भिडियोहरू पहुँच गर्न एपलाई अनुमति दिनुहोस्</string>
 </resources>

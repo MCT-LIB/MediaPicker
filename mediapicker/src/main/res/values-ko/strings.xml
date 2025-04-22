@@ -8,4 +8,7 @@
 	<string name="mp_select">선택하다</string>
 	<string name="mp_unselect">선택 취소</string>
 	<string name="mp_continue">계속하다</string>
+	<string name="mp_manage">관리하다</string>
+	<string name="mp_manage_explain">선택한 수의 사진과 비디오에 대한 액세스 권한을 부여했습니다.</string>
+	<string name="mp_permission_explain">앱이 사진과 동영상에 액세스할 수 있도록 허용하세요.</string>
 </resources>

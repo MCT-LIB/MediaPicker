@@ -8,4 +8,7 @@
 	<string name="mp_select">Επιλέγω</string>
 	<string name="mp_unselect">Αποεπιλογή</string>
 	<string name="mp_continue">Συνεχίζω</string>
+	<string name="mp_manage">Διαχειρίζομαι</string>
+	<string name="mp_manage_explain">Έχετε δώσει πρόσβαση σε έναν επιλεγμένο αριθμό φωτογραφιών και βίντεο</string>
+	<string name="mp_permission_explain">Επιτρέψτε στην εφαρμογή να έχει πρόσβαση στις φωτογραφίες και τα βίντεό σας</string>
 </resources>

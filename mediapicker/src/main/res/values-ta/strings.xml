@@ -8,4 +8,7 @@
 	<string name="mp_select">தேர்ந்தெடு</string>
 	<string name="mp_unselect">தேர்வுநீக்கு</string>
 	<string name="mp_continue">தொடரவும்</string>
+	<string name="mp_manage">நிர்வகிக்கவும்</string>
+	<string name="mp_manage_explain">தேர்ந்தெடுக்கப்பட்ட சில படங்கள் மற்றும் வீடியோக்களுக்கான அணுகலை வழங்கியுள்ளீர்கள்</string>
+	<string name="mp_permission_explain">உங்கள் புகைப்படங்கள் மற்றும் வீடியோக்களை அணுக பயன்பாட்டை அனுமதிக்கவும்</string>
 </resources>

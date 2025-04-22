@@ -8,4 +8,7 @@
 	<string name="mp_select">ఎంచుకోండి</string>
 	<string name="mp_unselect">ఎంపికను తీసివేయండి</string>
 	<string name="mp_continue">కొనసాగించు</string>
+	<string name="mp_manage">నిర్వహించండి</string>
+	<string name="mp_manage_explain">మీరు ఎంచుకున్న ఫోటోలు మరియు వీడియోల సంఖ్యకు యాక్సెస్ ఇచ్చారు</string>
+	<string name="mp_permission_explain">దయచేసి మీ ఫోటోలు మరియు వీడియోలను యాక్సెస్ చేయడానికి యాప్‌ని అనుమతించండి</string>
 </resources>

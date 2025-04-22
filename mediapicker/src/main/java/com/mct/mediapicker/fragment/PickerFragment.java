@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-// TODO: 21/04/2025 Translate string res
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PickerFragment extends BottomSheetDialogFragment implements MediaAdapter.OnItemClickListener, MediaAdapter.OnItemDragListener {
 

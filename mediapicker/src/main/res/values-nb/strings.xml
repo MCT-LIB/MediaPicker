@@ -8,4 +8,7 @@
 	<string name="mp_select">Velge</string>
 	<string name="mp_unselect">Fjern valget</string>
 	<string name="mp_continue">Fortsette</string>
+	<string name="mp_manage">Administrer</string>
+	<string name="mp_manage_explain">Du har gitt tilgang til et utvalgt antall bilder og videoer</string>
+	<string name="mp_permission_explain">Gi appen tilgang til bildene og videoene dine</string>
 </resources>

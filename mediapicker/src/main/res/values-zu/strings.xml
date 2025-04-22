@@ -8,4 +8,7 @@
 	<string name="mp_select">Khetha</string>
 	<string name="mp_unselect">Yeka ukukhetha</string>
 	<string name="mp_continue">Qhubeka</string>
+	<string name="mp_manage">Phatha</string>
+	<string name="mp_manage_explain">Unikeze ukufinyelela enanini elikhethiwe lezithombe namavidiyo</string>
+	<string name="mp_permission_explain">Sicela uvumele uhlelo lokusebenza ukuthi lufinyelele izithombe namavidiyo akho</string>
 </resources>

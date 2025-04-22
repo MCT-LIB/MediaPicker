@@ -8,4 +8,7 @@
 	<string name="mp_select">Chagua</string>
 	<string name="mp_unselect">Batilisha uteuzi</string>
 	<string name="mp_continue">Endelea</string>
+	<string name="mp_manage">Dhibiti</string>
+	<string name="mp_manage_explain">Umetoa ufikiaji wa idadi iliyochaguliwa ya picha na video</string>
+	<string name="mp_permission_explain">Tafadhali ruhusu programu kufikia picha na video zako</string>
 </resources>

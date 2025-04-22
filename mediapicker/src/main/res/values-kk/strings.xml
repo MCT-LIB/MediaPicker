@@ -8,4 +8,7 @@
 	<string name="mp_select">таңдаңыз</string>
 	<string name="mp_unselect">Таңдауды алып тастаңыз</string>
 	<string name="mp_continue">Жалғастыру</string>
+	<string name="mp_manage">Басқару</string>
+	<string name="mp_manage_explain">Сіз фотосуреттер мен бейнелердің таңдаулы санына рұқсат бердіңіз</string>
+	<string name="mp_permission_explain">Қолданбаға фотосуреттеріңіз бен бейнелеріңізге кіруге рұқсат етіңіз</string>
 </resources>

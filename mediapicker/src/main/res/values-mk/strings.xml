@@ -8,4 +8,7 @@
 	<string name="mp_select">Изберете</string>
 	<string name="mp_unselect">Отштиклирајте</string>
 	<string name="mp_continue">Продолжи</string>
+	<string name="mp_manage">Управувај</string>
+	<string name="mp_manage_explain">Дадовте пристап до одреден број фотографии и видеа</string>
+	<string name="mp_permission_explain">Дозволете апликацијата да пристапува до вашите фотографии и видеа</string>
 </resources>

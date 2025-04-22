@@ -8,4 +8,7 @@
 	<string name="mp_select">Seleccioneu</string>
 	<string name="mp_unselect">Desseleccioneu</string>
 	<string name="mp_continue">Continua</string>
+	<string name="mp_manage">Gestionar</string>
+	<string name="mp_manage_explain">Has donat accés a un nombre selecte de fotos i vídeos</string>
+	<string name="mp_permission_explain">Permet que l\'aplicació accedeixi a les teves fotos i vídeos</string>
 </resources>

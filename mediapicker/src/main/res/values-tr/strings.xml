@@ -8,4 +8,7 @@
 	<string name="mp_select">Seçme</string>
 	<string name="mp_unselect">Seçimi kaldır</string>
 	<string name="mp_continue">Devam etmek</string>
+	<string name="mp_manage">Üstesinden gelmek</string>
+	<string name="mp_manage_explain">Belirli sayıda fotoğraf ve videoya erişim izni verdiniz</string>
+	<string name="mp_permission_explain">Lütfen uygulamanın fotoğraflarınıza ve videolarınıza erişmesine izin verin</string>
 </resources>

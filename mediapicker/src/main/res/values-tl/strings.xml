@@ -8,4 +8,7 @@
 	<string name="mp_select">Pumili</string>
 	<string name="mp_unselect">Alisin sa pagkakapili</string>
 	<string name="mp_continue">Magpatuloy</string>
+	<string name="mp_manage">Pamahalaan</string>
+	<string name="mp_manage_explain">Nagbigay ka ng access sa isang piling bilang ng mga larawan at video</string>
+	<string name="mp_permission_explain">Mangyaring payagan ang app na i-access ang iyong mga larawan at video</string>
 </resources>

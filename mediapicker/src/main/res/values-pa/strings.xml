@@ -8,4 +8,7 @@
 	<string name="mp_select">ਚੁਣੋ</string>
 	<string name="mp_unselect">ਅਣਚੁਣਿਆ ਕਰੋ</string>
 	<string name="mp_continue">ਜਾਰੀ ਰੱਖੋ</string>
+	<string name="mp_manage">ਪ੍ਰਬੰਧਿਤ ਕਰੋ</string>
+	<string name="mp_manage_explain">ਤੁਸੀਂ ਫੋਟੋਆਂ ਅਤੇ ਵੀਡੀਓਜ਼ ਦੀ ਇੱਕ ਚੋਣਵੀਂ ਗਿਣਤੀ ਤੱਕ ਪਹੁੰਚ ਦਿੱਤੀ ਹੈ</string>
+	<string name="mp_permission_explain">ਕਿਰਪਾ ਕਰਕੇ ਐਪ ਨੂੰ ਤੁਹਾਡੀਆਂ ਫ਼ੋਟੋਆਂ ਅਤੇ ਵੀਡੀਓ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਦਿਓ</string>
 </resources>

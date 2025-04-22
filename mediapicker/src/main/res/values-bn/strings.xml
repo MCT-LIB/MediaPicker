@@ -8,4 +8,7 @@
 	<string name="mp_select">নির্বাচন করুন</string>
 	<string name="mp_unselect">অনির্বাচন করুন</string>
 	<string name="mp_continue">চালিয়ে যান</string>
+	<string name="mp_manage">পরিচালনা করুন</string>
+	<string name="mp_manage_explain">আপনি ফটো এবং ভিডিওগুলির একটি নির্বাচিত সংখ্যক অ্যাক্সেস দিয়েছেন৷</string>
+	<string name="mp_permission_explain">অনুগ্রহ করে অ্যাপটিকে আপনার ফটো এবং ভিডিও অ্যাক্সেস করার অনুমতি দিন</string>
 </resources>

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mp_media">Medios</string>
-    <string name="mp_album">Álbum</string>
-    <string name="mp_empty_media">Medios vacíos</string>
-    <string name="mp_empty_album">Álbum vacío</string>
-    <string name="mp_selected">Seleccionado %s</string>
-    <string name="mp_select">Seleccionar</string>
-    <string name="mp_unselect">Deseleccionar</string>
-    <string name="mp_continue">Continuar</string>
+	<string name="mp_media">Medios de comunicación</string>
+	<string name="mp_album">Álbum</string>
+	<string name="mp_empty_media">Medios vacíos</string>
+	<string name="mp_empty_album">álbum vacío</string>
+	<string name="mp_selected">Seleccionado %s</string>
+	<string name="mp_select">Seleccionar</string>
+	<string name="mp_unselect">Deseleccionar</string>
+	<string name="mp_continue">Continuar</string>
+	<string name="mp_manage">Administrar</string>
+	<string name="mp_manage_explain">Has dado acceso a un número selecto de fotos y vídeos.</string>
+	<string name="mp_permission_explain">Permita que la aplicación acceda a sus fotos y videos.</string>
 </resources>

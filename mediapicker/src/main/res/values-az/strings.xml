@@ -8,4 +8,7 @@
 	<string name="mp_select">Seç</string>
 	<string name="mp_unselect">Seçimi ləğv et</string>
 	<string name="mp_continue">Davam et</string>
+	<string name="mp_manage">İdarə et</string>
+	<string name="mp_manage_explain">Siz seçilmiş sayda foto və videolara giriş icazəsi verdiniz</string>
+	<string name="mp_permission_explain">Lütfən, tətbiqin foto və videolarınıza daxil olmasına icazə verin</string>
 </resources>

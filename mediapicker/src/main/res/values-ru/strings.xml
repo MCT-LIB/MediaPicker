@@ -8,4 +8,7 @@
     <string name="mp_select">Выбрать</string>
     <string name="mp_unselect">Отменить выбор</string>
     <string name="mp_continue">Продолжить</string>
+	<string name="mp_manage">Управлять</string>
+	<string name="mp_manage_explain">Вы предоставили доступ к выбранному количеству фотографий и видео.</string>
+	<string name="mp_permission_explain">Пожалуйста, разрешите приложению доступ к вашим фотографиям и видео.</string>
 </resources>

@@ -8,4 +8,7 @@
 	<string name="mp_select">Hautatu</string>
 	<string name="mp_unselect">Deshautatu</string>
 	<string name="mp_continue">Jarraitu</string>
+	<string name="mp_manage">Kudeatu</string>
+	<string name="mp_manage_explain">Argazki eta bideo kopuru jakin baterako sarbidea eman duzu</string>
+	<string name="mp_permission_explain">Mesedez, baimendu aplikazioari zure argazkiak eta bideoak atzitzeko</string>
 </resources>

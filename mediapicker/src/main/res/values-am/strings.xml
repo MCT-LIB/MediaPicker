@@ -8,4 +8,7 @@
 	<string name="mp_select">ይምረጡ</string>
 	<string name="mp_unselect">አንሳ</string>
 	<string name="mp_continue">ቀጥል</string>
+	<string name="mp_manage">አስተዳድር</string>
+	<string name="mp_manage_explain">ለተመረጡት የፎቶዎች እና ቪዲዮዎች መዳረሻ ሰጥተሃል</string>
+	<string name="mp_permission_explain">እባክዎ መተግበሪያው የእርስዎን ፎቶዎች እና ቪዲዮዎች እንዲደርስ ይፍቀዱለት</string>
 </resources>

@@ -2,10 +2,13 @@
 <resources>
 	<string name="mp_media">Médias</string>
 	<string name="mp_album">Album</string>
-	<string name="mp_empty_media">Médias vides</string>
+	<string name="mp_empty_media">Média vide</string>
 	<string name="mp_empty_album">Album vide</string>
 	<string name="mp_selected">Sélectionné %s</string>
 	<string name="mp_select">Sélectionner</string>
 	<string name="mp_unselect">Désélectionner</string>
 	<string name="mp_continue">Continuer</string>
+	<string name="mp_manage">Gérer</string>
+	<string name="mp_manage_explain">Vous avez donné accès à un certain nombre de photos et de vidéos</string>
+	<string name="mp_permission_explain">Veuillez autoriser l\'application à accéder à vos photos et vidéos</string>
 </resources>

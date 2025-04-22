@@ -8,4 +8,7 @@
 	<string name="mp_select">Valige</string>
 	<string name="mp_unselect">Tühista valik</string>
 	<string name="mp_continue">Jätka</string>
+	<string name="mp_manage">Halda</string>
+	<string name="mp_manage_explain">Olete andnud juurdepääsu valitud arvule fotodele ja videotele</string>
+	<string name="mp_permission_explain">Lubage rakendusel juurdepääs teie fotodele ja videotele</string>
 </resources>

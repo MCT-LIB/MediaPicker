@@ -8,4 +8,7 @@
 	<string name="mp_select">选择</string>
 	<string name="mp_unselect">取消选择</string>
 	<string name="mp_continue">继续</string>
+	<string name="mp_manage">管理</string>
+	<string name="mp_manage_explain">您已授予对选定数量的照片和视频的访问权限</string>
+	<string name="mp_permission_explain">请允许该应用访问您的照片和视频</string>
 </resources>

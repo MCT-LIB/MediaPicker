@@ -8,4 +8,7 @@
 	<string name="mp_select">Pasirinkite</string>
 	<string name="mp_unselect">Atšaukti pasirinkimą</string>
 	<string name="mp_continue">Tęsti</string>
+	<string name="mp_manage">Tvarkyti</string>
+	<string name="mp_manage_explain">Suteikėte prieigą prie tam tikro skaičiaus nuotraukų ir vaizdo įrašų</string>
+	<string name="mp_permission_explain">Leiskite programai pasiekti jūsų nuotraukas ir vaizdo įrašus</string>
 </resources>

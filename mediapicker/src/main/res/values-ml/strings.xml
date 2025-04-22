@@ -8,4 +8,7 @@
 	<string name="mp_select">തിരഞ്ഞെടുക്കുക</string>
 	<string name="mp_unselect">തിരഞ്ഞെടുത്തത് മാറ്റുക</string>
 	<string name="mp_continue">തുടരുക</string>
+	<string name="mp_manage">കൈകാര്യം ചെയ്യുക</string>
+	<string name="mp_manage_explain">തിരഞ്ഞെടുത്ത ഫോട്ടോകളിലേക്കും വീഡിയോകളിലേക്കും നിങ്ങൾ ആക്‌സസ് നൽകി</string>
+	<string name="mp_permission_explain">നിങ്ങളുടെ ഫോട്ടോകളും വീഡിയോകളും ആക്‌സസ് ചെയ്യാൻ ആപ്പിനെ അനുവദിക്കുക</string>
 </resources>

@@ -8,4 +8,7 @@
 	<string name="mp_select">પસંદ કરો</string>
 	<string name="mp_unselect">નાપસંદ કરો</string>
 	<string name="mp_continue">ચાલુ રાખો</string>
+	<string name="mp_manage">વ્યવસ્થા કરો</string>
+	<string name="mp_manage_explain">તમે ફોટા અને વીડિયોની પસંદગીની સંખ્યાની ઍક્સેસ આપી છે</string>
+	<string name="mp_permission_explain">કૃપા કરીને એપ્લિકેશનને તમારા ફોટા અને વિડિઓઝને ઍક્સેસ કરવાની મંજૂરી આપો</string>
 </resources>

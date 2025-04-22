@@ -8,4 +8,7 @@
 	<string name="mp_select">Selecta</string>
 	<string name="mp_unselect">Deselectați</string>
 	<string name="mp_continue">Continua</string>
+	<string name="mp_manage">Gestionează</string>
+	<string name="mp_manage_explain">Ați dat acces la un număr selectat de fotografii și videoclipuri</string>
+	<string name="mp_permission_explain">Vă rugăm să permiteți aplicației să vă acceseze fotografiile și videoclipurile</string>
 </resources>

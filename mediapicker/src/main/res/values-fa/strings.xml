@@ -8,4 +8,7 @@
 	<string name="mp_select">انتخاب کنید</string>
 	<string name="mp_unselect">لغو انتخاب کنید</string>
 	<string name="mp_continue">ادامه دهید</string>
+	<string name="mp_manage">مدیریت کنید</string>
+	<string name="mp_manage_explain">شما به تعداد معینی از عکس‌ها و ویدیوها دسترسی پیدا کرده‌اید</string>
+	<string name="mp_permission_explain">لطفاً به برنامه اجازه دهید به عکس‌ها و ویدیوهای شما دسترسی داشته باشد</string>
 </resources>

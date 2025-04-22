@@ -8,4 +8,7 @@
 	<string name="mp_select">Pilih</string>
 	<string name="mp_unselect">Nyahpilih</string>
 	<string name="mp_continue">teruskan</string>
+	<string name="mp_manage">Uruskan</string>
+	<string name="mp_manage_explain">Anda telah memberikan akses kepada beberapa foto dan video terpilih</string>
+	<string name="mp_permission_explain">Sila benarkan apl mengakses foto dan video anda</string>
 </resources>

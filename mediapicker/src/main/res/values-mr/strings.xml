@@ -8,4 +8,7 @@
 	<string name="mp_select">निवडा</string>
 	<string name="mp_unselect">निवड रद्द करा</string>
 	<string name="mp_continue">चालू ठेवा</string>
+	<string name="mp_manage">व्यवस्थापित करा</string>
+	<string name="mp_manage_explain">तुम्ही निवडक फोटो आणि व्हिडिओंमध्ये प्रवेश दिला आहे</string>
+	<string name="mp_permission_explain">कृपया ॲपला तुमचे फोटो आणि व्हिडिओ ऍक्सेस करण्याची अनुमती द्या</string>
 </resources>

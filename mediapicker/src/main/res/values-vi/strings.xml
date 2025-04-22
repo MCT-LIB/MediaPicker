@@ -8,4 +8,7 @@
 	<string name="mp_select">Chọn</string>
 	<string name="mp_unselect">Bỏ chọn</string>
 	<string name="mp_continue">Tiếp tục</string>
+	<string name="mp_manage">Quản lý</string>
+	<string name="mp_manage_explain">Bạn đã cấp quyền truy cập vào một số ảnh và video được chọn</string>
+	<string name="mp_permission_explain">Vui lòng cho phép ứng dụng truy cập ảnh và video của bạn</string>
 </resources>

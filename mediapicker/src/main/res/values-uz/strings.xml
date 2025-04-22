@@ -8,4 +8,7 @@
 	<string name="mp_select">Tanlang</string>
 	<string name="mp_unselect">Tanlovni bekor qiling</string>
 	<string name="mp_continue">Davom eting</string>
+	<string name="mp_manage">Boshqarish</string>
+	<string name="mp_manage_explain">Siz tanlab olingan foto va videolardan foydalanishga ruxsat berdingiz</string>
+	<string name="mp_permission_explain">Iltimos, ilovaga fotosuratlar va videolaringizga kirishiga ruxsat bering</string>
 </resources>

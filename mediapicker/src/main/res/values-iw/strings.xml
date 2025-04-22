@@ -8,4 +8,7 @@
 	<string name="mp_select">לִבחוֹר</string>
 	<string name="mp_unselect">בטל בחירה</string>
 	<string name="mp_continue">לְהַמשִׁיך</string>
+	<string name="mp_manage">לְנַהֵל</string>
+	<string name="mp_manage_explain">נתת גישה למספר נבחר של תמונות וסרטונים</string>
+	<string name="mp_permission_explain">אנא אפשר לאפליקציה לגשת לתמונות ולסרטונים שלך</string>
 </resources>

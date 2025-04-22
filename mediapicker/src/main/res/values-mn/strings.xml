@@ -8,4 +8,7 @@
 	<string name="mp_select">Сонго</string>
 	<string name="mp_unselect">Сонголтыг болиулах</string>
 	<string name="mp_continue">Үргэлжлүүлэх</string>
+	<string name="mp_manage">Удирдах</string>
+	<string name="mp_manage_explain">Та сонгосон тооны зураг, видеонд хандах эрх өгсөн</string>
+	<string name="mp_permission_explain">Аппликешнд таны зураг, видеонд хандахыг зөвшөөрнө үү</string>
 </resources>

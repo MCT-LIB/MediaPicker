@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.btnStart.setOnClickListener(v -> {
-            MediaPicker.pick(this, createOption());
+            MediaPicker.pick(getSupportFragmentManager(), createOption());
         });
     }
 

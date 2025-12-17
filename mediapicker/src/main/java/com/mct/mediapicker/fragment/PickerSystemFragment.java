@@ -49,7 +49,8 @@ public class PickerSystemFragment extends BottomSheetDialogFragment {
                 dismiss();
             });
         } else {
-            if (ActivityResultContracts.PickVisualMedia.isSystemPickerAvailable$activity_release()) {
+            //noinspection deprecation
+            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
                     if (maxSelection > MediaStore.getPickImagesMaxLimit()) {
                         maxSelection = MediaStore.getPickImagesMaxLimit();
